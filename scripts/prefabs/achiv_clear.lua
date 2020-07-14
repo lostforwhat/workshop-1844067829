@@ -13,6 +13,14 @@ local function IsInTable(value, tbl)
     return false
 end
 
+local function StrToTable(str)
+    if str == nil or type(str) ~= "string" then
+        return
+    end
+    
+    return loadstring("return " .. str)()
+end
+
 local function OnPray(inst, prayers)
     if prayers and not prayers:HasTag("playerghost") and 
         prayers.components.allachivevent then
@@ -41,6 +49,8 @@ local function OnPray(inst, prayers)
                     end) 
                 else
                     prayers.components.allachivevent.tempachiv[achivname] = allachiv_eventdata[achivname]
+                    local tempstr = TableToStr(prayers.components.allachivevent.tempachiv)
+                    prayers.components.allachivevent.tempachiv = StrToTable(tempstr)
                     prayers.components.allachivevent:seffc(prayers, achivname)
                     prayers:DoTaskInTime(0.5,function() 
                         prayers:PushEvent("achivecompleted", {achivname=achivname})

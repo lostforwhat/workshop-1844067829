@@ -733,6 +733,9 @@ function allachivcoin:onhitfn(inst)
             attackdeadchance = attackdeadchance * 0.2
             chance = chance*0.2
         end
+        if stimuli == "blood" then
+            return
+        end
         if inst.components.titlesystem and inst.components.titlesystem.titles[5] == 1 then
             chance = chance * (1+title_data["title5"]["crit"])
         end
@@ -2808,9 +2811,14 @@ end
 
 local function debufftarget(inst, target, damage)
     if target == nil or target.components.health == nil or (not target:IsValid()) or
-        target.components.combat == nil then return end
+        target.components.combat == nil then 
+            if target._bloodtask ~= nil then
+                target._bloodtask:Cancel()
+                target._bloodtask = nil
+            end
+            return end
     if target._bloodtask == nil then
-        target._bloodtasktime = 5
+        target._bloodtasktime = 10
         target._bloodtaskdamage = damage*0.05
         target._bloodtask = target:DoPeriodicTask(1, function(target) 
             if target.components.combat and inst ~= nil and inst.components.combat
@@ -2824,7 +2832,7 @@ local function debufftarget(inst, target, damage)
             end
         end)
     else
-        target._bloodtasktime = 5
+        target._bloodtasktime = 10
         target._bloodtaskdamage = damage*0.05
     end
 end
@@ -2857,12 +2865,23 @@ function allachivcoin:warlyupfn(inst)
             return target
         end]]
 
+        inst:ListenForEvent("onattackother", function(inst, data)
+            local target = data.target
+            local achiv = inst.components.allachivcoin
+            if target and not target:HasTag("wall") and achiv.warlyup > 0 then
+                local name = target.prefab
+                local memorykilldamage = achiv.memorykilldata[name] or 0
+                local level = inst.components.levelsystem.level or 1
+                debufftarget(inst, target, memorykilldamage+level)
+            end
+        end)
+
         inst:ListenForEvent("onhitother", function(inst, data)
             local target = data.target
             local damage = data.damage
             local achiv = inst.components.allachivcoin
             if target and not target:HasTag("wall") then
-                if achiv.warlyup > 0 and damage > 0 and data.stimuli ~= "blood" then
+                if achiv.warlyup > 0 and damage > 0.5 and data.stimuli ~= "blood" then
                     --inst.components.combat:SetRange(2)
                     --changeposition(inst, target)
                     if target.prefab == "beefalo" and achiv.attackcheck ~= true then
@@ -2870,7 +2889,7 @@ function allachivcoin:warlyupfn(inst)
                         target.components.combat:GetAttacked(inst, 9999)
                         inst:DoTaskInTime(0.2, function() achiv.attackcheck=false end)
                     else
-                        debufftarget(inst, target, damage)
+                        
                     end
                 end
                 

@@ -18,7 +18,7 @@ version:2.3.14 调整厨子，奶奶，沃尔特专属
 ]]
 author = "五年"
 
-version = "2.3.15"
+version = "2.3.16"
 
 api_version = 10
 
