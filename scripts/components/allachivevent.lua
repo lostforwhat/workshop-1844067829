@@ -1422,7 +1422,7 @@ function allachivevent:onkilledother(inst)
             if (not inst:HasTag("playerghost")) and math.ceil(inst.components.health.currenthealth) == 1 then
                 self:addOneJob(inst, "health1kill")
             end
-            local bosslist = {"moose", "dragonfly", "beager", "deerclops", "stalker_atrium", "klaus",
+            local bosslist = {"moose", "dragonfly", "beager", "deerclops", "stalker_atrium", "klaus", "crabking",
                             "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross"}
             if findprefab(bosslist, victim.prefab) then
                 self.killboss = self.killboss + 1

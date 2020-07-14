@@ -250,8 +250,8 @@ function levelsystem:levelDoDelta(inst)
 end
 
 function levelsystem:xpDoDelta(value,inst)
-	if not self:levelcheck(inst) then return end
 	self.overallxp = self.overallxp + value
+	if not self:levelcheck(inst) then return end
     self.levelxp = self.levelxp + value
     local leveup_need = math.min(levelxpcap, self.level*200)
 	while(self.levelxp >= leveup_need) do 
