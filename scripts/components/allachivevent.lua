@@ -1881,6 +1881,7 @@ function allachivevent:onreroll(inst)
                 SaveAchieve[k] = self[k] or 0
             end
         end
+        SaveAchieve["killboss"] = self.killboss or 0
         
         SaveAchieve["totalstar"] = math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95)
 		if SaveAchieve["totalstar"] > 10 then
