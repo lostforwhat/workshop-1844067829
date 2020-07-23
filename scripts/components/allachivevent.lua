@@ -404,6 +404,8 @@ local allachivevent = Class(function(self, inst)
     self.tempachiv = nil
     self.killboss = 0
     
+    self.complete_time = nil
+    self.temp_total = 0
 end,
 nil,
 {
@@ -761,6 +763,9 @@ function allachivevent:OnSave()
         tempachiv = self.tempachiv,
         all = self.all,
         killboss = self.killboss,
+
+        complete_time = self.complete_time,
+        temp_total = self.temp_total,
     }
     return data
 end
@@ -871,6 +876,7 @@ function allachivevent:addOneTemp(inst, achivname, amount)
         self.tempachiv = StrToTable(tempstr)
         if self.tempachiv[achivname] >= allachiv_eventdata[achivname] then
             self.tempachiv[achivname] = allachiv_eventdata[achivname]
+            self.temp_total = self.temp_total + 1
             self:seffc(inst, achivname)
             inst:DoTaskInTime(1,function() 
                 inst:PushEvent("achivecompleted", {achivname=achivname})
@@ -1832,6 +1838,7 @@ function allachivevent:onteleport(inst)
         
     end)
     inst:ListenForEvent("townportalteleport", function(inst) --传送
+    	--预留传送隐藏任务
         
     end)
 end
@@ -1882,6 +1889,8 @@ function allachivevent:onreroll(inst)
             end
         end
         SaveAchieve["killboss"] = self.killboss or 0
+        SaveAchieve["complete_time"] = self.complete_time or nil
+        SaveAchieve["temp_total"] = self.temp_total or 0
         
         SaveAchieve["totalstar"] = math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95)
 		if SaveAchieve["totalstar"] > 10 then
@@ -1890,8 +1899,7 @@ function allachivevent:onreroll(inst)
             SaveAchieve["totalstar"] = 0
         end
         AchievementData[inst:GetDisplayName()] = SaveAchieve
-        --print("SAVED")
-        inst.components.allachivcoin:removecoin(inst)
+        --inst.components.allachivcoin:removecoin(inst)
     end)
 end
 --Init
@@ -1970,6 +1978,9 @@ function allachivevent:allget(inst)
         inst:DoPeriodicTask(1, function()
             if self.all < 1 then
                 if checkallachive() then
+                	if self.complete_time == nil then
+                		self.complete_time = os.date("%Y-%m-%d %X")
+                	end
                     self.all = 1
                     self:seffc(inst, "all")
                 end
