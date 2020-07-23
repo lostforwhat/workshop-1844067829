@@ -150,6 +150,13 @@ return {
         {chance = 0.2, item = "koalefant_winter", aggro = true},--冬象
         {chance = 0.05, item = "rocky", aggro = true},--石虾
         {chance = 0.12, item = "catcoon", aggro = true},--猫
+        {chance = 0.1, item = "carrat_planted"},
+        {chance = 0.1, item = "dug_sapling_moon"},
+        {chance = 0.2, item = "moonbutterfly"},--蝴蝶
+        {chance = 0.1, item = "moonglass"},
+        {chance = 0.3, item = "fruitdragon", aggro = true},
+        {chance = 0.05, item = "dug_trap_starfish"},
+        {chance = 0.2, item = "bullkelp_beachedroot"},
 },
 
 s_loot = {
