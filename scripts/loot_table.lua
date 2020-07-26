@@ -157,6 +157,7 @@ return {
         {chance = 0.3, item = "fruitdragon", aggro = true},
         {chance = 0.05, item = "dug_trap_starfish"},
         {chance = 0.2, item = "bullkelp_beachedroot"},
+        {chance = 0.6, item = "driftwood_log"},
 },
 
 s_loot = {
@@ -311,6 +312,7 @@ d_loot = {
         {chance = 0.002, item = "catcoonden"}, --中空树桩
         {chance = 0.002, item = "pigtorch"}, -- 猪人火炬
         {chance = 0.002, item = "wasphive"}, -- 杀人蜂巢
+        {chance = 0.01, item = "moonspider_spike"},
     },
 
 dd_loot = {

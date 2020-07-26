@@ -6,24 +6,6 @@ end
 local function getlevelxp(self,levelxp) self.inst.currentlevelxp:set(levelxp) end
 local function getoverallxp(self,overallxp) self.inst.currentoverallxp:set(overallxp) end
 
-local function currenthungeruplevel(self,hungerupamount) self.inst.currenthungeruplevel:set(hungerupamount) end
-local function currentsanityuplevel(self,sanityupamount) self.inst.currentsanityuplevel:set(sanityupamount) end
-local function currenthealthuplevel(self,healthupamount) self.inst.currenthealthuplevel:set(healthupamount) end
-local function currentspeeduplevel(self,speedupamount) self.inst.currentspeeduplevel:set(speedupamount) end
-local function currentabsorbuplevel(self,absorbupamount) self.inst.currentabsorbuplevel:set(absorbupamount) end
-local function currentdamageuplevel(self,damageupamount) self.inst.currentdamageuplevel:set(damageupamount) end
-local function currentinsulationuplevel(self,insulationupamount) self.inst.currentinsulationuplevel:set(insulationupamount) end
-local function currentinsulationsummeruplevel(self,insulationsummerupamount) self.inst.currentinsulationsummeruplevel:set(insulationsummerupamount) end
-
-local function currenthungercost(self,hungercost) self.inst.currenthungercost:set(hungercost) end
-local function currentsanitycost(self,sanitycost) self.inst.currentsanitycost:set(sanitycost) end
-local function currenthealthcost(self,healthcost) self.inst.currenthealthcost:set(healthcost) end
-local function currentspeedcost(self,speedcost) self.inst.currentspeedcost:set(speedcost) end
-local function currentabsorbcost(self,absorbcost) self.inst.currentabsorbcost:set(absorbcost) end
-local function currentdamagecost(self,damagecost) self.inst.currentdamagecost:set(damagecost) end
-local function currentinsulationcost(self,insulationcost) self.inst.currentinsulationcost:set(insulationcost) end
-local function currentinsulationsummercost(self,insulationsummercost) self.inst.currentinsulationsummercost:set(insulationsummercost) end
-
 local function currenthungermax(self,hunger) self.inst.currenthungermax:set(hunger) end
 local function currentsanitymax(self,sanity) self.inst.currentsanitymax:set(sanity) end
 local function currenthealthmax(self,health) self.inst.currenthealthmax:set(health) end
@@ -103,24 +85,6 @@ nil,
     level = getlevel,
 	levelxp = getlevelxp,
 	overallxp = getoverallxp,
-
-    hungerupamount = currenthungeruplevel,
-    sanityupamount = currentsanityuplevel,
-    healthupamount = currenthealthuplevel,
-    speedupamount = currentspeeduplevel,
-    absorbupamount = currentabsorbuplevel,
-    damageupamount = currentdamageuplevel,
-	insulationupamount = currentinsulationuplevel,
-	insulationsummerupamount = currentinsulationsummeruplevel,
-	
-	hungercost = currenthungercost,
-	sanitycost = currentsanitycost,
-	healthcost = currenthealthcost,
-	speedcost = currentspeedcost,
-	absorbcost = currentabsorbcost,
-	damagecost = currentdamagecost,
-	insulationcost = currentinsulationcost,
-	insulationsummercost = currentinsulationsummercost,
 	
 	hungermax = currenthungermax,
     sanitymax = currentsanitymax,

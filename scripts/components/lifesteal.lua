@@ -14,6 +14,10 @@ local function IsValidVictim(victim)
         and victim.components.combat ~= nil
 end
 
+local function Onhitother(inst, data)
+    inst.components.lifesteal:Onhitother(inst, data)
+end
+
 local function onpercent(self, percent)
 
 end
@@ -24,6 +28,7 @@ local LifeSteal = Class(function(self, inst)
     self.percent = 0
     self.max_percent = MAX_PERCENT
     self.extra_percent = 0
+    --self.extra_source_map = nil
     self:Init()
 end,
 nil,
@@ -37,25 +42,63 @@ function LifeSteal:OnSave()
 	}
 end
 
-function LifeSteal:Init()
-	self.inst:ListenForEvent("onhitother", function(inst, data)
-		if data.target and
-			not inst.components.health:IsDead() and 
-			IsValidVictim(data.target) and 
-			data.damage>0 then
+function LifeSteal:SetPercent(val)
+    if val > 0 and val < MAX_PERCENT then
+        self.percent = val
+    end
+end
 
-			local damage = data.damage or 0
-            local target = data.target
-            local stimuli = data.stimuli
-			
-			if self.percent > 0 then
-				local absorb = target.components.health and target.components.health.absorb or 0
-				damage = damage * (1- math.clamp(absorb, 0, 1))
-				local lifestealnum = self.percent * 0.01 * damage * (1 + self.extra_percent)
-				inst.components.health:DoDelta(lifestealnum, false, "lifesteal")
-			end
-		end
-    end)
+function LifeSteal:AddExtraPercent(source, val)
+    if self.extra_source_map == nil then
+        self.extra_source_map = {}
+    end
+    self.extra_source_map[source] = val
+    self.extra_percent = 0
+    for k, v in pairs(self.extra_source_map) do
+        if k and v then
+            self.extra_percent = self.extra_percent + v
+        end
+    end
+end
+
+function LifeSteal:RemoveExtraPercent(source)
+    if self.extra_source_map ~= nil and self.extra_source_map[source] then
+        self.extra_source_map[source] = nil
+        self.extra_percent = 0
+        for k, v in pairs(self.extra_source_map) do
+            if k and v then
+                self.extra_percent = self.extra_percent + v
+            end
+        end
+    end
+end
+
+function LifeSteal:Onhitother(inst, data)
+    if data.target and
+        not inst.components.health:IsDead() and 
+        IsValidVictim(data.target) and 
+        data.damage>0 then
+
+        local damage = data.damage or 0
+        local target = data.target
+        local stimuli = data.stimuli
+        if stimuli ~= nil then return end
+        
+        if self.percent > 0 then
+            local absorb = target.components.health and target.components.health.absorb or 0
+            damage = damage * (1- math.clamp(absorb, 0, 1))
+            local lifestealnum = self.percent * 0.01 * damage * (1 + self.extra_percent)
+            inst.components.health:DoDelta(lifestealnum, false, "lifesteal")
+        end
+    end
+end
+
+function LifeSteal:Init()
+	self.inst:ListenForEvent("onhitother", Onhitother)
+end
+
+function LifeSteal:OnRemoveFromEntity()
+    self.inst:RemoveEventCallback("onhitother", Onhitother)
 end
 
 return LifeSteal

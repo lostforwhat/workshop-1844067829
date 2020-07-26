@@ -36,40 +36,68 @@ local function currenthealthup(self,healthupamount) self.inst.currenthealthup:se
 local function currentspeedup(self,speedupamount) self.inst.currentspeedup:set(speedupamount) end
 local function currentabsorbup(self,absorbupamount) self.inst.currentabsorbup:set(absorbupamount) end
 local function currentdamageup(self,damageupamount) self.inst.currentdamageup:set(damageupamount) end
-local function currentcrit(self,crit) self.inst.currentcrit:set(crit) end
-local function currentlifesteal(self,lifesteal) self.inst.currentlifesteal:set(lifesteal) end
+local function currentcrit(self,crit) 
+    self.inst.currentcrit:set(crit) 
+    if crit > 0 then
+        if self.inst.components.crit == nil then
+            self.inst:AddComponent("crit")
+        end
+        self.inst.components.crit:SetChance(allachiv_coindata["crit"]*crit*100)
+    else
+        self.inst:RemoveComponent("crit")
+    end
+end
+local function currentlifesteal(self,lifesteal) 
+    self.inst.currentlifesteal:set(lifesteal)
+    if lifesteal > 0 then
+        if self.inst.components.lifesteal == nil then
+            self.inst:AddComponent("lifesteal")
+        end
+        self.inst.components.lifesteal:SetPercent(allachiv_coindata["lifesteal"]*self.lifestealupamount*100)
+    else
+        self.inst:RemoveComponent("lifesteal")
+    end 
+end
 
-local function currenthungerachivcost(self,hungerachivcost) self.inst.currenthungerachivcost:set(hungerachivcost) end
-local function currentsanityachivcost(self,sanityachivcost) self.inst.currentsanityachivcost:set(sanityachivcost) end
-local function currenthealthachivcost(self,healthachivcost) self.inst.currenthealthachivcost:set(healthachivcost) end
-local function currentspeedachivcost(self,speedachivcost) self.inst.currentspeedachivcost:set(speedachivcost) end
-local function currentabsorbachivcost(self,absorbachivcost) self.inst.currentabsorbachivcost:set(absorbachivcost) end
-local function currentdamageachivcost(self,damageachivcost) self.inst.currentdamageachivcost:set(damageachivcost) end
-local function currentcritachivcost(self,critachivcost) self.inst.currentcritachivcost:set(critachivcost) end
-local function currentlifestealcost(self,lifestealcost) self.inst.currentlifestealcost:set(lifestealcost) end
-local function currentfireflylightcost(self,fireflylightcost) self.inst.currentfireflylightcost:set(fireflylightcost) end
-
-local function currentdoubledrop(self,doubledrop) local c = 0 if doubledrop then c=1 end self.inst.currentdoubledrop:set(c) end
-local function currentnomoist(self,nomoist) local c = 0 if nomoist then c=1 end self.inst.currentnomoist:set(c) end
-local function currentgoodman(self,goodman) local c = 0 if goodman then c=1 end self.inst.currentgoodman:set(c) end
-local function currentcheatdeath(self,cheatdeath) local c = 0 if cheatdeath then c=1 end self.inst.currentcheatdeath:set(c) end
-local function currentrefresh(self,refresh) local c = 0 if refresh then c=1 end self.inst.currentrefresh:set(c) end
-local function currentfishmaster(self,fishmaster) local c = 0 if fishmaster then c=1 end self.inst.currentfishmaster:set(c) end
-local function currentcookmaster(self,cookmaster) local c = 0 if cookmaster then c=1 end self.inst.currentcookmaster:set(c) end
-local function currentchopmaster(self,chopmaster) local c = 0 if chopmaster then c=1 end self.inst.currentchopmaster:set(c) end
-local function currentpickmaster(self,pickmaster) local c = 0 if pickmaster then c=1 end self.inst.currentpickmaster:set(c) end
-local function currentbuildmaster(self,buildmaster) local c = 0 if buildmaster then c=1 end self.inst.currentbuildmaster:set(c) end
-local function currenticebody(self,icebody) local c = 0 if icebody then c=1 end self.inst.currenticebody:set(c) end
-local function currentfirebody(self,firebody) local c = 0 if firebody then c=1 end self.inst.currentfirebody:set(c) end
-local function currentreader(self,reader) local c = 0 if reader then c=1 end self.inst.currentreader:set(c) end
-local function currentmasterchef(self,masterchef) local c = 0 if masterchef then c=1 end self.inst.currentmasterchef:set(c) end
-local function currentattackback(self,attackback) local c = 0 if attackback then c=1 end self.inst.currentattackback:set(c) end
-local function currentminemaster(self,minemaster) local c = 0 if minemaster then c=1 end self.inst.currentminemaster:set(c) end
-local function currentfastworker(self,fastworker) local c = 0 if fastworker then c=1 end self.inst.currentfastworker:set(c) end
-local function currentstopregen(self,stopregen) local c = 0 if stopregen then c=1 end self.inst.currentstopregen:set(c) end
-local function currentattackfrozen(self,attackfrozen) local c = 0 if attackfrozen then c=1 end self.inst.currentattackfrozen:set(c) end
-local function currentattackdead(self,attackdead) local c = 0 if attackdead then c=1 end self.inst.currentattackdead:set(c) end
-local function currentattackbroken(self,attackbroken) local c = 0 if attackbroken then c=1 end self.inst.currentattackbroken:set(c) end
+local function currentdoubledrop(self,doubledrop) self.inst.currentdoubledrop:set(doubledrop) end
+local function currentnomoist(self,nomoist) self.inst.currentnomoist:set(nomoist) end
+local function currentgoodman(self,goodman) self.inst.currentgoodman:set(goodman) end
+local function currentcheatdeath(self,cheatdeath) self.inst.currentcheatdeath:set(cheatdeath) end
+local function currentrefresh(self,refresh) self.inst.currentrefresh:set(refresh) end
+local function currentfishmaster(self,fishmaster) self.inst.currentfishmaster:set(fishmaster) end
+local function currentcookmaster(self,cookmaster) self.inst.currentcookmaster:set(cookmaster) end
+local function currentchopmaster(self,chopmaster) self.inst.currentchopmaster:set(chopmaster) end
+local function currentpickmaster(self,pickmaster) self.inst.currentpickmaster:set(pickmaster) end
+local function currentbuildmaster(self,buildmaster) self.inst.currentbuildmaster:set(buildmaster) end
+local function currenticebody(self,icebody) self.inst.currenticebody:set(icebody) end
+local function currentfirebody(self,firebody) self.inst.currentfirebody:set(firebody) end
+local function currentreader(self,reader) self.inst.currentreader:set(reader) end
+local function currentmasterchef(self,masterchef) self.inst.currentmasterchef:set(masterchef) end
+local function currentattackback(self,attackback) self.inst.currentattackback:set(attackback) end
+local function currentminemaster(self,minemaster) self.inst.currentminemaster:set(minemaster) end
+local function currentfastworker(self,fastworker) self.inst.currentfastworker:set(fastworker) end
+local function currentstopregen(self,stopregen) self.inst.currentstopregen:set(stopregen) end
+local function currentattackfrozen(self,attackfrozen) self.inst.currentattackfrozen:set(attackfrozen) end
+local function currentattackdead(self,attackdead) 
+    self.inst.currentattackdead:set(attackdead) 
+    if attackdead > 0 then
+        if self.inst.components.attackdeath == nil then
+            self.inst:AddComponent("attackdeath")
+        end
+    else
+        self.inst:RemoveComponent("attackdeath")
+    end
+end
+local function currentattackbroken(self,attackbroken) 
+    self.inst.currentattackbroken:set(attackbroken) 
+    if attackbroken > 0 then
+        if self.inst.components.attackbroken == nil then
+            self.inst:AddComponent("attackbroken")
+        end
+    else
+        self.inst:RemoveComponent("attackbroken")
+    end
+end
 local function currentwaterwalk(self,waterwalk) self.inst.currentwaterwalk:set(waterwalk) end
 
 --特殊
@@ -168,45 +196,35 @@ local allachivcoin = Class(function(self, inst)
 	self.lifestealupamount = 0
 	self.fireflylightup = 0
 	
-	self.hungerachivcost = allachiv_coinuse["hungerup"]
-    self.sanityachivcost = allachiv_coinuse["sanityup"]
-    self.healthachivcost = allachiv_coinuse["healthup"]
-    self.speedachivcost = allachiv_coinuse["speedup"]
-    self.absorbachivcost = allachiv_coinuse["absorbup"]
-    self.damageachivcost = allachiv_coinuse["damageup"]
-    self.critachivcost = allachiv_coinuse["crit"]
-	self.lifestealcost = allachiv_coinuse["lifesteal"]
-	self.fireflylightcost = allachiv_coinuse["fireflylightup"]
-	
 	self.starsspent = 0
 
-    self.doubledrop = false
-    self.nomoist = false
-    self.goodman = false
-	self.cheatdeath = false
-    self.refresh = false
-    self.fishmaster = false
-    self.cookmaster = false
-    self.chopmaster = false
-    self.pickmaster = false
-    self.buildmaster = false
-    self.icebody = false
-    self.firebody = false
-    self.reader = false
-    self.masterchef = false
-	self.minemaster = false
-	self.anicentstation = false
-	self.fastworker = false
+    self.doubledrop = 0
+    self.nomoist = 0
+    self.goodman = 0
+	self.cheatdeath = 0
+    self.refresh = 0
+    self.fishmaster = 0
+    self.cookmaster = 0
+    self.chopmaster = 0
+    self.pickmaster = 0
+    self.buildmaster = 0
+    self.icebody = 0
+    self.firebody = 0
+    self.reader = 0
+    self.masterchef = 0
+	self.minemaster = 0
+	self.anicentstation = 0
+	self.fastworker = 0
 
     self.fishtimemin = 4
     self.fishtimemax = 40
     self.maxMoistureRate = math.pi
-    self.attackback = false
+    self.attackback = 0
     self.cheatdeathcd = 0
-    self.stopregen = false
-    self.attackfrozen = false
-    self.attackdead = false
-    self.attackbroken = false
+    self.stopregen = 0
+    self.attackfrozen = 0
+    self.attackdead = 0
+    self.attackbroken = 0
     self.waterwalk = 0
 
     --特殊
@@ -290,15 +308,6 @@ nil,
     damageupamount = currentdamageup,
     crit = currentcrit,
 	lifestealupamount = currentlifesteal,
-	
-	hungerachivcost = currenthungerachivcost,
-    sanityachivcost = currentsanityachivcost,
-    healthachivcost = currenthealthachivcost,
-    speedachivcost = currentspeedachivcost,
-    absorbachivcost = currentabsorbachivcost,
-    damageachivcost = currentdamageachivcost,
-    critachivcost = currentcritachivcost,
-	lifestealcost = currentlifestealcost,
 	
     doubledrop = currentdoubledrop,
     nomoist = currentnomoist,
@@ -502,36 +511,29 @@ function allachivcoin:OnLoad(data)
     self.crit = data.crit or 0
 	self.lifestealupamount = data.lifestealupamount or 0
 	self.fireflylightup = data.fireflylightup or 0
-	self.hungerachivcost = allachiv_coinuse["hungerup"]
-    self.sanityachivcost = allachiv_coinuse["sanityup"]
-    self.healthachivcost = allachiv_coinuse["healthup"]
-    self.speedachivcost = allachiv_coinuse["speedup"] 
-    self.absorbachivcost = allachiv_coinuse["absorbup"] 
-    self.damageachivcost = allachiv_coinuse["damageup"] 
-    self.critachivcost = allachiv_coinuse["crit"] 
-	self.lifestealcost = allachiv_coinuse["lifesteal"] 
 	self.starsspent = data.starsspent or 0
-    self.doubledrop = data.doubledrop or false
-    self.nomoist = data.nomoist or false
-    self.goodman = data.goodman or false
-	self.cheatdeath = data.cheatdeath or false
-    self.refresh = data.refresh or false
-    self.fishmaster = data.fishmaster or false
-    self.cookmaster = data.cookmaster or false
-    self.chopmaster = data.chopmaster or false
-    self.pickmaster = data.pickmaster or false
-    self.buildmaster = data.buildmaster or false
-    self.icebody = data.icebody or false
-    self.firebody = data.firebody or false
-    self.reader = data.reader or false
-    self.masterchef = data.masterchef or false
-	self.minemaster = data.minemaster or false
-	self.fastworker = data.fastworker or false
-    self.attackback = data.attackback or false
-    self.stopregen = data.stopregen or false
-    self.attackfrozen = data.attackfrozen or false
-    self.attackdead = data.attackdead or false
-    self.attackbroken = data.attackbroken or false
+    --bug fixed
+    self.doubledrop = data.doubledrop==true and 1 or (data.doubledrop or 0)
+    self.nomoist = data.nomoist==true and 1 or (data.nomoist or 0)
+    self.goodman = data.goodman==true and 1 or (data.goodman or 0)
+	self.cheatdeath = data.cheatdeath==true and 1 or (data.cheatdeath or 0)
+    self.refresh = data.refresh==true and 1 or (data.refresh or 0)
+    self.fishmaster = data.fishmaster==true and 1 or (data.fishmaster or 0)
+    self.cookmaster = data.cookmaster==true and 1 or (data.cookmaster or 0)
+    self.chopmaster = data.chopmaster==true and 1 or (data.chopmaster or 0)
+    self.pickmaster = data.pickmaster==true and 1 or (data.pickmaster or 0)
+    self.buildmaster = data.buildmaster==true and 1 or (data.buildmaster or 0)
+    self.icebody = data.icebody==true and 1 or (data.icebody or 0)
+    self.firebody = data.firebody==true and 1 or (data.firebody or 0)
+    self.reader = data.reader==true and 1 or (data.reader or 0)
+    self.masterchef = data.masterchef==true and 1 or (data.masterchef or 0)
+	self.minemaster = data.minemaster==true and 1 or (data.minemaster or 0)
+	self.fastworker = data.fastworker==true and 1 or (data.fastworker or 0)
+    self.attackback = data.attackback==true and 1 or (data.attackback or 0)
+    self.stopregen = data.stopregen==true and 1 or (data.stopregen or 0)
+    self.attackfrozen = data.attackfrozen==true and 1 or (data.attackfrozen or 0)
+    self.attackdead = data.attackdead==true and 1 or (data.attackdead or 0)
+    self.attackbroken = data.attackbroken==true and 1 or (data.attackbroken or 0)
     self.waterwalk = data.waterwalk or 0
 
     self.level120 = data.level120 or 0
@@ -595,6 +597,9 @@ function allachivcoin:OnLoad(data)
     self.freetimes = data.freetimes or 0
     self.aoestatus = data.aoestatus or 0
     self.memorykilldata = data.memorykilldata or {}
+
+    --fixbug
+
 end
 
 --通用效果器 获取成功
@@ -613,32 +618,32 @@ end
 
 --提升饱腹获取
 function allachivcoin:hungerupcoin(inst)
-    if self.coinamount >= self.hungerachivcost 
+    if self.coinamount >= allachiv_coinuse["hungerup"] 
         and self.hungerupamount < allachiv_coindata_max["hungerup"] then
         self.hungerupamount = self.hungerupamount + 1
-		self:coinDoDelta(-self.hungerachivcost)
-		self.starsspent = self.starsspent + self.hungerachivcost
+		self:coinDoDelta(-allachiv_coinuse["hungerup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["hungerup"]
 		self:ongetcoin(inst)
     end
 end
 
 --提升精神获取
 function allachivcoin:sanityupcoin(inst)
-    if self.coinamount >= self.sanityachivcost 
+    if self.coinamount >= allachiv_coinuse["sanityup"] 
         and self.sanityupamount < allachiv_coindata_max["sanityup"] then
         self.sanityupamount = self.sanityupamount + 1
-		self:coinDoDelta(-self.sanityachivcost)
-		self.starsspent = self.starsspent + self.sanityachivcost
+		self:coinDoDelta(-allachiv_coinuse["sanityup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["sanityup"]
 		self:ongetcoin(inst)
     end
 end
 
 function allachivcoin:healthupcoin(inst)
-    if self.coinamount >= self.healthachivcost and inst.prefab ~= "wolfgang"
+    if self.coinamount >= allachiv_coinuse["healthup"] and inst.prefab ~= "wolfgang"
         and self.healthupamount < allachiv_coindata_max["healthup"]  then
         self.healthupamount = self.healthupamount + 1
-		self:coinDoDelta(-self.healthachivcost)
-		self.starsspent = self.starsspent + self.healthachivcost
+		self:coinDoDelta(-allachiv_coinuse["healthup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["healthup"]
 		self:ongetcoin(inst)
     end
 end
@@ -646,11 +651,11 @@ end
 
 --提升速度获取
 function allachivcoin:speedupcoin(inst)
-    if self.coinamount >= self.speedachivcost
+    if self.coinamount >= allachiv_coinuse["speedup"]
     and self.speedupamount < allachiv_coindata_max["speedup"] then
         self.speedupamount = self.speedupamount + 1
-        self:coinDoDelta(-self.speedachivcost)
-		self.starsspent = self.starsspent + self.speedachivcost
+        self:coinDoDelta(-allachiv_coinuse["speedup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["speedup"]
 		local currentSpeedMult = inst.components.locomotor:GetExternalSpeedMultiplier(inst,"speedUpgrade")
 		currentSpeedMult = currentSpeedMult + allachiv_coindata["speedup"]
 		inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedUpgrade", currentSpeedMult)
@@ -660,11 +665,11 @@ end
 
 
 function allachivcoin:damageupcoin(inst)
-    if self.coinamount >= self.damageachivcost 
+    if self.coinamount >= allachiv_coinuse["damageup"]
         and self.damageupamount < allachiv_coindata_max["damageup"] then
         self.damageupamount = self.damageupamount + 1
-        self:coinDoDelta(-self.damageachivcost)
-		self.starsspent = self.starsspent + self.damageachivcost
+        self:coinDoDelta(-allachiv_coinuse["damageup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["damageup"]
 		local currentDamageMult = inst.components.combat.externaldamagemultipliers:CalculateModifierFromSource("damageUpgrade")
 		currentDamageMult = currentDamageMult + allachiv_coindata["damageup"]
 		inst.components.combat.externaldamagemultipliers:SetModifier("damageUpgrade", currentDamageMult)
@@ -677,11 +682,11 @@ function allachivcoin:absorbupcoin(inst)
 	if currentAbsorbAdd > 0.95 then
 		return
 	end
-    if self.coinamount >= self.absorbachivcost
+    if self.coinamount >= allachiv_coinuse["absorbup"]
     and self.absorbupamount < allachiv_coindata_max["absorbup"] then
         self.absorbupamount = self.absorbupamount + 1
-        self:coinDoDelta(-self.absorbachivcost)
-		self.starsspent = self.starsspent + self.absorbachivcost
+        self:coinDoDelta(-allachiv_coinuse["absorbup"])
+		self.starsspent = self.starsspent + allachiv_coinuse["absorbup"]
 		currentAbsorbAdd = currentAbsorbAdd + allachiv_coindata["absorbup"]
 		inst.components.health.externalabsorbmodifiers:SetModifier("absorbUpgrade", currentAbsorbAdd)
 		self:ongetcoin(inst)
@@ -689,17 +694,17 @@ function allachivcoin:absorbupcoin(inst)
 end
 
 function allachivcoin:critcoin(inst)
-    if self.coinamount >= self.critachivcost
+    if self.coinamount >= allachiv_coinuse["crit"]
     and self.crit < allachiv_coindata_max["crit"] then
         self.crit = self.crit + 1
-        self:coinDoDelta(-self.critachivcost)
-		self.starsspent = self.starsspent + self.critachivcost
+        self:coinDoDelta(-allachiv_coinuse["crit"])
+		self.starsspent = self.starsspent + allachiv_coinuse["crit"]
 		self:ongetcoin(inst)
     end
 end
 
 function allachivcoin:onhitfn(inst)
-    inst:ListenForEvent("onhitother", function(inst, data)
+    --[[inst:ListenForEvent("onhitother", function(inst, data)
         local shadowcrit = false
         if inst:HasTag("shadow") then 
             inst:Show()
@@ -711,11 +716,7 @@ function allachivcoin:onhitfn(inst)
             self.hits = self.hits + 1
         end
         self.hitattackcd = 3
-        --[[if inst.prefab == "wolfgang" and not inst:HasTag("playerghost") then
-            if inst.components.combat.areahitdisabled == false then
-                inst.components.hunger:DoDelta(-0.5)
-            end
-        end]]
+        
         local chance = allachiv_coindata["crit"]*self.crit*100
         local damage = data.damage
         local target = data.target
@@ -799,54 +800,23 @@ function allachivcoin:onhitfn(inst)
             end
             inst:DoTaskInTime(.1, function() self.attackcheck = false end)
         end
-    end)
+    end)]]
 end
 
 function allachivcoin:lifestealupcoin(inst)
-    if self.coinamount >= self.lifestealcost
+    if self.coinamount >= allachiv_coinuse["lifesteal"]
     and self.lifestealupamount < allachiv_coindata_max["lifesteal"] then
         self.lifestealupamount = self.lifestealupamount + 1
-        self:coinDoDelta(-self.lifestealcost)
-		self.starsspent = self.starsspent + self.lifestealcost
+        self:coinDoDelta(-allachiv_coinuse["lifesteal"])
+		self.starsspent = self.starsspent + allachiv_coinuse["lifesteal"]
 		self:ongetcoin(inst)
     end
 end
 
-local function IsValidVictim(victim)
-    return victim ~= nil
-        and not ((victim:HasTag("prey") and not victim:HasTag("hostile")) or
-                victim:HasTag("veggie") or
-                victim:HasTag("structure") or
-                victim:HasTag("wall") or
-                victim:HasTag("balloon") or
-                victim:HasTag("groundspike") or
-                victim:HasTag("smashable") or
-                victim:HasTag("companion"))
-        and victim.components.health ~= nil
-        and victim.components.combat ~= nil
-end
-
-function allachivcoin:lifestealfn(inst)
-    inst:ListenForEvent("onhitother", function(inst, data)
-		if self.lifestealupamount > 0 and data.target and not inst.components.health:IsDead() and IsValidVictim(data.target) then	
-			local damage = data.damage or 0
-            local target = data.target
-            local absorb = target.components.health and target.components.health.absorb or 0
-            damage = damage * (1- math.clamp(absorb, 0, 1))
-			--local damage = data.weapon ~= nil and data.weapon.components.weapon.damage or inst.components.combat.defaultdamage
-            local lifestealnum = damage*allachiv_coindata["lifesteal"]*self.lifestealupamount
-            local title5 = inst.components.titlesystem and inst.components.titlesystem.titles[5] or 0
-            if title5 == 1 then
-                lifestealnum = lifestealnum * (1+title_data["title5"]["stealhealth"])
-            end
-			inst.components.health:DoDelta(lifestealnum, false, "lifesteal")
-		end
-    end)
-end
 
 function allachivcoin:attackfrozencoin(inst)
-    if self.coinamount >= allachiv_coinuse["attackfrozen"] and self.attackfrozen ~= true then
-        self.attackfrozen = true
+    if self.coinamount >= allachiv_coinuse["attackfrozen"] and self.attackfrozen < 1 then
+        self.attackfrozen = 1
         self:coinDoDelta(-allachiv_coinuse["attackfrozen"])
         self.starsspent = self.starsspent + allachiv_coinuse["attackfrozen"]
         self:ongetcoin(inst)
@@ -856,7 +826,7 @@ end
 --冰冻攻击
 function allachivcoin:attackfrozenfn(inst)
     inst:ListenForEvent("onhitother", function(inst,data)
-        if math.random()<=0.2 and self.attackfrozen and data and data.target then
+        if math.random()<=0.2 and self.attackfrozen > 0 and data and data.target then
             local target = data.target
             if target.components and target.components.freezable then --只有有freezable组件的prefab才会被冰冻
                 local coldness = 1 --(冰冻强度，每个可冰冻的prefab都有冰冻抗性，只有积累的强度超过抗性了才会被冰冻)
@@ -868,8 +838,8 @@ function allachivcoin:attackfrozenfn(inst)
 end
 
 function allachivcoin:attackdeadcoin(inst)
-    if self.coinamount >= allachiv_coinuse["attackdead"] and self.attackdead ~= true then
-        self.attackdead = true
+    if self.coinamount >= allachiv_coinuse["attackdead"] and self.attackdead < 1 then
+        self.attackdead = 1
         self:coinDoDelta(-allachiv_coinuse["attackdead"])
         self.starsspent = self.starsspent + allachiv_coinuse["attackfrozen"]
         self:ongetcoin(inst)
@@ -877,8 +847,8 @@ function allachivcoin:attackdeadcoin(inst)
 end
 
 function allachivcoin:attackbrokencoin(inst)
-    if self.coinamount >= allachiv_coinuse["attackbroken"] and self.attackbroken ~= true then
-        self.attackbroken = true
+    if self.coinamount >= allachiv_coinuse["attackbroken"] and self.attackbroken < 1 then
+        self.attackbroken = 1
         self:coinDoDelta(-allachiv_coinuse["attackbroken"])
         self.starsspent = self.starsspent + allachiv_coinuse["attackbroken"]
         self:ongetcoin(inst)
@@ -935,8 +905,8 @@ end
 
 --雨水免疫获取
 function allachivcoin:nomoistcoin(inst)
-    if self.nomoist ~= true and self.coinamount >= allachiv_coinuse["nomoist"] then
-        self.nomoist = true
+    if self.nomoist < 1 and self.coinamount >= allachiv_coinuse["nomoist"] then
+        self.nomoist = 1
         inst.components.moisture.maxMoistureRate = 0
         self.maxMoistureRate = inst.components.moisture.maxMoistureRate
 		self.starsspent = self.starsspent + allachiv_coinuse["nomoist"]
@@ -947,8 +917,8 @@ end
 
 --双倍掉落获取
 function allachivcoin:doubledropcoin(inst)
-    if self.doubledrop ~= true and self.coinamount >= allachiv_coinuse["doubledrop"] then
-        self.doubledrop = true
+    if self.doubledrop < 1 and self.coinamount >= allachiv_coinuse["doubledrop"] then
+        self.doubledrop = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["doubledrop"]
         self:coinDoDelta(-allachiv_coinuse["doubledrop"])
         self:ongetcoin(inst)
@@ -958,7 +928,7 @@ end
 --双倍掉落效果
 function allachivcoin:doubledropfn(inst)
     inst:ListenForEvent("killedmonster", function(inst, data)
-        if self.doubledrop and data.victim.components.lootdropper then
+        if self.doubledrop > 0 and data.victim.components.lootdropper then
             if data.victim.prefab == "stalker" 
                 and data.victim.prefab == "stalker_atrium" 
                 and data.victim.prefab == "stalker_forest" then
@@ -973,8 +943,8 @@ end
 
 		
 function allachivcoin:goodmancoin(inst)
-    if self.goodman ~= true and self.coinamount >= allachiv_coinuse["goodman"] then
-        self.goodman = true
+    if self.goodman < 1 and self.coinamount >= allachiv_coinuse["goodman"] then
+        self.goodman = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["goodman"]
         self:coinDoDelta(-allachiv_coinuse["goodman"])
         self:ongetcoin(inst)
@@ -988,8 +958,8 @@ end
 
 --垂钓圣手获取
 function allachivcoin:fishmastercoin(inst)
-    if self.fishmaster ~= true and self.coinamount >= allachiv_coinuse["fishmaster"] then
-        self.fishmaster = true
+    if self.fishmaster < 1 and self.coinamount >= allachiv_coinuse["fishmaster"] then
+        self.fishmaster = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["fishmaster"]
         self:coinDoDelta(-allachiv_coinuse["fishmaster"])
         self:ongetcoin(inst)
@@ -1008,14 +978,14 @@ end
 --垂钓圣手效果
 function allachivcoin:fishmasterfn(inst)
     inst:ListenForEvent("equip", function(inst, data)
-        if  self.fishmaster and data.item and data.item.components.fishingrod then
+        if  self.fishmaster > 0 and data.item and data.item.components.fishingrod then
             self.fishtimemin = data.item.components.fishingrod.minwaittime
             self.fishtimemax = data.item.components.fishingrod.maxwaittime
             data.item.components.fishingrod:SetWaitTimes(1, 1)
         end
     end)
     inst:ListenForEvent("unequip", function(inst, data)
-        if self.fishmaster and data.item and data.item.components.fishingrod then
+        if self.fishmaster > 0 and data.item and data.item.components.fishingrod then
             data.item.components.fishingrod:SetWaitTimes(self.fishtimemin, self.fishtimemax)
         end
     end)
@@ -1023,8 +993,8 @@ end
 
 --双倍采集获取
 function allachivcoin:pickmastercoin(inst)
-    if self.pickmaster ~= true and self.coinamount >= allachiv_coinuse["pickmaster"] then
-        self.pickmaster = true
+    if self.pickmaster < 1 and self.coinamount >= allachiv_coinuse["pickmaster"] then
+        self.pickmaster = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["pickmaster"]
         self:coinDoDelta(-allachiv_coinuse["pickmaster"])
         self:ongetcoin(inst)
@@ -1034,7 +1004,7 @@ end
 --双倍采集效果
 function allachivcoin:pickmasterfn(inst)
     inst:ListenForEvent("picksomething", function(inst, data)
-        if self.pickmaster and data.object and data.object.components.pickable and not data.object.components.trader then
+        if self.pickmaster > 0 and data.object and data.object.components.pickable and not data.object.components.trader then
             if data.object.components.pickable.product ~= nil then
                 local item = SpawnPrefab(data.object.components.pickable.product)
                 if item.components.stackable then
@@ -1048,8 +1018,8 @@ end
 
 --砍树圣手获取
 function allachivcoin:chopmastercoin(inst)
-    if self.chopmaster ~= true and self.coinamount >= allachiv_coinuse["chopmaster"] then
-        self.chopmaster = true
+    if self.chopmaster < 1 and self.coinamount >= allachiv_coinuse["chopmaster"] then
+        self.chopmaster = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["chopmaster"]
         self:coinDoDelta(-allachiv_coinuse["chopmaster"])
         self:ongetcoin(inst)
@@ -1059,7 +1029,7 @@ end
 --砍树圣手效果
 function allachivcoin:chopmasterfn(inst)
     inst:ListenForEvent("working", function(inst, data)
-        if self.chopmaster and data.target and data.target:HasTag("tree") then
+        if self.chopmaster > 0 and data.target and data.target:HasTag("tree") then
             local workable = data.target.components.workable
             --if workable.workleft >= 1 then
             --    if workable.onfinish then
@@ -1072,8 +1042,8 @@ end
 
 --烹调圣手获取
 function allachivcoin:cookmastercoin(inst)
-    if self.cookmaster ~= true and self.coinamount >= allachiv_coinuse["cookmaster"] then
-        self.cookmaster = true
+    if self.cookmaster < 1 and self.coinamount >= allachiv_coinuse["cookmaster"] then
+        self.cookmaster = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["cookmaster"]
         self:coinDoDelta(-allachiv_coinuse["cookmaster"])
         self:ongetcoin(inst)
@@ -1085,7 +1055,7 @@ end
 
 --烹调圣手效果&煮食事件内置
 function allachivcoin:cookmasterfn(inst)
-    if self.cookmaster == true and inst:HasTag("expertchef") ~= true then
+    if self.cookmaster > 0 and inst:HasTag("expertchef") ~= true then
         inst:AddTag("expertchef")
     end
     local COOK = ACTIONS.COOK
@@ -1104,7 +1074,7 @@ function allachivcoin:cookmasterfn(inst)
             if stewer.product == "bananapop" then
                 allachivevent:addOneJob(act.doer, "cookbananapop")
             end
-            if allachivcoin.cookmaster then
+            if allachivcoin.cookmaster > 0 then
                 local fn = stewer.task.fn
                 stewer.task:Cancel()
                 fn(act.target, stewer)
@@ -1116,8 +1086,8 @@ end
 
 --节省材料获取
 function allachivcoin:buildmastercoin(inst)
-    if self.buildmaster ~= true and self.coinamount >= allachiv_coinuse["buildmaster"] then
-        self.buildmaster = true
+    if self.buildmaster < 1 and self.coinamount >= allachiv_coinuse["buildmaster"] then
+        self.buildmaster = 1
         inst.components.builder.ingredientmod = .5
 		self.starsspent = self.starsspent + allachiv_coinuse["buildmaster"]
         self:coinDoDelta(-allachiv_coinuse["buildmaster"])
@@ -1129,16 +1099,16 @@ end
 
 --节省材料效果
 function allachivcoin:buildmasterfn(inst)
-    if self.buildmaster then
+    if self.buildmaster > 0 then
         inst.components.builder.ingredientmod = .5
     end
     inst:ListenForEvent("equip", function(inst, data)
-        if self.buildmaster and data.item and data.item.prefab == "greenamulet" then
+        if self.buildmaster > 0 and data.item and data.item.prefab == "greenamulet" then
             inst.components.builder.ingredientmod = .5
         end
     end)
     inst:ListenForEvent("unequip", function(inst, data)
-        if self.buildmaster and data.item and data.item.prefab == "greenamulet" then
+        if self.buildmaster > 0 and data.item and data.item.prefab == "greenamulet" then
             inst.components.builder.ingredientmod = .5
         end
     end)
@@ -1146,8 +1116,8 @@ end
 
 
 function allachivcoin:cheatdeathcoin(inst)
-    if self.cheatdeath ~= true and self.coinamount >= allachiv_coinuse["cheatdeath"] then
-        self.cheatdeath = true
+    if self.cheatdeath < 1 and self.coinamount >= allachiv_coinuse["cheatdeath"] then
+        self.cheatdeath = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["cheatdeath"]
         self:coinDoDelta(-allachiv_coinuse["cheatdeath"])
         self:ongetcoin(inst)
@@ -1155,13 +1125,11 @@ function allachivcoin:cheatdeathcoin(inst)
 end
 
 function allachivcoin:cheatdeathfn(inst)
-	local onCoolDown = false
-    local commonCD = false
 	inst:ListenForEvent("minhealth", function(player, data)
         if self.cheatdeathcd > 0 then
-            onCoolDown = true
+            return
         end
-		if self.cheatdeath and not onCoolDown and not commonCD and player.components.health.currenthealth <= 0 then
+		if self.cheatdeath > 0 and player.components.health.currenthealth <= 0 then
 			player.components.health.currenthealth = 1
 			player.components.health:SetInvincible(true)
 			if player._fx ~= nil then
@@ -1179,17 +1147,15 @@ function allachivcoin:cheatdeathfn(inst)
 					player._fx = nil
 				end
 				player.components.health:SetInvincible(false)
-                commonCD = false
 			end)
-            commonCD = true
             self.cheatdeathcd = allachiv_coindata["cheatdeath"]
 		end
 	end)
 end
 
 function allachivcoin:refreshcoin(inst)
-    if self.refresh ~= true and self.coinamount >= allachiv_coinuse["refresh"] then
-        self.refresh = true
+    if self.refresh < 1 and self.coinamount >= allachiv_coinuse["refresh"] then
+        self.refresh = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["refresh"]
         self:coinDoDelta(-allachiv_coinuse["refresh"])
         self:ongetcoin(inst)
@@ -1199,7 +1165,7 @@ end
 --携带反鲜效果
 function allachivcoin:refreshfn(inst)
     inst:DoPeriodicTask(1, function()
-        if self.refresh then
+        if self.refresh > 0 then
             --[[--物品栏反鲜
             for k,v in pairs(inst.components.inventory.itemslots) do
                 if v and v.components.perishable then
@@ -1228,8 +1194,8 @@ end
 
 --低温免疫获取
 function allachivcoin:icebodycoin(inst)
-    if self.icebody ~= true and self.coinamount >= allachiv_coinuse["icebody"] then
-        self.icebody = true
+    if self.icebody < 1 and self.coinamount >= allachiv_coinuse["icebody"] then
+        self.icebody = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["icebody"]
         self:coinDoDelta(-allachiv_coinuse["icebody"])
         self:icebodyfn(inst)
@@ -1239,15 +1205,15 @@ end
 
 --低温免疫效果
 function allachivcoin:icebodyfn(inst)
-    if self.icebody == true then
+    if self.icebody == 1 then
         inst.components.temperature.mintemp = 5
     end
 end
 
 --高温免疫获取
 function allachivcoin:firebodycoin(inst)
-    if self.firebody ~= true and self.coinamount >= allachiv_coinuse["firebody"] then
-        self.firebody = true
+    if self.firebody < 1 and self.coinamount >= allachiv_coinuse["firebody"] then
+        self.firebody = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["firebody"]
         self:coinDoDelta(-allachiv_coinuse["firebody"])
         self:firebodyfn(inst)
@@ -1257,15 +1223,15 @@ end
 
 --高温免疫效果
 function allachivcoin:firebodyfn(inst)
-    if self.firebody == true then
+    if self.firebody == 1 then
         inst.components.temperature.maxtemp = 65
     end
 end
 
 --书籍阅读获取
 function allachivcoin:readercoin(inst)
-    if self.reader ~= true and self.coinamount >= allachiv_coinuse["reader"] and inst.prefab ~= "wickerbottom" then
-        self.reader = true
+    if self.reader < 1 and self.coinamount >= allachiv_coinuse["reader"] and inst.prefab ~= "wickerbottom" then
+        self.reader = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["reader"]
         self:coinDoDelta(-allachiv_coinuse["reader"])
         self:readerfn(inst)
@@ -1278,15 +1244,15 @@ end
 
 --书籍阅读效果
 function allachivcoin:readerfn(inst)
-    if self.reader then
+    if self.reader > 0 then
         inst:AddComponent("reader")
 --        inst:AddTag("bookbuilder")
     end
 end
 
 function allachivcoin:masterchefcoin(inst)
-    if self.masterchef ~= true and self.coinamount >= allachiv_coinuse["masterchef"] and inst.prefab ~= "warly" then
-        self.masterchef = true
+    if self.masterchef < 1 and self.coinamount >= allachiv_coinuse["masterchef"] and inst.prefab ~= "warly" then
+        self.masterchef = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["masterchef"]
         self:coinDoDelta(-allachiv_coinuse["masterchef"])
         self:mastercheffn(inst)
@@ -1304,7 +1270,7 @@ function allachivcoin:masterchefcoin(inst)
 end
 
 function allachivcoin:mastercheffn(inst)
-    if self.masterchef then
+    if self.masterchef > 0 then
         inst:AddTag("perkchef")
         inst:AddTag("masterchef")
         inst:AddTag("professionalchef")
@@ -1312,8 +1278,8 @@ function allachivcoin:mastercheffn(inst)
 end
 
 function allachivcoin:minemastercoin(inst)
-    if self.minemaster ~= true and self.coinamount >= allachiv_coinuse["minemaster"] then
-        self.minemaster = true
+    if self.minemaster < 1 and self.coinamount >= allachiv_coinuse["minemaster"] then
+        self.minemaster = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["minemaster"]
         self:coinDoDelta(-allachiv_coinuse["minemaster"])
         self:minemasterfn(inst)
@@ -1322,9 +1288,9 @@ function allachivcoin:minemastercoin(inst)
 end
 
 function allachivcoin:minemasterfn(inst)
-    if self.minemaster then
+    if self.minemaster > 0 then
         inst:ListenForEvent("working", function(inst, data)
-			if self.minemaster and data.target and (data.target:HasTag("boulder") or data.target:HasTag("statue") or findprefab(rocklist, data.target.prefab)) then
+			if self.minemaster > 0 and data.target and (data.target:HasTag("boulder") or data.target:HasTag("statue") or findprefab(rocklist, data.target.prefab)) then
 				local workable = data.target.components.workable
 				workable.workleft = 0
 			end
@@ -1333,8 +1299,8 @@ function allachivcoin:minemasterfn(inst)
 end
 
 function allachivcoin:fastworkercoin(inst)
-    if self.fastworker ~= true and self.coinamount >= allachiv_coinuse["fastworker"] then
-        self.fastworker = true
+    if self.fastworker < 1 and self.coinamount >= allachiv_coinuse["fastworker"] then
+        self.fastworker = 1
 		self.starsspent = self.starsspent + allachiv_coinuse["fastworker"]
         self:coinDoDelta(-allachiv_coinuse["fastworker"])
         self:fastworkerfn(inst)
@@ -1343,7 +1309,7 @@ function allachivcoin:fastworkercoin(inst)
 end
 
 function allachivcoin:fastworkerfn(inst)
-    if self.fastworker then
+    if self.fastworker > 0 then
 		inst:AddTag("fastpick")
 		if inst:HasTag("expertchef") ~= true then
             inst:AddTag("expertchef")
@@ -1356,8 +1322,8 @@ end
 
 --反伤
 function allachivcoin:attackbackcoin(inst)
-    if self.attackback ~= true and self.coinamount >= allachiv_coinuse["attackback"] then
-        self.attackback = true
+    if self.attackback < 1 and self.coinamount >= allachiv_coinuse["attackback"] then
+        self.attackback = 1
         self.starsspent = self.starsspent + allachiv_coinuse["attackback"]
         self:coinDoDelta(-allachiv_coinuse["attackback"])
         self:ongetcoin(inst)
@@ -1366,7 +1332,7 @@ end
 
 function allachivcoin:attackbackfn(inst)
     inst:ListenForEvent("attacked", function(inst, data)
-        if self.attackback and inst.attackbackcd == nil and data ~= nil and not data.redirected then
+        if self.attackback > 0 and inst.attackbackcd == nil and data ~= nil and not data.redirected then
             inst.attackbackcd = inst:DoTaskInTime(.3, function(inst)
                 inst.attackbackcd = nil
             end)
@@ -1383,8 +1349,8 @@ function allachivcoin:attackbackfn(inst)
 end
 
 function allachivcoin:stopregencoin(inst)
-    if self.stopregen ~= true and self.coinamount >= allachiv_coinuse["stopregen"] then
-        self.stopregen = true
+    if self.stopregen < 1 and self.coinamount >= allachiv_coinuse["stopregen"] then
+        self.stopregen = 1
         self.starsspent = self.starsspent + allachiv_coinuse["stopregen"]
         self:coinDoDelta(-allachiv_coinuse["stopregen"])
         self:ongetcoin(inst)
@@ -1393,7 +1359,7 @@ end
 
 function allachivcoin:stopregenfn(inst)
     inst:ListenForEvent("onhitother", function(inst, data)
-        if self.stopregen then
+        if self.stopregen > 0 then
             local damage = data.damage
             local target = data.target
             if target:HasTag("monster") or 
@@ -1559,6 +1525,9 @@ function allachivcoin:addfollowerfn(inst)
             if follower.prefab == "abigail" and follower.components.clone == nil then
                 follower:AddComponent("clone")
             end
+        end
+        if follower:HasTag("abigail") and inst.components.titlesystem and inst.components.titlesystem.titles[6] > 0 then
+            follower:AddComponent("revenge")
         end
         if allachivcoin.spiderstronger > 0 then
             if follower:HasTag("spider") then
@@ -1870,6 +1839,14 @@ function allachivcoin:wescheatfn(inst)
             end)
             self.wescheatcd = allachiv_coindata["wescheatcd"]
         end
+
+        inst:ListenForEvent("onattackother", function(inst, data)
+            if inst:HasTag("shadow") then
+                inst:Show()
+                inst:RemoveTag("shadow")
+                inst.components.colourtweener:StartTween({1,1,1,1}, 0)
+            end
+        end)
     --end)
 end
 
@@ -3330,38 +3307,29 @@ function allachivcoin:removecoin(inst)
 	--self.fireflylightup = 0
     inst.components.allachivevent.starreset = 0
 	
-	self.hungerachivcost = allachiv_coinuse["hungerup"]
-    self.sanityachivcost = allachiv_coinuse["sanityup"]
-    self.healthachivcost = allachiv_coinuse["healthup"]
-    self.speedachivcost = allachiv_coinuse["speedup"]
-    self.absorbachivcost = allachiv_coinuse["absorbup"]
-    self.damageachivcost = allachiv_coinuse["damageup"]
-    self.critachivcost = allachiv_coinuse["crit"]
-	self.fireflylightcost = allachiv_coinuse["fireflylightup"]
-	self.lifestealcost = allachiv_coinuse["lifesteal"]
 	self.starsspent = 0
 
-    self.doubledrop = false
-    self.nomoist = false
-    self.goodman = false
-	self.cheatdeath = false
-    self.refresh = false
-    self.fishmaster = false
-    self.cookmaster = false
-    self.chopmaster = false
-    self.pickmaster = false
-    self.buildmaster = false
-    self.icebody = false
-    self.firebody = false
-    self.reader = false
-    self.masterchef = false
-	self.minemaster = false
-	self.fastworker = false
-    self.attackback = false
-    self.stopregen = false
-    self.attackfrozen = false
-    self.attackdead = false
-    self.attackbroken = false
+    self.doubledrop = 0
+    self.nomoist = 0
+    self.goodman = 0
+	self.cheatdeath = 0
+    self.refresh = 0
+    self.fishmaster = 0
+    self.cookmaster = 0
+    self.chopmaster = 0
+    self.pickmaster = 0
+    self.buildmaster = 0
+    self.icebody = 0
+    self.firebody = 0
+    self.reader = 0
+    self.masterchef = 0
+	self.minemaster = 0
+	self.fastworker = 0
+    self.attackback = 0
+    self.stopregen = 0
+    self.attackfrozen = 0
+    self.attackdead = 0
+    self.attackbroken = 0
     self.abigaillevelup = 0
     self.abigailclone = 0
     self.bloodangry = 0
@@ -3529,8 +3497,6 @@ function allachivcoin:Init(inst)
 		self:goodmanfn(inst)
 		self:doubledropfn(inst)
 		self:fireflylightfn(inst)
-		self:onhitfn(inst)
-		self:lifestealfn(inst)
 		self:readerfn(inst)
 		self:mastercheffn(inst)
 		self:minemasterfn(inst)
@@ -3578,7 +3544,7 @@ end
 --实时更新数据
 function allachivcoin:onupdate(inst)
     if self.maxMoistureRate ~= inst.components.moisture.maxMoistureRate then
-        if self.nomoist then
+        if self.nomoist > 0 then
             inst.components.moisture.maxMoistureRate = 0
         end
     end

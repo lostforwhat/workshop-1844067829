@@ -406,6 +406,7 @@ local allachivevent = Class(function(self, inst)
     
     self.complete_time = nil
     self.temp_total = 0
+    self.tumbleweednum = 0
 end,
 nil,
 {
@@ -766,6 +767,7 @@ function allachivevent:OnSave()
 
         complete_time = self.complete_time,
         temp_total = self.temp_total,
+        tumbleweednum = self.tumbleweednum,
     }
     return data
 end
@@ -939,6 +941,7 @@ function allachivevent:tumfn(inst)
                 self:addOneJob(inst, "tumdd")
             end
         end
+        self.tumbleweednum = self.tumbleweednum + 1
     end)
 end
 
@@ -1891,6 +1894,7 @@ function allachivevent:onreroll(inst)
         SaveAchieve["killboss"] = self.killboss or 0
         SaveAchieve["complete_time"] = self.complete_time or nil
         SaveAchieve["temp_total"] = self.temp_total or 0
+        SaveAchieve["tumbleweednum"] = self.tumbleweednum or 0
         
         SaveAchieve["totalstar"] = math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95)
 		if SaveAchieve["totalstar"] > 10 then

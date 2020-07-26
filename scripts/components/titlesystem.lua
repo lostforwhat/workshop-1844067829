@@ -178,6 +178,26 @@ local function ontitles(self,titles)
 	for k,v in pairs(STRINGS.TITLE) do
 		local value = titles[k] or 0
 		self.inst["current"..v.id]:set(value)
+		if titles[5] > 0 then
+			if self.inst.components.crit then
+				self.inst.components.crit:AddExtraChance("title5", title_data["title5"]["crit"])
+			end
+			if self.inst.components.lifesteal then
+				self.inst.components.lifesteal:AddExtraPercent("title5", title_data["title5"]["stealhealth"])
+			end
+		else
+			if self.inst.components.crit then
+				self.inst.components.crit:RemoveExtraChance("title5")
+			end
+			if self.inst.components.lifesteal then
+				self.inst.components.lifesteal:RemoveExtraPercent("title5")
+			end
+		end
+		if titles[6] > 0 and self.inst.prefab=="wendy" then
+			if self.inst.components.revenge == nil then
+				self.inst:AddComponent("revenge")
+			end
+		end
 	end
 end
 local function ondesc(self,desc)
@@ -209,6 +229,24 @@ local function onequip(self,equip)
 	else
 		if inst._fireflylight ~= nil and inst._fireflylight.Light ~= nil then
 			inst._fireflylight.Light:SetRadius(0.5)
+		end
+	end
+	if equip == 5 then
+		if self.inst.components.crit then
+			self.inst.components.crit.max_hit = 6
+		end
+	else
+		if self.inst.components.crit then
+			self.inst.components.crit.max_hit = 4
+		end
+	end
+	if equip == 10 then
+		if self.inst.components.crit then
+			self.inst.components.crit.luck_crit = true
+		end
+	else
+		if self.inst.components.crit then
+			self.inst.components.crit.luck_crit = false
 		end
 	end
 	self.inst.currentequip:set(equip)
@@ -628,7 +666,8 @@ function Titlesystem:ApplayTilte(inst)
     	getluck(self, inst)
 	end)
 	inst:ListenForEvent("attacked", function(inst, data)
-		if data.damage and data.damage > 0 then
+		if data.damage and data.damage > 0 and data.attacker ~= nil then
+			local attacker = data.attacker
 			
 		end
 	end)
@@ -1100,6 +1139,9 @@ function Titlesystem:GetCommads(cmd)
 			cmds["move"] = true
 		end
 	end
+	if self.titles[14] and self.titles[14] > 0 then
+		cmds["rgb"] = true
+	end
 	local inst = self.inst
 	if self.cmdcd > 0 then 
 		if inst.components.talker then 
@@ -1108,6 +1150,7 @@ function Titlesystem:GetCommads(cmd)
 		return 
 	end
 	if inst:HasTag("playerghost") then return end
+	cmd = string.lower(cmd)
 	if string.find(cmd, "#migrate")==1 and cmds["migrate"] then 
 		local param = string.sub(cmd,9)
 		local worldid = tonumber(param) or TheShard:GetShardId()
@@ -1179,6 +1222,24 @@ function Titlesystem:GetCommads(cmd)
 			end
 		end
 	end
+	if string.find(cmd, "#rgb")==1 and cmds["rgb"] then
+		local param = string.sub(cmd,5)
+		if param ~= nil and param ~= "" and param ~= 0 then
+			if param:find("[^0-9A-Fa-f]")~=nil then
+				return
+			end
+			local hex = string.format("%#x", param)
+			while(#hex < 6) do
+				hex = hex.."F"
+			end
+			local b = string.sub(hex, 7, 8) or "FF"
+			local r = string.sub(hex, 3, 4) or "FF"
+			local g = string.sub(hex, 5, 6) or "FF"
+			inst.components.colourtweener:StartTween({tonumber(r, 16)/255,tonumber(g, 16)/255,tonumber(b, 16)/255,1}, 0)
+		else
+			inst.components.colourtweener:StartTween({math.random(),math.random(),math.random(),1}, 0)
+		end
+	end
 end
 
 local function loadvip(self, inst, data)
@@ -1187,9 +1248,9 @@ local function loadvip(self, inst, data)
 	self.vip_level = 0
 	if self.equip == 12 then self.equip = 0 end
 	--print for test
-	for k,v in pairs(data) do
-		print(k..":"..tostring(v))
-	end
+	--for k,v in pairs(data) do
+	--	print(k..":"..tostring(v))
+	--end
 	local num = data[inst.userid]
 	if num and num >= 1 then
 		print("------"..inst:GetDisplayName().."获得vip------")
@@ -1201,7 +1262,7 @@ local function loadvip(self, inst, data)
 	end
 end
 
-local function OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, resultCode)
+local function OnHandleQuestQueryResponce(self, inst, result, isSuccessful, resultCode)
 	if isSuccessful and string.len(result) > 1 and resultCode == 200 then 
 		local status, data = pcall( function() return json.decode(result) end )
 		if not status or not data then
@@ -1210,26 +1271,34 @@ local function OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, res
 			loadvip(self, inst, data)
 		end
 	else
-		print("再次获取vip列表失败,code:"..tostring(resultCode))
+		print("获取vip列表失败,code:"..tostring(resultCode))
+		
 	end
 end
 
 local function tryAgainVip(self, inst)
-	local url = "http://vip.tumbleweedofall.xyz:8008/vip.json"
+	local url = "https://raw.githubusercontent.com/lostforwhat/dst/master/vip.json"
 	TheSim:QueryServer( url, 
 		function(result, isSuccessful, resultCode) 
-			OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, resultCode)
+			OnHandleQuestQueryResponce(self, inst, result, isSuccessful, resultCode)
 		end, 
 		"GET")
 end
 
-local function OnHandleQuestQueryResponce(self, inst, result, isSuccessful, resultCode)
+local function OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, resultCode)
 	if isSuccessful and string.len(result) > 1 and resultCode == 200 then 
 		local status, data = pcall( function() return json.decode(result) end )
 		if not status or not data then
 	 		print("解析vip列表失败" .. tostring(inst.userid) .."! ", tostring(status), tostring(data))
 		else
-			loadvip(self, inst, data)
+			if data.userid == inst.userid and data.level > 0 then
+				print("------"..inst:GetDisplayName().."获得vip------")
+				self.desc[13][1] = 1
+				self.titles[13] = 1
+				self.vip_level = math.ceil(data.level)
+				self.desc = deepcopy(self.desc)
+				self.titles = deepcopy(self.titles)
+			end
 		end
 	else
 		print("获取vip列表失败,code:"..tostring(resultCode))
@@ -1261,10 +1330,11 @@ function Titlesystem:GetVip(inst)
 	end
 	--无论如何都加载modvip
 	--test and give vips for mod vip
-	vips = "https://raw.githubusercontent.com/lostforwhat/dst/master/vip.json"
+	--vips = "https://raw.githubusercontent.com/lostforwhat/dst/master/vip.json"
+	vips = "http://api.tumbleweedofall.xyz:8888/public/getVip?userid="..inst.userid
 	TheSim:QueryServer( vips, 
 		function(result, isSuccessful, resultCode) 
-			OnHandleQuestQueryResponce(self, inst, result, isSuccessful, resultCode)
+			OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, resultCode)
 		end, 
 		"GET")
 end

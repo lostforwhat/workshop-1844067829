@@ -40,7 +40,7 @@ STRINGS.TITLE={
 		common={
 			"厨技:吃肉食额外恢复"..(title_data["title3"]["hunger"]).."饥饿",
 			"厨技:吃素食额外恢复"..(title_data["title3"]["sanity"]).."理智",
-			"怜悯:【沃利】【庖丁解牛】直接斩杀生命值小于"..(title_data["title3"]["lost_percent"]*100).."%的目标"
+			"怜悯:【沃利】直接斩杀生命值小于"..(title_data["title3"]["lost_percent"]*100).."%的目标"
 		},
 		equip={
 			"强健:饱食度大于"..(title_data["title3"]["hunger_percent"]*100).."%消耗1饥饿附加"..(title_data["title3"]["extra"]*100).."%额外伤害",
@@ -97,6 +97,7 @@ STRINGS.TITLE={
 		common={
 			"怜悯:黄昏或夜晚复活后获得光源",
 			"抗拒:死亡时对周围低级怪物强行催眠",
+			"复仇:【温蒂】及阿比盖尔受伤后提升对该攻击者的伤害",
 		},
 		equip={
 			"狂怒:死亡时对范围内进行爆炸",
@@ -185,6 +186,7 @@ STRINGS.TITLE={
 		},
 		common={
 			"灾厄:幸运值低于"..title_data["title11"]["luck"].."时，附加"..(title_data["title11"]["extra"]*100).."%额外伤害",
+			
 		},
 		equip={
 			"命运:攻击有"..(title_data["title11"]["per"]*100).."%概率消耗武器所有耐久一次性造成"..(title_data["title11"]["damage"]*100).."%伤害",
@@ -234,7 +236,8 @@ STRINGS.TITLE={
 			"*朋友，我这里有一本飞仙秘籍*",
 		},
 		common={
-			"隐市:*",
+			"一阶:#RGB",
+			"二阶:*"
 		},
 		equip={
 			"飞仙:*",

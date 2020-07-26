@@ -86,6 +86,8 @@ local function dohit(inst)
                             if not TheNet:GetPVPEnabled() and Isfriend(v) then
                                 return
                             end
+                            --fixed if attacker not online
+                            if attacker == nil or not attacker:IsValid() then return end
                             if not v:HasTag("player") then
                                 v.components.combat:GetAttacked(attacker, attackdamage, nil, "book_kill")
                             end
