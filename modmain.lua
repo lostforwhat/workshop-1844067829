@@ -1045,7 +1045,7 @@ local _Harvest = self.Harvest
         local pos = self.inst:GetPosition()
         local ret, product = _Harvest(self, harvester)
         --print(harvester.components.allachivcoin.pickmaster)
-        if ret and product and harvester and pos and harvester.components.allachivcoin and harvester.components.allachivcoin.pickmaster then
+        if ret and product and harvester and pos and harvester.components.allachivcoin and harvester.components.allachivcoin.pickmaster>0 then
             local wetness = GLOBAL.TheWorld.state.wetness
             local iswet = GLOBAL.TheWorld.state.iswet
             local item = GLOBAL.SpawnPrefab(product.prefab)

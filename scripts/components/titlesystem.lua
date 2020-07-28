@@ -1224,12 +1224,17 @@ function Titlesystem:GetCommads(cmd)
 	end
 	if string.find(cmd, "#rgb")==1 and cmds["rgb"] then
 		local param = string.sub(cmd,5)
-		if param ~= nil and param ~= "" and param ~= 0 then
+		if param ~= nil and param ~= "" and param ~= "0" then
 			if param:find("[^0-9A-Fa-f]")~=nil then
 				return
 			end
-			local hex = string.format("%#x", param)
-			while(#hex < 6) do
+			local hex = "0xFFFFFF"
+			if param:find("[^0-9]")~=nil then
+				hex = param
+			else
+				hex = string.format("%#x", param)
+			end
+			while(#hex < 8) do
 				hex = hex.."F"
 			end
 			local b = string.sub(hex, 7, 8) or "FF"
