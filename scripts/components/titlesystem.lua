@@ -24,10 +24,10 @@ local function findprefab(list,prefab)
     end
 end
 local function addnextdamage(self, inst)
-	local level = inst.components.levelsystem and inst.components.levelsystem.level or 0
+	local level = inst.components.levelsystem and inst.components.levelsystem.level or 1
 	local luck = inst.components.luck and inst.components.luck:GetLuck() or 1
 	local maxdamage = 2000 + level*20
-	self.nextdamage = self.nextdamage + math.random(1, level) * math.random(1, luck) * 0.01
+	self.nextdamage = self.nextdamage + math.random(1, level) * math.random(0, luck) * 0.01
 	if self.nextdamage > maxdamage then
 		self.nextdamage = maxdamage
 	end
