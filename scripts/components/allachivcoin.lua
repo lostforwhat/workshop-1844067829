@@ -704,6 +704,12 @@ function allachivcoin:critcoin(inst)
 end
 
 function allachivcoin:onhitfn(inst)
+    inst:ListenForEvent("onattackother", function(inst, data)
+        if self.hits < 20 then
+            self.hits = self.hits + 1
+        end
+        self.hitattackcd = 3
+    end)
     --[[inst:ListenForEvent("onhitother", function(inst, data)
         local shadowcrit = false
         if inst:HasTag("shadow") then 
@@ -3524,6 +3530,7 @@ function allachivcoin:Init(inst)
         self:woodieupfn(inst)
         self:quickshotfn(inst)
         --self:killedfn(inst)
+        self:onhitfn(inst)
 	end)
 
 	inst:DoTaskInTime(1.5, function()

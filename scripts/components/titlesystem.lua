@@ -1127,6 +1127,23 @@ local function getrandomposition(caster)
     end
 end
 
+function ChangeRGB(inst, r,g,b,t)
+	r = r or math.random()
+	g = g or math.random()
+	b = b or math.random()
+	t = t or math.random()
+	inst.components.colourtweener:StartTween({r,g,b,t}, 0)
+	if inst._title ~= nil then
+		if inst._title.components.colourtweener == nil then
+			inst._title:AddComponent("colourtweener")
+		end
+		inst._title.components.colourtweener:StartTween({r,g,b,t}, 0)
+		if inst.components.titlesystem.equip == 14 then
+			inst._title.Light:SetColour(r,g,b)
+		end
+	end
+end
+
 function Titlesystem:GetCommads(cmd)
 	local cmds = {}
 	if self.equip == 12 then
@@ -1240,9 +1257,18 @@ function Titlesystem:GetCommads(cmd)
 			local b = string.sub(hex, 7, 8) or "FF"
 			local r = string.sub(hex, 3, 4) or "FF"
 			local g = string.sub(hex, 5, 6) or "FF"
-			inst.components.colourtweener:StartTween({tonumber(r, 16)/255,tonumber(g, 16)/255,tonumber(b, 16)/255,1}, 0)
+			if inst._rgbtask ~= nil then
+				inst._rgbtask:Cancel()
+				inst._rgbtask = nil
+			end
+			ChangeRGB(inst, tonumber(r, 16)/255,tonumber(g, 16)/255,tonumber(b, 16)/255, 1)
+			
 		else
-			inst.components.colourtweener:StartTween({math.random(),math.random(),math.random(),1}, 0)
+			if param == "0" and inst._rgbtask == nil then
+				inst._rgbtask = inst:DoPeriodicTask(1, ChangeRGB)
+				return
+			end
+			ChangeRGB(inst)
 		end
 	end
 end
