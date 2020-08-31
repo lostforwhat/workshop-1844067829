@@ -709,6 +709,11 @@ function allachivcoin:onhitfn(inst)
             self.hits = self.hits + 1
         end
         self.hitattackcd = 3
+        if inst:HasTag("shadow") then 
+            inst:Show()
+            inst:RemoveTag("shadow")
+            inst.components.colourtweener:StartTween({1,1,1,1}, 0) 
+        end
     end)
     --[[inst:ListenForEvent("onhitother", function(inst, data)
         local shadowcrit = false

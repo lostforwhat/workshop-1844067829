@@ -45,7 +45,11 @@ function Revenge:Onhitother(inst, data)
         
         if self.revenge_data[target] and self.revenge_data[target] > 0 then
             self.attacking = true
-            target.components.combat:GetAttacked(inst, damage*self.revenge_data[target]*self.damge_percent, nil, "revenge")
+            local revenge_damage = damage*self.revenge_data[target]*self.damge_percent
+            if revenge_damage > damage * 2 then
+                revenge_damage = damage * 2
+            end
+            target.components.combat:GetAttacked(inst, revenge_damage, nil, "revenge")
             self.inst:DoTaskInTime(.2, function() self.attacking = false end)
         end
         
