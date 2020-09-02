@@ -1705,6 +1705,7 @@ function allachivevent:onplant(inst)
         data.prefab == "butterfly" or 
         data.prefab == "moonbutterfly" or 
         string.find(data.prefab, "seeds") ~= nil or 
+        data.prefab == "marblebean" or 
         data.prefab == "burr" then
             self:addOneJob(inst, "plant188")
             self:addOneJob(inst, "plant1000")

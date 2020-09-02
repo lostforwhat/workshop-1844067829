@@ -1538,6 +1538,17 @@ AddStategraphPostInit("wilson_client", function(sg)
     end
 end)
 
+local old_eat_fn = _G.ACTIONS.EAT.fn
+_G.ACTIONS.EAT.fn = function(act) 
+    local obj = act.target or act.invobject
+    if obj ~= nil then
+        if obj.prefab=="potion_achiv" and obj._userid~=nil and obj._userid ~= act.doer.userid then
+            return false
+        end
+    end
+    return old_eat_fn(act)
+end
+
 --wickerbottom
 AddRecipe("book_treat", 
     {Ingredient("papyrus", 2), Ingredient("spidergland", 5), Ingredient("charcoal", 2)}, 
@@ -1639,5 +1650,14 @@ if TUNING.more_blueprint then
     AddRecipe("book_sleep",     {Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
     AddRecipe("book_brimstone", {Ingredient("papyrus", 2), Ingredient("redgem", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
     AddRecipe("book_tentacles", {Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
+    AddRecipe("slingshotammo_gold",        {Ingredient("goldnugget", 1)},                                          CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,      {no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+    AddRecipe("slingshotammo_marble",      {Ingredient("marble", 1)},                                              CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,      {no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+    AddRecipe("slingshotammo_poop",        {Ingredient("poop", 1)},                                                CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,      {no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+    AddRecipe("slingshotammo_freeze",      {Ingredient("moonrocknugget", 1), Ingredient("bluegem", 1)},            CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,        {no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+    AddRecipe("slingshotammo_slow",        {Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)},          CUSTOM_RECIPETABS.SLINGSHOTAMMO, TECH.NONE,      {no_deconstruction = true}, nil, nil, 10, "pebblemaker")
+    AddRecipe("mermhouse_crafted", {Ingredient("boards", 4), Ingredient("cutreeds", 3), Ingredient("pondfish", 2)}, RECIPETABS.TOWN, TECH.NONE, "mermhouse_crafted_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
+    AddRecipe("mermthrone_construction", {Ingredient("boards", 5), Ingredient("rope", 5)}, RECIPETABS.TOWN, TECH.NONE, "mermthrone_construction_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
+    AddRecipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1), Ingredient("spear", 2)}, RECIPETABS.TOWN, TECH.NONE, "mermwatchtower_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
+    AddRecipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.NONE, nil, nil, nil, nil, "merm_builder")
 end
 

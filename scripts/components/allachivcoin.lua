@@ -1347,11 +1347,11 @@ function allachivcoin:attackbackfn(inst)
             inst.attackbackcd = inst:DoTaskInTime(.3, function(inst)
                 inst.attackbackcd = nil
             end)
-            SpawnPrefab("bramblefx_armor"):SetFXOwner(inst)--22
-            --SpawnPrefab("bramblefx_trap"):SetFXOwner(inst)--40
-            if data and data.attacker and data.attacker.components.combat and data.attacker.components.combat.defaultdamage >= 100 then
-                SpawnPrefab("bramblefx_trap"):SetFXOwner(inst)--40
-            end
+            local back_attack = SpawnPrefab("bramblefx_armor")
+            back_attack.damage = data.damage*0.5 + 10
+            back_attack:SetFXOwner(inst)
+            --SpawnPrefab("bramblefx_armor"):SetFXOwner(inst)--22
+           
             if inst.SoundEmitter ~= nil then
                 inst.SoundEmitter:PlaySound("dontstarve/common/together/armor/cactus")
             end
@@ -2137,9 +2137,9 @@ function allachivcoin:lightpowerfn(inst)
             if self.lightpower > 0 then
                 if inst.components.moisture.moisture>0 then
                     if weapon.components.weapon.projectile ~= nil then return end
-                    local range, hit, per = 5, 6, 0.3
+                    local range, hit, per = 4, 5, 0.3
                     if inst.charge_time > 0 then
-                        range, hit, per = 10, 12, 0.5
+                        range, hit, per = 8, 10, 0.5
                     end
                     --weapon.components.weapon.olddmg = weapon.components.weapon.damage
                     --weapon.components.weapon.damage = weapon.components.weapon.damage * per
@@ -2160,9 +2160,9 @@ function allachivcoin:lightpowerfn(inst)
                     local weapon = data.item
                     if weapon == nil or weapon.prefab == "hambat" then return end
                     if weapon.components.weapon and weapon.components.weapon.attackrange == nil then
-                        local range, hit, per = 5, 6, 0.3
+                        local range, hit, per = 4, 5, 0.3
                         if inst.charge_time > 0 then
-                            range, hit, per = 10, 12, 0.5
+                            range, hit, per = 8, 10, 0.5
                         end
                         --weapon.components.weapon.olddmg = weapon.components.weapon.damage
                         --weapon.components.weapon.damage = weapon.components.weapon.damage * per

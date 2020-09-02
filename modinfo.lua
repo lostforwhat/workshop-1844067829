@@ -14,13 +14,15 @@ version:2.3.10 bug fixed
 version:2.3.11 新增部分技能
 version:2.3.14 调整厨子，奶奶，沃尔特专属
 version:2.3.21 优化一些性能，并解决一些带来的bug
+version:2.3.23 新mod开发中，当前mod后续不进行功能更新，仅修复mod
 ---fixed 解决存档不兼容问题
+---final 稳定最终版，之后仅修复bug
 
 本mod最适合无资源世界开启,建议使用自带成就系统获得最大乐趣
 ]]
 author = "五年"
 
-version = "2.3.22-fixed"
+version = "2.3.23-final"
 
 api_version = 10
 
