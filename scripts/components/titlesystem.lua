@@ -1,3 +1,5 @@
+local loot_table = require("loot_table")
+
 local function deepcopy(object)
     local lookup_table = {}
     local function _copy(object)
@@ -32,7 +34,70 @@ local function addnextdamage(self, inst)
 		self.nextdamage = maxdamage
 	end
 end
-local function randomItem(value)
+
+
+local function needNotice(goods)
+    local notice_goods = {
+        "eyebrellahat",
+        "cane",
+        "hivehat",
+        "armorskeleton",
+        "opalstaff",
+        "krampus_sack",
+        "beequeen",
+        "toadstool",
+        "stalker_atrium",
+        "stalker",
+        "stalker_forest",
+        "spat",
+        "bearger",
+        "warg",
+        "dragonfly",
+        "moose",
+        "minotaur",
+        "deerclops",
+        "spiderqueen",
+        "package_staff",
+        "prayer_symbol",
+        "minotaurhorn",
+        "yellowstaff",
+        "greenstaff",
+        "orangestaff",
+        "eyeturret_item",
+        "ruins_bat",
+        "armorruins",
+        "ruinshat",
+        "yellowamulet",
+        "panflute",
+        "shadowheart",
+        "pigtorch",
+        "monkeybarrel", -- 猴子桶
+        "catcoonden", --中空树桩
+        "ruins_statue_mage",
+        "archive_moon_statue",
+        "nightmaregrowth",
+        "atrium_idol",
+        "atrium_overgrowth",
+        "moonbase",
+        "pigking",
+        "achiv_clear",
+        "blueprint",
+        "little_walrus",
+        "book_gardening",
+        "book_sleep",
+        "book_brimstone",
+        "book_birds",
+    }
+    for i, v in ipairs(notice_goods) do
+        if goods == v then 
+            return true
+        end
+    end
+    return false
+end
+
+local function randomItem(value)--传入vip等级
+	--[[
 	local num = GetTableLength(recycle_table)
 	local rand = math.random(1, num)
 	local index = 1
@@ -47,7 +112,46 @@ local function randomItem(value)
 			index = index + 1
 		end
 	end
+	]]
+	if loot_table == nil then return end
+	--普通物品表
+	local types1 = {"new_loot","s_loot"}
+	--高级物品表
+	local types2 = {"ss_loot","cave_loot","dd_loot","d_loot"}
+	--稀有物品表
+	local types3 = {"new_items_loot"}
+	--选择的物品表
+	local types = nil
+    
+    value= value or 0
+    --根据算法，选择物品表
+    local  gl = math.random()
+
+    if  gl<= 0.05+0.1*(value/(value+1)) and TUNING.new_items then  --是否开启新物品啊
+    	types=types3
+    elseif gl<= 0.1+0.1*(value/(value+1)) then
+    	types=types2
+    else
+    	types=types1
+    end
+
+	local items = deepcopy(loot_table[types[math.random(#types)]])
+    local loot = items[math.random(#items)]--随机表中的项
+
+	local prefab = loot.item  --项的名称
+	if prefab=="bullkelp_beachedroot" then return SpawnPrefab("ash") end
+	if prefab ~= nil and PrefabExists(prefab) then   --判断预制体是否存在
+		local item = SpawnPrefab(prefab)
+		if item.components.inventoryitem == nil then
+			local pack_item = SpawnPrefab("package_ball")
+			pack_item.components.packer:Pack(item)
+			return pack_item
+		end
+		return item
+	end
+	return SpawnPrefab("ash")
 end
+
 local function HearPanFlute(inst, musician)
     if inst ~= musician and
         (TheNet:GetPVPEnabled() or not inst:HasTag("player")) and
@@ -251,6 +355,7 @@ local function onequip(self,equip)
 	end
 	self.inst.currentequip:set(equip)
 end
+
 local function ontitlepos(self, titlepos)
 	if self.inst._title ~= nil then
 		self.inst._title.Transform:SetPosition(0, 3.2 + self.titlepos, 0)
@@ -363,7 +468,7 @@ function Titlesystem:ApplayTilte(inst)
         	self.hungerup = math.min(math.floor(age/10), 100)
         end
         if self.equip == 12 then
-        	local item = randomItem(500+self.vip_level*20) or "ash"
+        	local item = randomItem(500+self.vip_level*20) or SpawnPrefab("ash")
         	if math.random() < 0.01 then
         		local tb = {"tumbleweedspawner", "moonbase", "pond_cave", 
         		"ancient_altar", "pigking", "pigtorch"}
@@ -371,10 +476,16 @@ function Titlesystem:ApplayTilte(inst)
         		local target = SpawnPrefab(tb[math.random(#tb)])
         		package_ball.components.packer:Pack(target)
         		inst.components.inventory:GiveItem(package_ball)
+        		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..package_ball:GetDisplayName().."】")
         	else
-        		inst.components.inventory:GiveItem(SpawnPrefab(item))
+        		inst.components.inventory:GiveItem(item)
         	end
-			
+			--宣告贵重物品
+    		if item ~= nil and needNotice(item.prefab) then
+        		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..item:GetDisplayName().."】")
+    		elseif inst.components.talker then 
+    			inst.components.talker:Say("【每日物资】 "..item:GetDisplayName(),2,true,true,false) 
+    		end
         end
 	end)
 	inst:ListenForEvent("xpdelta", function(inst, data) 
@@ -408,15 +519,16 @@ function Titlesystem:ApplayTilte(inst)
 			inst.components.sanity:DoDelta(title_data["title2"]["sanity"]*maxhealth)
 		end
 	end)
+	--监听击中事件
 	inst:ListenForEvent("onhitother", function(inst, data)
 		local damage = data.damage
 	    local target = data.target
-	    if target:HasTag("wall") then return end
-	    if target.components.health == nil then return end
+	    if target:HasTag("wall") then return end  --如果目标有"墙"标签 结束
+	    if target.components.health == nil then return end   --目标有血量组件吗
 	    local hp = target.components.health and target.components.health.currenthealth or 0
 	    local maxhp = target.components.health and target.components.health.maxhealth or 0
-	    local extra_damage = 0
-	    if self.titles[11] == 1 then
+	    local extra_damage = 0   --额外伤害
+	    if self.titles[11] == 1 then    --厄运之躯
 	    	local luck = inst.components.luck and inst.components.luck:GetLuck() or 0
 	    	if luck < title_data["title11"]["luck"] then
 	    		extra_damage = extra_damage + title_data["title11"]["extra"]*damage
@@ -450,16 +562,56 @@ function Titlesystem:ApplayTilte(inst)
 			end
 		end
 		if self.equip == 4 then
-			if math.random() < title_data["title4"]["steal"] then
-				local lootdropper = inst.components.lootdropper
+			if math.random() < title_data["title4"]["steal"] and target.components.lootdropper ~= nil then  --随机0-1的数，小于0.01
+				local item = nil
+
+				--
+				local  gl = math.random()
+				if gl >0.4 then 
+					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
+					if lootdropper and #lootdropper > 0 then
+                		item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
+                		item.Transform:SetPosition(target:GetPosition():Get())
+                	end
+                end
+
+				if item == nil then  --如果目标没有战利品，则从表中随机一份战利品
+        			item = randomItem(self.vip_level) or "ash"
+        		end
+				--[[
+				local lootdropper = target.components.lootdropper:GenerateLoot()  --生成战利品
+				if #lootdropper > 0 then
+                	item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
+                	item.Transform:SetPosition(target:GetPosition():Get())
+            	end
+
+            	if item == nil then  --如果目标没有战利品，则从表中随机一份战利品
+        			item = randomItem(100+self.vip_level*20) or "ash"
+        		end
+        		]]
+            	--[[
 				if lootdropper then
 					local lootitem = lootdropper:PickRandomLoot() or randomItem(100+self.vip_level*20) or "ash"
 					local randomitem = randomItem(100+self.vip_level*20) or "ash"
 					local items = {lootitem, randomitem}
 					local item = SpawnPrefab(items[math.random(#items)])
 					inst.components.inventory:GiveItem(item)
+					print(item)
 				end
+				]]    
+				--宣告贵重物品
+    			if item ~= nil and needNotice(item.prefab) then
+        			TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
+    			end
+    			if inst.components.talker then 
+    				inst.components.talker:Say("偷了 "..item:GetDisplayName(),2,true,true,false) 
+    			end
+       			--TheNet:Say(, false)
+				if self.inst.components.inventory ~= nil then  --inst表示自己，自己有库存组件则添加到自己库存里
+                	self.inst.components.inventory:GiveItem(item)
+            	end
 			end
+
 		end
 		if self.equip == 9 and self.nextdamage > 0 then
 			extra_damage = extra_damage + self.nextdamage
@@ -479,7 +631,7 @@ function Titlesystem:ApplayTilte(inst)
 			local damagemax = inst.components.levelsystem and inst.components.levelsystem.damagemax or 0
 			extra_damage = extra_damage + level * damagemax*0.01 * 0.5
 		end
-		if self.hitcd ~= true and extra_damage>0 then
+		if target.components.combat and self.hitcd ~= true and extra_damage>0 then
 			self.hitcd = true
 			target.components.combat:GetAttacked(inst, extra_damage)
 			inst:DoTaskInTime(0.3, function() self.hitcd=false end)
@@ -543,7 +695,10 @@ function Titlesystem:ApplayTilte(inst)
 		        HearPanFlute(v, inst)
 		    end
         end
+
         if self.titles[6] == 1 and self.equip == 6 then
+        	local ents = TheSim:FindEntities(x,y,z, 4, nil,nil, {"monster", "animal", "flying", "pig", "merm", "crazy", "player"})
+        	if #ents < 2 then return end
         	local level = inst.components.levelsystem and inst.components.levelsystem.level or 1
         	local num = math.floor(level*0.1) + 1
         	for k=1, num do
@@ -638,7 +793,7 @@ function Titlesystem:ApplayTilte(inst)
         	getluck(self, inst)
         end
     end)
-    inst:ListenForEvent("finishedwork", function(inst, data)
+    inst:ListenForEvent("finishedwork", function(inst, data)  --监听完成工作 ,增加经验值
         --砍树
 		if data.target and data.target:HasTag("tree") then
             if self.equip == 9 then
@@ -657,7 +812,7 @@ function Titlesystem:ApplayTilte(inst)
         end
         getluck(self, inst)
     end)
-    inst:ListenForEvent("docook", function(inst, data)
+    inst:ListenForEvent("docook", function(inst, data)  --监听烹饪 ,增加经验值
     	if self.equip == 9 then
     		inst.components.levelsystem:xpDoDelta(math.random(1,5), inst)
 
@@ -665,21 +820,24 @@ function Titlesystem:ApplayTilte(inst)
     	end
     	getluck(self, inst)
 	end)
-	inst:ListenForEvent("attacked", function(inst, data)
+	inst:ListenForEvent("attacked", function(inst, data) --监听被攻击
 		if data.damage and data.damage > 0 and data.attacker ~= nil then
 			local attacker = data.attacker
 			
 		end
 	end)
-	inst:ListenForEvent("builditem", function(inst, data)
+	inst:ListenForEvent("builditem", function(inst, data)  --监听制作
 		local item = data.item
 		if self.equip == 10 and item.components.weapon ~= nil then
 			local luck = inst.components.luck and inst.components.luck:GetLuck() or 0
 			local chance = luck*0.01-0.7
 			if chance > 0 and math.random() <= chance then
-				if TUNING[string.upper(item.prefab).."_DAMAGE"] then
-					item.components.weapon:SetDamage(TUNING[string.upper(item.prefab).."_DAMAGE"], true)
+				if TUNING[string.upper(item.prefab).."_DAMAGE"] then --string.upper，转换大小写
+					item.components.weapon:SetDamage(TUNING[string.upper(item.prefab).."_DAMAGE"], true) --设置伤害
 					inst.components.luck:DoDelta(-1)
+					if inst.components.talker then 
+    					inst.components.talker:Say("打造了强力武器: "..item:GetDisplayName(),2,true,true,false) 
+    				end
 				end
 			end
 		end
@@ -1095,7 +1253,8 @@ function Titlesystem:CheckTitles(inst)
 	
 end
 
-function Titlesystem:equiptitle(inst, id)
+function Titlesystem:equiptitle(inst, id)  --切换称号
+    print()
 	local title = self.titles[id]
 	if title ~= nil then
 		if self.equip == id then
@@ -1238,6 +1397,22 @@ function Titlesystem:GetCommads(cmd)
 				self.titlepos = self.titlepos - 0.1
 			end
 		end
+	end
+	if cmd =="#see" then
+		if not inst.components.talker then 
+	        return
+	    end 
+		for k,v in pairs(inst.components.inventory.equipslots) do
+			if v and v.prefab=="opalgemsamulet" then 
+                if TUMBLEWEED_5_NUM then 
+                	inst.components.talker:Say("这个世界上，还存在 "..TUMBLEWEED_5_NUM.." 个发光的风滚草") 
+                else
+                	inst.components.talker:Say("这个世界上，不存在发光的风滚草") 
+                end
+                return 
+            end
+		end
+		inst.components.talker:Say("无法感知") 
 	end
 	if string.find(cmd, "#rgb")==1 and cmds["rgb"] then
 		local param = string.sub(cmd,5)

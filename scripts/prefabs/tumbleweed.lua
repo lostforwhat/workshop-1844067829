@@ -1,5 +1,6 @@
 local easing = require("easing")
 local loot_tables = require("loot_table")
+local opalgemsamulet=require("prefabs/opalgemsamulet")
 
 local AVERAGE_WALK_SPEED = 4
 local WALK_SPEED_VARIATION = 2
@@ -75,6 +76,7 @@ local prefabs =
     "boneshard",
 }
 
+--棋子和装饰品
 local CHESS_LOOT =
 {
     "chesspiece_pawn_sketch",
@@ -179,6 +181,7 @@ local function needNotice(goods)
         "monkeybarrel", -- 猴子桶
         "catcoonden", --中空树桩
         "ruins_statue_mage",
+		"achiv_clear",
     }
     for i, v in ipairs(notice_goods) do
         if goods == v then 
@@ -220,6 +223,7 @@ local function onpickup(inst, picker)
     local item = nil
     for i, v in ipairs(inst.loot) do
         item = SpawnPrefab(v)
+        if item==nil then print("彩色风滚草 这个物品找不到对应的预制体：",v) return false end
         item.Transform:SetPosition(x, y, z)
         if item.components.inventoryitem ~= nil and item.components.inventoryitem.ondropfn ~= nil then
             item.components.inventoryitem.ondropfn(item)
@@ -246,8 +250,8 @@ end
 local function MakeLoot(inst)
     local possible_loot =
     {
-        {chance = 20,   item = "cutgrass"},
-        {chance = 15,   item = "twigs"},
+        {chance = 25,   item = "cutgrass"},
+        {chance = 20,   item = "twigs"},
         {chance = 1,    item = "petals"},
         {chance = 1,    item = "foliage"},
         {chance = 1,    item = "silk"},
@@ -723,9 +727,24 @@ local function RandomType()
     end
 end
 
+--[[
+local function RemoveList(inst)
+    local index = nil
+    for i,v in ipairs(MOD_INDICATORS) do
+        if v == inst then
+            index = i
+            break
+        end
+    end
+    if index then table.remove(MOD_INDICATORS, index) end
+    TUMBLEWEED_5_NUM = TUMBLEWEED_5_NUM - 1 > 0 and TUMBLEWEED_5_NUM -1 or nil
+end
+]]
+
 local function MakeAnyTumbleweed()
     local inst = fn()
-    if not TheWorld.ismastersim then
+    if not TheWorld.ismastersim then --not TheWorld.ismastersim 判断是否是客户端
+        --print("---是这里吗2-----------------")
         return inst
     end
     local level = RandomType()
@@ -739,6 +758,15 @@ local function MakeAnyTumbleweed()
     end
     inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
     inst.Light:Enable(level == 3)
+    --[[
+    if level==3 then 
+        TUMBLEWEED_5_NUM=TUMBLEWEED_5_NUM and TUMBLEWEED_5_NUM+1 or 1
+        --添加到对象指示器列表里
+        table.insert(MOD_INDICATORS, inst)
+        --注册监听删除事件
+        inst:ListenForEvent("onremove",RemoveList)    
+    end
+    ]]
     MakeLoot(inst)
     return inst
 end
@@ -747,6 +775,7 @@ local function MakeTumbleweed(level)
     return function()
         local inst = fn()
         if not TheWorld.ismastersim then
+            --print("---是这里吗1-----------------")
             return inst
         end
         if level == nil then
@@ -762,6 +791,19 @@ local function MakeTumbleweed(level)
         end
         inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.Light:Enable(level == 3)
+        --[[
+        if level==3 then
+            print("这里")
+            TUMBLEWEED_5_NUM=TUMBLEWEED_5_NUM and TUMBLEWEED_5_NUM+1 or 1
+            print("计数",TUMBLEWEED_5_NUM)
+            --添加到对象指示器列表里
+            table.insert(MOD_INDICATORS, inst)
+            print("添加到表里了")
+            --注册监听删除事件
+            inst:ListenForEvent("onremove",RemoveList)
+            print("注册事件")
+        end
+        ]]
         MakeLoot(inst)
         return inst
     end

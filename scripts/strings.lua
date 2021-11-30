@@ -1,6 +1,7 @@
 local strings = {}
 strings.WORLD = "WORLD"
 strings.PICKTUMBLEWEED = "from tumbleweed get "
+strings.PRANKRESULT = "It's lost "
 strings.LIGHTING = " lighting"
 strings.SEASON_CHANGE = " season change"
 strings.SANITY = " sanity attacked"
@@ -14,6 +15,14 @@ strings.CIRCLE = " cage"
 strings.BOSSUPDATED = "monsters becoming stronger"
 strings.PERISH = "perish trap"
 strings.BROKEN = "broken trap"
+strings.BOX_GIFT="box gift"
+strings.PACKING_GIFT="gift"
+strings.SHIT="bad luck trap"
+strings.LUCK="be in luck"
+strings.WEATHERCHANGED="weather change"
+strings.KINGTREASURE="The king's Treasure"
+strings.PRANK="PRANK"
+strings.CELESTIALFURY="Celestial Fury"
 
 strings.UNKNOWN_PACKAGE = "UNKNOWN PACKAGE"
 strings.PRAY = "pray"
@@ -22,6 +31,8 @@ strings.BOOK_SEAN_READ = "unknown power effect the world"
 
 GLOBAL.STRINGS.TUM = strings
 
+GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.OPALGEMSAMULET = "It senses the glowing tumbleweed"
+GLOBAL.STRINGS.NAMES.OPALGEMSAMULET = "opalgems amulet"
 GLOBAL.STRINGS.NAMES.PACKAGE_STAFF = "package staff"
 GLOBAL.STRINGS.NAMES.PACKAGE_BALL = "package ball"
 GLOBAL.STRINGS.NAMES.PACKAGED = "full packaged"

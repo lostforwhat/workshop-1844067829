@@ -119,6 +119,11 @@ allachiv_eventdata={
 ["killtoadstool"] = 1,
 ["killtoadstool_dark"] = 1,
 ["killmalbatross"] = 1,
+["killcrabking"] = 1,
+["killalterguardian_phase1"] = 1,
+["killeyeofterror"] = 1,
+["killtwinofterror1"] = 1,
+["killtwinofterror2"] = 1,
 
 ["pickcactus50"] = 50,
 ["pickred_mushroom50"] = 50,
@@ -233,6 +238,7 @@ allachiv_eventdata={
 ["rekilltoadstool"] = 1,
 ["rekilltoadstool_dark"] = 1,
 ["rekillmalbatross"] = 1,
+["rekillcrabking"] = 1,
 ["repickcactus"] = 20,
 ["repickred_mushroom"] = 20,
 ["repickblue_mushroom"] = 20,
@@ -361,6 +367,11 @@ allachiv_coinget={
 ["killtoadstool"] = 7,
 ["killtoadstool_dark"] = 8,
 ["killmalbatross"] = 5,
+["killcrabking"] = 7,
+["killalterguardian_phase1"] = 15,
+["killeyeofterror"] = 5,
+["killtwinofterror1"] = 4,
+["killtwinofterror2"] = 4,
 
 ["pickcactus50"] = 3,
 ["pickred_mushroom50"] = 2,
@@ -475,6 +486,7 @@ allachiv_coinget={
 ["rekilltoadstool"] = 2,
 ["rekilltoadstool_dark"] = 3,
 ["rekillmalbatross"] = 2,
+["rekillcrabking"] = 3,
 ["repickcactus"] = 1,
 ["repickred_mushroom"] = 1,
 ["repickblue_mushroom"] = 1,
@@ -510,6 +522,7 @@ allachiv_coindata={
 ["gears"] = 1,
 ["dug_grass"] = 1,
 ["dug_sapling"] = 1,
+["dug_rock_avocado_bush"]=1,--
 ["dug_berrybush"] = 1,
 ["blowdart_pipe"] = 5,
 ["gunpowder"] = 5,
@@ -541,6 +554,7 @@ allachiv_coindata_max={
 ["gears"] = 999,
 ["dug_grass"] = 999,
 ["dug_sapling"] = 999,
+["dug_rock_avocado_bush"]=999,
 ["dug_berrybush"] = 999,
 ["blowdart_pipe"] = 999,
 ["gunpowder"] = 999,
@@ -600,6 +614,7 @@ allachiv_coinuse={
 ["gears"] = 2,
 ["dug_grass"] = 2,
 ["dug_sapling"] = 2,
+["dug_rock_avocado_bush"]=2,
 ["dug_berrybush"] = 2,
 ["blowdart_pipe"] = 5,
 ["gunpowder"] = 5,
@@ -643,8 +658,9 @@ allachiv_coinuse={
 ["quickshot"] = 45,
 }
 
-
-heatfood = {"dragonpie", "honeyham", "kabobs", "hotchili", "stuffedeggplant", "turkeydinner", "dragonchilisalad", "winter_food8", "winter_food7"}
+--热食
+heatfood = {"dragonpie", "honeyham", "kabobs", "hotchili", "stuffedeggplant", "turkeydinner", "dragonchilisalad", "winter_food8", "winter_food7", "frognewton", "figkabab", "sweettea"}
+--冷食
 coldfood = {"watermelon", "watermelon_cooked", "fruitmedley", "ice","watermelonicle", "icecream", "ceviche", "bananapop", "gazpacho", "winter_food9"}
 rocklist = {"marbletree", "marblepillar",
 			"rock_ice", "rock_ice_tall", "rock_ice_medium", "rock_ice_short",
@@ -719,6 +735,7 @@ tempachiv = {
 	"rekilltoadstool",
 	"rekilltoadstool_dark",
 	"rekillmalbatross",
+	"rekillcrabking",
 	"repickcactus",
 	"repickred_mushroom",
 	"repickblue_mushroom",
@@ -819,6 +836,7 @@ recycle_table = {
 	["blue_cap"] = 10,--蓝蘑菇
 	["dug_grass"] = 50,--草丛
 	["dug_sapling"] = 50,--树苗
+	["dug_rock_avocado_bush"]=50,
 	["dug_berrybush"] = 50,--普通浆果丛
 	["dug_berrybush2"] = 50,--三叶浆果丛
 	["shroom_skin"] = 100,--蛤蟆皮
@@ -829,19 +847,52 @@ recycle_table = {
 	["fossil_piece"] = 10,--化石碎片
 	["shadowheart"] = 10,--暗影之心
 	
-	["carrot_seeds"] = 1,--胡萝卜种子
-	["pumpkin_seeds"] = 1,--南瓜种子
-	["dragonfruit_seeds"] = 1,--火龙果种子
-	["pomegranate_seeds"] = 1,--石榴种子
-	["corn_seeds"] = 1,--玉米种子
-	["durian_seeds"] = 1,--榴莲种子
-	["eggplant_seeds"] = 1,--茄子种子
-	["pumpkin"] = 10,--南瓜
-	["dragonfruit"] = 10,--火龙果
-	["pomegranate"] = 10,--石榴
-	["corn"] = 10,--玉米
-	["durian"] = 10,--榴莲
-	["eggplant"] = 10,--茄子
+        ["asparagus_seeds"] = 1,--种子是芦笋
+        ["carrot_seeds"] = 1,--种子是胡萝卜
+        ["corn_seeds"] = 1,--种子是玉米
+        ["dragonfruit_seeds"] = 1,--种子是火龙果
+        ["durian_seeds"] = 1,--种子是榴莲
+        ["eggplant_seeds"] = 1,--种子是茄子
+        ["garlic_seeds"] = 1,--种子是大蒜
+        ["onion_seeds"] = 1,--种子是洋葱
+        ["pepper_seeds"] = 1,--种子是辣椒
+        ["pomegranate_seeds"] = 1,--种子是石榴
+        ["potato_seeds"] = 1,--种子是土豆
+        ["pumpkin_seeds"] = 1,--种子是南瓜
+        ["tomato_seeds"] = 1,--种子是西红柿
+        ["watermelon_seeds"] = 1,--种子是西瓜
+
+        ["asparagus_cooked"] = 11,--烤芦笋
+        ["carrot_cooked"] = 11,--烤胡萝卜
+        ["corn_cooked"] = 11,--烤玉米
+        ["dragonfruit_cooked"] = 11,--烤火龙果
+        ["durian_cooked"] = 11,--烤榴莲
+        ["eggplant_cooked"] = 11,--烤茄子
+        ["garlic_cooked"] = 11,--烤大蒜
+        ["onion_cooked"] = 11,--烤洋葱
+        ["pepper_cooked"] = 11,--烤辣椒
+        ["pomegranate_cooked"] = 11,--烤石榴
+        ["potato_cooked"] = 11,--烤土豆
+        ["pumpkin_cooked"] = 11,--烤南瓜
+        ["tomato_cooked"] = 11,--烤西红柿
+        ["watermelon_cooked"] = 11,--烤西瓜
+
+        ["fig"] = 10,--无花果
+        ["fig_cooked"] = 11,--烤熟的无花果
+        ["asparagus"] = 10,--芦笋
+        ["carrot"] = 10,--胡萝卜
+        ["corn"] = 10,--玉米
+        ["dragonfruit"] = 10,--火龙果
+        ["durian"] = 10,--榴莲
+        ["eggplant"] = 10,--茄子
+        ["garlic"] = 10,--大蒜
+        ["onion"] = 10,--洋葱
+        ["pepper"] = 10,--辣椒
+        ["pomegranate"] = 10,--石榴
+        ["potato"] = 10,--土豆
+        ["pumpkin"] = 10,--南瓜
+        ["tomato"] = 10,--西红柿
+        ["watermelon"] = 10,--西瓜
 	["cave_banana"] = 10,--洞穴香蕉
 	["cactus_meat"] = 10,--仙人掌肉
 	["watermelon"] = 10,--西瓜
@@ -894,6 +945,8 @@ recycle_table = {
 	["goldenpickaxe"] = 20,--黄金鹤嘴锄
 	["shovel"] = 10,--铲子
 	["goldenshovel"] = 20,--黄金铲子
+	["farm_hoe"] = 10,--园艺锄
+	["golden_farm_hoe"] = 20,--黄金园艺锄
 	["hammer"] = 10,--锤子
 	["pitchfork"] = 10,--草叉
 	["razor"] = 10,--剃刀
@@ -1004,7 +1057,44 @@ recycle_table = {
 	["gunpowder"] = 50,
 	["malbatross_feather"] = 50,
 	["crabking_claw"] = 50,
-	
+	["waterplant_bomb"] = 5, --种壳
+	["barnaclesushi"] =50,  --藤壶握寿司
+	["barnaclinguine"] = 30,--藤壶中细面
+	["barnaclepita"] = 20,	--藤壶皮塔饼
+	["shroomcake"] = 60,	--蘑菇蛋糕
+	["californiaroll"] = 25,--加州卷
+	["sweettea"] = 30, 		--舒缓茶
+	["saltrock"]= 10,		--盐晶
+	["opalpreciousgem"]= 800,--彩虹宝石
+	["moonglass"] = 2,		--月亮碎片
+	["glasscutter"]= 80,	--玻璃刀
+	["moonglassaxe"]= 30,	--月光玻璃斧头
+	["leafymeatsouffle"]=40,--果冻沙拉
+	["leafymeatburger"] =40, --素食堡
+	["leafloaf"]=40,--叶肉糕
+	["surfnturf"]=40,--海鲜牛排
+	["tillweed"]=1,--犁地草
+	["tillweedsalve"]=10,--犁地草膏
+	["seafoodgumbo"]=40,--海鲜浓汤
+	["sketch"]=50,--草图
+	["slingshotammo_freeze"]=2,--冰冻弹药
+	["slingshotammo_gold"]=2,--黄金弹药
+	["slingshotammo_marble"]=2,--大理石弹
+	["slingshotammo_poop"]=1,--便便弹
+	["slingshotammo_slow"]=3,--减速弹药
+	["slingshotammo_thulecite"]=3,--诅咒弹药
+	["lobsterbisque"]=30,--龙虾汤
+	["lobsterdinner"]=60,--龙虾正餐
+	["eel"]=5,--鳗鱼
+	["eel_cooked"]=5,--烤鳗鱼
+	["pondeel"]=10,--活鳗鱼
+	["unagi"]=40,--鳗鱼料理
+	["vegstinger"]=40,--蔬菜鸡尾酒
+	["voltgoatjelly"]=60,--伏特羊肉冻
+	["eyemaskhat"]=200,--眼面具
+	["shieldofterror"]=250,--恐怖盾牌
+	["milkywhites"]=10,--乳白物
+	--["opalgemsamulet"]=900,--彩色护符
 }
 
 if TUNING.new_items then

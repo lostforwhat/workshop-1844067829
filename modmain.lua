@@ -10,6 +10,7 @@ local NODE_TYPE = GLOBAL.NODE_TYPE
 local StartThread = GLOBAL.StartThread
 local Sleep = GLOBAL.Sleep
 local SetSharedLootTable = GLOBAL.SetSharedLootTable
+local TumbleweedIndicator = require ("widgets/tumbleweedindicator")
 
 TUNING.start_protect=GetModConfigData("start_protect")--开局保护设置
 TUNING.drop_chance=GetModConfigData("drop_chance")--物品掉落率
@@ -25,6 +26,7 @@ TUNING.vipurl = GetModConfigData("vipurl")
 require 'AllAchiv/allachivbalance'
 require 'AllAchiv/titlebalance'
 require "loot_table"
+--_G.require "loot_list"
 
 local mlang = _G.LanguageTranslator.defaultlang
 if mlang == "zh" or mlang == "chs" then
@@ -39,6 +41,7 @@ if TUNING.new_items then
         "package_ball",
         "package_staff",
         "prayer_symbol",
+        --"opalgemsamulet",
     }
 else
     PrefabFiles = {}
@@ -51,6 +54,8 @@ end
 if stronger_boss == false then
     stronger_boss = 0
 end
+
+_G.TUMBLEWEED_5_NUM=nil
 
 _G.GetTableLength = function(tab)
     local count = 0
@@ -105,7 +110,22 @@ _G.ToStringEx = function(value)
     end
 end
 
+--[[
+--local mainfunctions = require("mainfunctions")
+local _RequestShutdown = _G.RequestShutdown()
+function RequestShutdown()
+    for _, v in pairs(_G.Ents) do
+        if v:HasTag("kingtreasure") or v:HasTag("box_gift") then v:Remove() end
+    end
+    _RequestShutdown()
+end
+]]
+
+--AddPrefabPostInit("",function(inst)inst:AddComponent("") end)
+
+
 local function ResetBoss(stronger_health, stronger_speed, stronger_attack,stronger_period,stronger_aoe)
+    --ResetBoss(2.25, 2.5, 1.25, 1.2, 4)
 	stronger_health = 1 + math.min(stronger_health, 2)
 	stronger_speed = math.min(stronger_speed, 3)
 	stronger_attack = 1 + math.min(stronger_attack, 1)
@@ -162,7 +182,7 @@ local function ResetBoss(stronger_health, stronger_speed, stronger_attack,strong
     TUNING.BEEQUEEN_ATTACK_RANGE = 4 + stronger_aoe * 0.5
     TUNING.BEEQUEEN_HIT_RANGE = 6 + stronger_aoe * 0.6
     TUNING.BEEQUEEN_SPEED = 4 + stronger_speed
-    --klaus
+    --klaus克劳斯
     TUNING.KLAUS_HEALTH = 10000 * 2
     TUNING.KLAUS_HEALTH_REGEN = 25 * stronger_attack --per second (only when not in combat)
     TUNING.KLAUS_HEALTH_REZ = .5
@@ -222,6 +242,16 @@ local function ResetBoss(stronger_health, stronger_speed, stronger_attack,strong
     TUNING.ANTLION_WALL_CD = 20 * 0.5
     TUNING.ANTLION_HIT_RECOVERY = 1
     TUNING.ANTLION_EAT_HEALING = 200
+
+    --恐怖之眼
+    TUNING.EYEOFTERROR_HEALTH = 5000 * 2 * stronger_health
+    TUNING.EYEOFTERROR_DAMAGE = 125 * stronger_attack
+    TUNING.EYEOFTERROR_MINI_ATTACK_PERIOD = 3 - stronger_period
+
+    --激光眼
+
+    --魔炎眼
+    
 
     TUNING.SHADOW_ROOK =
     {
@@ -318,12 +348,76 @@ local function ResetBoss(stronger_health, stronger_speed, stronger_attack,strong
     --发条主教
     TUNING.BISHOP_DAMAGE = 40 * math.min(stronger_attack, 1.5)
     TUNING.BISHOP_HEALTH = 300 * 3 * math.min(stronger_health, 1.5)
-
+    --邪天翁
     TUNING.MALBATROSS_HEALTH = 2500 * 2 * stronger_health
     TUNING.MALBATROSS_DAMAGE = 150 * stronger_attack
+    --帝王蟹
+    TUNING.CRABKING_HEALTH = 20000 * 2 * stronger_health
+    TUNING.CRABKING_DAMAGE = 150 * stronger_attack
+    TUNING.CRABKING_CLAW_HEALTH = 500 * 2 *stronger_health
+    TUNING.CRABKING_CLAW_HEALTH_BOOST = 50 * 2 * stronger_health
+    TUNING.CRABKING_ATTACK_RANGE = 7
+    TUNING.CRABKING_AOE_RANGE = 4
+    TUNING.CRABKING_CLAW_PLAYER_DAMAGE = 30
+    TUNING.CRABKING_ATTACK_PERIOD = 2
+    TUNING.CRABKING_FREEZE_RANGE = 12
+    TUNING.CRABKING_REGEN = 800
+    TUNING.CRABKING_REGEN_BUFF = 150
+    TUNING.CRABKING_CLAW_RESPAWN_DELAY = 15
+    TUNING.CRABKING_CLAW_REGEN_DELAY = 3
+    TUNING.CRABKING_CLAW_WALK_SPEED = 2
+    TUNING.CRABKING_CLAW_RUN_SPEED = 5
+    TUNING.CRABKING_CAST_TIME = 5
+    --天体英雄1
+    TUNING.ALTERGUARDIAN_PHASE1_WALK_SPEED = 5 + stronger_speed
+    TUNING.ALTERGUARDIAN_PHASE1_HEALTH = 10000 *1.15 * stronger_health
+    TUNING.ALTERGUARDIAN_PHASE1_ROLLDAMAGE = 166.67 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE1_AOEDAMAGE = 66.67 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE1_ATTACK_PERIOD = 7.5 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE1_ROLLCOOLDOWN = 8.5 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE1_MINROLLCOUNT = 4
+    TUNING.ALTERGUARDIAN_PHASE1_SUMMONCOOLDOWN = 15
+    TUNING.ALTERGUARDIAN_PHASE1_TARGET_DIST = 25
+    TUNING.ALTERGUARDIAN_PHASE1_SHIELDABSORB = 0.85
+    --天体英雄2
+    TUNING.ALTERGUARDIAN_PHASE2_WALK_SPEED = 4.5 + stronger_speed
+    TUNING.ALTERGUARDIAN_PHASE2_MAXHEALTH = 20000 *1.25* stronger_health
+    TUNING.ALTERGUARDIAN_PHASE2_STARTHEALTH = 13000 *1.25 * stronger_health
+    TUNING.ALTERGUARDIAN_PHASE2_DAMAGE = 133.33 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE2_ATTACK_PERIOD = 6 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE2_CHOP_RANGE = 4.5 + stronger_aoe
+    TUNING.ALTERGUARDIAN_PHASE2_SPIN_RANGE = 18 + stronger_aoe
+    TUNING.ALTERGUARDIAN_PHASE2_SPIN_SPEED = 8.5
+    TUNING.ALTERGUARDIAN_PHASE2_SPINCD = 14.25 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE2_SPIKEDAMAGE = 50 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE2_SUMMONCOOLDOWN = 24.25 - stronger_period
+    --天体英雄3
+    TUNING.ALTERGUARDIAN_PHASE3_WALK_SPEED = 7.5 + stronger_speed
+    TUNING.ALTERGUARDIAN_PHASE3_MAXHEALTH = 22500 *1.25* stronger_health
+    TUNING.ALTERGUARDIAN_PHASE3_STARTHEALTH = 14000 *1.25 * stronger_health
+    TUNING.ALTERGUARDIAN_PHASE3_DAMAGE = 150 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE3_LASERDAMAGE = 120 * stronger_attack
+    TUNING.ALTERGUARDIAN_PHASE3_ATTACK_PERIOD = 5 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE3_SUMMONCOOLDOWN = 45 - stronger_period
+    TUNING.ALTERGUARDIAN_PHASE3_ATTACK_RANGE = 14 + stronger_aoe
+    TUNING.ALTERGUARDIAN_PHASE3_TRAP_MINRANGE = 2.0 + stronger_aoe
 
     TUNING.MOSSLING_HEALTH = 5000
+
 end
+
+-- 增加血量，不然使用的是饥荒原本的TUNING.EYEOFTERROR_HEALTH值
+AddPrefabPostInit("twinofterror1",function(inst)
+    if inst.components and inst.components.health then
+        inst.components.health:SetMaxHealth(TUNING.EYEOFTERROR_HEALTH*1.5)
+    end
+end)
+AddPrefabPostInit("twinofterror2",function(inst)
+    if inst.components and inst.components.health then
+        inst.components.health:SetMaxHealth(TUNING.EYEOFTERROR_HEALTH*1.5)
+    end
+end)
+
 
 --boss强化
 local function UpdateBoss()
@@ -350,7 +444,20 @@ local function UpdateBoss()
     		ResetBoss(stronger_health, stronger_speed, stronger_attack, stronger_period, 0)
     	end
     elseif stronger_boss == 2 then
-        ResetBoss(2.25, 2.5, 1.25, 1.2, 4)
+        local days = _G.TheWorld.state.cycles  --世界天数
+        if days >= 50 then
+            local ex_days = days - 50
+            if math.fmod(ex_days, 20)==0 then
+                _G.TheNet:Announce(resetNotice(_G.STRINGS.TUM.BOSSUPDATED))
+            end
+            local stronger_health = math.floor(ex_days/20) * 0.02   --HP增加倍率
+            local stronger_speed = math.floor(ex_days/80) * 0.07    --speed增加固定值
+            local stronger_attack = math.floor(ex_days/50) * 0.07   --attack增加倍率
+            local stronger_period = math.floor(ex_days/250) * 0.25  --attack频率
+            ResetBoss(stronger_health, stronger_speed, stronger_attack, stronger_period, 1)
+        end
+    elseif stronger_boss == 3 then
+         ResetBoss(2.25, 2.5, 1.25, 1.2, 4)
     end
 end
 
@@ -407,6 +514,7 @@ local function OnEntityDropLoot(world, data)
                     table.insert(loot, "prayer_symbol")
                     table.insert(loot, "prayer_symbol")
                     table.insert(loot, "package_staff")
+                    table.insert(loot, "achiv_clear")
                 end
             end
             if #loot > 0 then
@@ -422,6 +530,89 @@ local function OnEntityDropLoot(world, data)
     end
 end
 
+local monster_prefabs = {
+    "spider",--蜘蛛
+    "frog",--青蛙
+    "bee",--蜜蜂 
+    "killerbee",--杀人蜂
+    "mosquito",--蚊子
+    "beefalo",--牛
+    "lightninggoat",--闪电羊
+    "pigman",--猪人
+    "pigguard",--猪人守卫
+    "bunnyman",--兔人
+    "merm",--鱼人
+    "spider_warrior",--蜘蛛战士
+    "spider_dropper",--蜘蛛
+    "spider_moon",--蜘蛛
+    "spider_hider",--蜘蛛
+    "spider_spitter",--蜘蛛
+    "spider_water",--海黾
+    "grassgator",--草鳄鱼
+    "spiderqueen",--蜘蛛女王
+    "hound",--猎狗
+    "firehound",--火狗
+    "icehound",--冰狗
+    "leif",--树精
+    "leif_sparse",--稀有树精
+    "walrus",--海象
+    "little_walrus",--小海象
+    "tallbird",--高鸟
+    "koalefant_summer",--夏象
+    "koalefant_winter",--冬象
+    "bat",--蝙蝠
+    "squid",--鱿鱼
+    "molebat",--裸鼹鼠蝙蝠
+    --"rocky",--石虾
+    "monkey",--猴子
+    "knight",--发条骑士
+    "knight_nightmare",
+    "bishop",--发条主教
+    "bishop_nightmare",
+    "rook",--发条战车
+    "rook_nightmare",
+    "deerclops",--巨鹿
+    "minotaur",--远古守护者
+    "worm",--洞穴蠕虫
+    "krampus",--小偷
+    "moose",--鹿鸭
+    "mossling",--小鸭
+    "dragonfly",--龙蝇
+    "warg",--座狼
+    "bearger",--熊大
+    "toadstool",--蘑菇蛤
+    "beequeen",--蜂后
+    "spat",--钢羊
+    "shadow_rook",--暗影战车
+    "shadow_knight",--暗影骑士
+    "shadow_bishop",--暗影主教
+    "slurtle", -- 蜗牛1
+    "snurtle", -- 蜗牛2
+    "slurper", -- slurper
+    "penguin", -- 企鹅
+    "catcoon", --猫
+    "stalker", --地洞复活的骨架
+    "stalker_atrium", --远古影织者
+    "stalker_forest", --森林守护者
+    "perd",--火鸡
+    "antlion",--蚁狮
+    "buzzard", --秃鹰
+    "malbatross",--邪天翁
+    "crabking",--帝王蟹
+    "alterguardian_phase1",--天体英雄1
+    "alterguardian_phase2",
+    "alterguardian_phase3",
+    "eyeofterror", --恐怖之眼
+    "twinofterror1", --机械之眼1
+    "twinofterror2", --机械之眼2
+ 
+    --神话boss
+    "blackbear", --黑风
+    "rhino3_red",--三兄弟
+    "rhino3_blue",
+    "rhino3_yellow",
+    "myth_goldfrog",--金蛤蟆
+}
 
 if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 	modimport("scripts/player_start.lua")
@@ -444,63 +635,113 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 	end
 
     if stronger_boss == 2 then
-        local monster_prefabs = {
-            "spider",
-            "frog",
-            "bee",
-            "mosquito",
-            "canary", --金丝雀
-            "beefalo",--牛
-            "lightninggoat",--闪电羊
-            "pigman",--猪人
-            "pigguard",--猪人守卫
-            "bunnyman",--兔人
-            "merm",--鱼人
-            "spider_warrior",--蜘蛛战士
-            "spiderqueen",--蜘蛛女王
-            "hound",--猎狗
-            "firehound",--火狗
-            "icehound",--冰狗
-            "leif",--树精
-            "leif_sparse",--稀有树精
-            "walrus",--海象
-            "little_walrus",--小海象
-            "tallbird",--高鸟
-            "koalefant_summer",--夏象
-            "koalefant_winter",--冬象
-            "bat",--蝙蝠
-            --"rocky",--石虾
-            "monkey",--猴子
-            "knight",--发条骑士
-            "bishop",--发条主教
-            "rook",--发条战车
-            "deerclops",--巨鹿
-            "minotaur",--远古守护者
-            "worm",--洞穴蠕虫
-            "krampus",--小偷
-            "moose",--鹿鸭
-            "mossling",--小鸭
-            "dragonfly",--龙蝇
-            "warg",--座狼
-            "bearger",--熊大
-            "toadstool",--蘑菇蛤
-            "beequeen",--蜂后
-            "spat",--钢羊
-            "shadow_rook",--暗影战车
-            "shadow_knight",--暗影骑士
-            "shadow_bishop",--暗影主教
-            "slurtle", -- 蜗牛1
-            "snurtle", -- 蜗牛2
-            "slurper", -- slurper
-            "penguin", -- 企鹅
-            "catcoon", --猫
-            "stalker", --地洞复活的骨架
-            "stalker_atrium", --远古影织者
-            "stalker_forest",
-            "perd",
-            "antlion",
-            "buzzard",
-        }
+        for k,v in pairs(monster_prefabs) do
+            AddPrefabPostInit(v, function(inst)
+                if inst.components.health ~= nil and inst.components.health.regen == nil then
+                    local regen_health = 8
+                    local regen_period = 2
+                    local max_health = inst.components.health.maxhealth
+                    if max_health > 1999 then
+                        regen_health = 2--25
+                    end
+                    if max_health > 9999 then
+                        regen_health = 15--50
+                    end
+                    inst.components.health:StartRegen(regen_health, regen_period, false)
+                end
+                local x,y,z = inst.Transform:GetWorldPosition()
+                if (inst.components.health ~= nil and inst.components.health.maxhealth > 4999) then
+                    inst:ListenForEvent("attacked", function(inst, data)
+                        if data.attacker ~= nil then
+                            if data.attacker:HasTag("player") then
+                                if inst.components.health:GetPercent() < 0.6 and inst.components.health:GetPercent() > 0.1 then
+                                    if inst.components.health.maxhealth > 1999 then
+                                        local extra_att = math.random()
+                                        if extra_att < 0.02 then
+                                            data.attacker:StartThread(function()
+                                                local pos = data.attacker:GetPosition()
+                                                _G.TheWorld:PushEvent("ms_sendlightningstrike", pos) --触发天气事件，生成雷劈
+                                            end)
+                                        elseif extra_att < 0.05 then
+                                            data.attacker:StartThread(function()
+                                                local pos = data.attacker:GetPosition()
+                                                GLOBAL.SpawnPrefab("alterguardian_phase3trapprojectile").Transform:SetPosition(pos.x, pos.y, pos.z)
+                                            end)
+                                        elseif extra_att < 0.1 then
+                                            if data.attacker.components.moisture ~= nil then --潮湿度5
+                                                data.attacker.components.moisture:DoDelta(5)
+                                            end
+                                        elseif extra_att < 0.15 then
+                                            if data.attacker.components.sanity ~= nil then --降低理智
+                                                data.attacker.components.sanity:DoDelta(-5)
+                                            end
+                                        end
+                                    end
+                                    if math.random() < 0.01 and inst:IsNear(data.attacker, 13) and not inst:IsNear(data.attacker, 3) then
+                                        local px, py, pz = data.attacker.Transform:GetWorldPosition()
+                                        --想到更好的处理方案再说
+                                        --inst.Transform:SetPosition(px, py, pz)
+                                    end
+                                end
+                            elseif data.attacker.components.health and data.attacker.components.health.maxhealth > 9999 then --更换目标,boss不能互相打起来
+                                if inst.components.health:GetPercent() < 0.7 then
+                                    
+                                    local ents = TheSim:FindEntities(x,y,z, 90, nil,nil, {"player"})
+                                    local has_target = false
+                                    for k,v in pairs(ents) do
+                                        inst.components.combat:SuggestTarget(v)
+                                        has_target = true
+                                        break
+                                    end
+                                    if not has_target and inst.components.sleeper ~= nil then
+                                        sendtorandomposition(data.attacker)
+                                        --inst.components.sleeper:GoToSleep(1 + math.random() * 4)
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                    inst:ListenForEvent("healthdelta", function(inst, data) 
+                        if inst.components.health:GetPercent() < 0.05 then
+                            if inst.components.health.absorb == 0 then
+                                inst.components.health.absorb = 0.5
+                                inst:AddTag("absorbadd")
+                            end
+                        else
+                            if inst:HasTag("absorbadd") then
+                                inst.components.health.absorb = 0
+                                inst:RemoveTag("absorbadd")
+                            end
+                        end
+                    end)
+
+                end
+                if v == "klaus" then
+                    inst:ListenForEvent("killed", function(inst, data) 
+                        if inst.enraged then
+                           local max_health = inst.components.health.maxhealth
+                           inst.components.health:DoDelta(max_health*0.02) 
+                        end
+                    end)
+                    inst:ListenForEvent("enrage", function() 
+                        local max_health = inst.components.health.maxhealth
+                        inst.components.health:DoDelta(max_health*1.15)
+                    end)
+                end
+                if v == "alterguardian_phase1" or v == "alterguardian_phase2" or v == "alterguardian_phase3" then
+                    inst:ListenForEvent("attacked", function(inst, data)
+                        if math.random()>0.85 then
+                            data.attacker:StartThread(function()
+                                local pos = data.attacker:GetPosition()
+                                GLOBAL.SpawnPrefab("alterguardian_phase3trapprojectile").Transform:SetPosition(pos.x, pos.y, pos.z)
+                            end)
+                        end
+                    end)
+                end
+            end)
+        end
+    end
+    if stronger_boss == 3 then
         for k,v in pairs(monster_prefabs) do
             AddPrefabPostInit(v, function(inst)
                 if v == "mossling" and inst.components.health and inst.components.health.invincible~=true then
@@ -530,19 +771,19 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
                                         if extra_att < 0.02 then
                                             data.attacker:StartThread(function()
                                                 local pos = data.attacker:GetPosition()
-                                                _G.TheWorld:PushEvent("ms_sendlightningstrike", pos)
+                                                _G.TheWorld:PushEvent("ms_sendlightningstrike", pos) --触发天气事件，生成雷劈
                                             end)
                                         elseif extra_att < 0.15 then
-                                            if data.attacker.components.freezable ~= nil then
+                                            if data.attacker.components.freezable ~= nil then --增加冰冻层数
                                                 data.attacker.components.freezable:AddColdness(1)
-                                                data.attacker.components.freezable:SpawnShatterFX()
+                                                data.attacker.components.freezable:SpawnShatterFX() --冰冻粉碎效果
                                             end
                                         elseif extra_att < 0.25 then
-                                            if data.attacker.components.moisture ~= nil then
+                                            if data.attacker.components.moisture ~= nil then --潮湿度5
                                                 data.attacker.components.moisture:DoDelta(5)
                                             end
                                         elseif extra_att < 0.4 then
-                                            if data.attacker.components.sanity ~= nil then
+                                            if data.attacker.components.sanity ~= nil then --降低理智
                                                 data.attacker.components.sanity:DoDelta(-5)
                                             end
                                         end
@@ -553,7 +794,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
                                         --inst.Transform:SetPosition(px, py, pz)
                                     end
                                 end
-                            elseif data.attacker.components.health and data.attacker.components.health.maxhealth > 9999 then
+                            elseif data.attacker.components.health and data.attacker.components.health.maxhealth > 9999 then --更换目标,boss不能互相打起来
                                 if inst.components.health:GetPercent() < 0.7 then
                                     
                                     local ents = TheSim:FindEntities(x,y,z, 90, nil,nil, {"player"})
@@ -601,7 +842,6 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
             end)
         end
     end
-
     if not worldregrowth_enabled then
         AddComponentPostInit("regrowthmanager", function(self)
             function self:LongUpdate()
@@ -925,8 +1165,12 @@ Assets = {
     Asset("IMAGE", "images/title/title_content.tex"),
     Asset("ATLAS", "images/title/equip.xml"),
     Asset("IMAGE", "images/title/equip.tex"),
+
+    Asset("ATLAS", "images/opal_gems_amulet1.xml"),
+    Asset("IMAGE", "images/opal_gems_amulet1.tex"), --物品栏
 }
 
+--给玩家添加任务等级成就等组件
 AddPlayerPostInit(function(inst)
 
     for k,v in pairs(_G.allachiv_eventdata) do
@@ -993,6 +1237,9 @@ AddPlayerPostInit(function(inst)
         inst.components.allachivcoin:Init(inst)
         inst.components.levelsystem:Init(inst)
         inst.components.titlesystem:Init(inst)
+        if inst.components.oldager then
+            inst.components.oldager:AddValidHealingCause("lifesteal")
+        end
     end
 end)
 
@@ -1039,12 +1286,82 @@ end
 
 AddClassPostConstruct("widgets/controls", Adduiachievement)
 
+--[[
+AddReplicableComponent("playertumbleweedindicator") --这样这个组件主客机都可以用
+--是否开启新物品
+_G.MOD_INDICATORS = {}
+AddClassPostConstruct("screens/playerhud", function(self) 
+
+    self.AddIndicator = function(self, target)
+        if not self.indicators then
+            self.indicators = {}
+        end
+        local bi = self.under_root:AddChild(TumbleweedIndicator(self.owner, target, { 255 / 255, 255 / 255, 55 / 255, 1 }))
+        table.insert(self.indicators, bi)
+    end
+        
+    self.HasIndicator = function(self, target)
+        if not self.indicators then return end
+
+        for i,v in pairs(self.indicators) do
+            if v and v:GetTarget() == target then
+                return true
+            end
+        end
+        return false
+    end
+    
+    self.RemoveIndicator = function(self, target)
+        if not self.indicators then return end
+
+        local index = nil
+        for i,v in pairs(self.indicators) do
+            if v and v:GetTarget() == target then
+                index = i
+                break
+            end
+        end
+        if index then
+            local bi = table.remove(self.indicators, index)
+            if bi then bi:Kill() end
+        end
+    end
+end)
+
+
+--给玩家添加风滚草指示器
+AddPlayerPostInit(function(inst)  --玩家添加组件 replica
+    inst:AddComponent("playertumbleweedindicator")
+    if not _G.TheWorld.ismastersim then
+        inst:AddComponent("playertumbleweedindicator")
+    end
+    inst.dataEnabled=nil --存储现在装备的对象
+    inst:ListenForEvent("indicatorstate",function(world,data)
+        if not inst.components.playertumbleweedindicator then print("不存在组件") return end
+        if data.Enabled then  --传入对象存在，属性true
+            inst.components.playertumbleweedindicator:SetEnabled(true)
+            if not inst.dataEnabled or data.inst ~= inst.dataEnabled then  --第一次,和切换时
+                inst.dataEnabled=data.inst
+            end
+        else
+            inst.components.playertumbleweedindicator:SetEnabled(false)
+            if data.inst == inst.dataEnabled then               
+                inst.dataEnabled=nil
+            else
+                inst.components.playertumbleweedindicator:SetEnabled(true)
+            end
+        end
+    end,_G.TheWorld)
+end)
+]]
+
 AddComponentPostInit("crop", function(self)
 local _Harvest = self.Harvest
     self.Harvest = function(self, harvester)
         local pos = self.inst:GetPosition()
         local ret, product = _Harvest(self, harvester)
         --print(harvester.components.allachivcoin.pickmaster)
+        
         if ret and product and harvester and pos and harvester.components.allachivcoin and harvester.components.allachivcoin.pickmaster>0 then
             local wetness = GLOBAL.TheWorld.state.wetness
             local iswet = GLOBAL.TheWorld.state.iswet
@@ -1644,6 +1961,19 @@ nil, -- numtogive
 )
 
 end
+--[[
+if TUNING.new_items then
+AddRecipe("opalgemsamulet",{Ingredient("opalpreciousgem", 1),Ingredient("nightmarefuel", 5),Ingredient("thulecite", 4)},
+_G.RECIPETABS.ANCIENT, --远古科技
+_G.TECH.ANCIENT_FOUR, 
+nil,
+nil, 
+true, 
+nil, 
+nil,
+"images/opal_gems_amulet1.xml","opal_gems_amulet1.tex")
+end
+]]
 
 if TUNING.more_blueprint then
     AddRecipe("book_gardening", {Ingredient("papyrus", 2), Ingredient("seeds", 1), Ingredient("poop", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
@@ -1659,5 +1989,6 @@ if TUNING.more_blueprint then
     AddRecipe("mermthrone_construction", {Ingredient("boards", 5), Ingredient("rope", 5)}, RECIPETABS.TOWN, TECH.NONE, "mermthrone_construction_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
     AddRecipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1), Ingredient("spear", 2)}, RECIPETABS.TOWN, TECH.NONE, "mermwatchtower_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
     AddRecipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.NONE, nil, nil, nil, nil, "merm_builder")
+    --AddRecipe("opalgemsamulet",{Ingredient("opalpreciousgem", 1),Ingredient("nightmarefuel", 5),Ingredient("thulecite", 4)}, _G.RECIPETABS.ANCIENT, _G.TECH.ANCIENT_FOUR, nil, nil, true, nil, nil,"images/opal_gems_amulet1.xml","opal_gems_amulet1.tex")
 end
 

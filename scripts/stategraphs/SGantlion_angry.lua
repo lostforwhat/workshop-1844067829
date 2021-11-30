@@ -19,7 +19,7 @@ end
 local function ChooseAttack(inst)
     local target = inst.components.combat.target
     if target ~= nil and target:IsNear(inst, TUNING.ANTLION_CAST_RANGE) then
-        if inst.components.timer:TimerExists("wall_cd") then
+        if inst.components.worldsettingstimer:ActiveTimerExists("wall_cd") then
             inst.sg:GoToState("summonspikes", target)
         else
             inst.sg:GoToState("summonwall")
@@ -107,9 +107,10 @@ local function SpawnBlocks(inst, pos, count)
                 end
             end
         end
-        if math.random() < 0.1 and not inst.components.timer:TimerExists("sinkhole_cd") then
+        if math.random() < 0.1 and not
+		inst.components.worldsettingstimer:ActiveTimerExists("sinkhole_cd") then
             inst.components.sinkholespawner:StartSinkholes()
-            inst.components.timer:StartTimer("sinkhole_cd", 60)
+            inst.components.worldsettingstimer:ActiveTimerExists("sinkhole_cd", 60)
         end
     end
 end
@@ -418,7 +419,7 @@ local states =
             TimeEvent(14 * FRAMES, function(inst)
                 --NOTE: sandblock has 10 frames lead in time
                 SpawnBlocks(inst, inst:GetPosition(), 19)
-                inst.components.timer:StartTimer("wall_cd", TUNING.ANTLION_WALL_CD)
+                inst.components.worldsettingstimer:StartTimer("wall_cd", TUNING.ANTLION_WALL_CD)
             end),
             TimeEvent(25 * FRAMES, ShakeRaising),
             CommonHandlers.OnNoSleepTimeEvent(56 * FRAMES, function(inst)

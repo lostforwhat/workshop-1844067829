@@ -123,6 +123,11 @@ local function checkkillbeequeen(self,killbeequeen) local c = 0 if killbeequeen 
 local function checkkilltoadstool(self,killtoadstool) local c = 0 if killtoadstool then c=killtoadstool end self.inst.checkkilltoadstool:set(c) end
 local function checkkilltoadstool_dark(self,killtoadstool_dark) local c = 0 if killtoadstool_dark then c=killtoadstool_dark end self.inst.checkkilltoadstool_dark:set(c) end
 local function checkkillmalbatross(self,killmalbatross) local c = 0 if killmalbatross then c=killmalbatross end self.inst.checkkillmalbatross:set(c) end
+local function checkkillcrabking(self,killcrabking) local c = 0 if killcrabking then c=killcrabking end self.inst.checkkillcrabking:set(c) end
+local function checkkillalterguardian_phase1(self,killalterguardian_phase1) local c = 0 if killalterguardian_phase1 then c=killalterguardian_phase1 end self.inst.checkkillalterguardian_phase1:set(c) end
+local function checkkilleyeofterror(self,killeyeofterror) local c = 0 if killeyeofterror then c=killeyeofterror end self.inst.checkkilleyeofterror:set(c) end
+local function checkkilltwinofterror1(self,killtwinofterror1) local c = 0 if killtwinofterror1 then c=killtwinofterror1 end self.inst.checkkilltwinofterror1:set(c) end
+local function checkkilltwinofterror2(self,killtwinofterror2) local c = 0 if killtwinofterror2 then c=killtwinofterror2 end self.inst.checkkilltwinofterror2:set(c) end
 
 local function checkpickcactus50(self,pickcactus50) self.inst.checkpickcactus50:set(pickcactus50) end
 local function checkpickred_mushroom50(self,pickred_mushroom50) self.inst.checkpickred_mushroom50:set(pickred_mushroom50) end
@@ -335,6 +340,11 @@ local allachivevent = Class(function(self, inst)
     self.killtoadstool = 0
     self.killtoadstool_dark = 0
     self.killmalbatross = 0
+    self.killcrabking = 0
+    self.killalterguardian_phase1 = 0
+    self.killeyeofterror = 0
+    self.killtwinofterror1 = 0
+    self.killtwinofterror2 = 0
 
     self.pickcactus50 = 0
     self.pickred_mushroom50 = 0
@@ -504,6 +514,11 @@ nil,
     killtoadstool = checkkilltoadstool,
     killtoadstool_dark = checkkilltoadstool_dark,
     killmalbatross = checkkillmalbatross,
+    killcrabking = checkkillcrabking,
+    killalterguardian_phase1 = checkkillalterguardian_phase1,
+    killeyeofterror = checkkilleyeofterror,
+    killtwinofterror1 = checkkilltwinofterror1,
+    killtwinofterror2 = checkkilltwinofterror2,
 
     killglommer = checkkillglommer,
     kilchester = checkkilchester,
@@ -682,6 +697,12 @@ function allachivevent:OnSave()
         killtoadstool = self.killtoadstool,
         killtoadstool_dark = self.killtoadstool_dark,
         killmalbatross = self.killmalbatross,
+        killcrabking = self.killcrabking,
+        killalterguardian_phase1 = self.killalterguardian_phase1,
+        killeyeofterror = self.killeyeofterror,
+        killtwinofterror1 = self.killtwinofterror1,
+        killtwinofterror2 = self.killtwinofterror2,
+
         killglommer = self.killglommer,
         kilchester = self.kilchester,
         killhutch = self.killhutch,
@@ -787,7 +808,7 @@ function allachivevent:seffc(inst, tag)
     local str0 = STRINGS.ALLACHIVCURRENCY
     local strname = STRINGS.ALLACHIVNAME_VALUE
     local strinfo = STRINGS.ALLACHIVINFO
-    
+
     TheNet:Announce(inst:GetDisplayName().."   "..strinfo[tag]..str0[3]..str0[1]..strname[tag]..str0[2]..str0[3]..str0[4]..str0[6]..allachiv_coinget[tag]..str0[2])
     inst.components.talker:Say(str0[6]..strname[tag]..str0[2].."\n"..str0[4]..allachiv_coinget[tag]..str0[5])
     inst.components.allachivcoin:coinDoDelta(allachiv_coinget[tag])
@@ -863,7 +884,9 @@ function allachivevent:checkAllTemp(inst)
     end
 end
 
+--查看重复任务
 function allachivevent:addOneTemp(inst, achivname, amount)
+	--if self.tempachiv == nil then return end --防止报错,选了神话角色杨戬后,没有 tempachiv 而崩服
     if self.tempachiv[achivname] ~= nil then
         if self.tempachiv[achivname] >= allachiv_eventdata[achivname] then 
             self.tempachiv[achivname] = allachiv_eventdata[achivname] 
@@ -887,7 +910,7 @@ function allachivevent:addOneTemp(inst, achivname, amount)
         self:checkAllTemp(inst)
     end
 end
-
+--查看任务
 function allachivevent:addOneJob(inst, achivname)
     if self[achivname] ~= nil then
         if self[achivname] >= allachiv_eventdata[achivname] then 
@@ -1196,6 +1219,7 @@ function allachivevent:onkilledother(inst)
             self:addOneJob(inst, "killperd10")
             self:addOneTemp(inst, "rekillperd")
         end
+        --击杀对象是鸟吗
         if victim.prefab == "crow" 
             or victim.prefab == "canary"
             or victim.prefab == "puffin"
@@ -1348,9 +1372,9 @@ function allachivevent:onkilledother(inst)
                 end
             end
         end
-        if victim.prefab == "toadstool_dark" then
-            self:addOneJob(inst, "killtoadstool_dark")
-            self:addOneTemp(inst, "rekilltoadstool_dark")
+        if victim.prefab == "toadstool_dark" then 
+            self:addOneJob(inst, "killtoadstool_dark") ----击杀暗黑蛤蟆
+            self:addOneTemp(inst, "rekilltoadstool_dark") --重复击杀暗黑蛤蟆
             for k,v in pairs(ents) do
                 if v:HasTag("player") and v ~= inst then
                     v.components.allachivevent:addOneJob(v, "killtoadstool_dark")
@@ -1368,6 +1392,49 @@ function allachivevent:onkilledother(inst)
                 end
             end
         end
+        if victim.prefab == "crabking" then
+            self:addOneJob(inst, "killcrabking")
+            self:addOneTemp(inst, "rekillcrabking")
+            for k,v in pairs(ents) do
+                if v:HasTag("player") and v ~= inst then
+                    v.components.allachivevent:addOneJob(v, "killcrabking")
+                    v.components.allachivevent:addOneTemp(v, "rekillcrabking")
+                end
+            end
+        end
+		if victim.prefab == "alterguardian_phase1" or victim.prefab == "alterguardian_phase2" or victim.prefab == "alterguardian_phase3" then
+            self:addOneJob(inst, "killalterguardian_phase1")
+            for k,v in pairs(ents) do
+                if v:HasTag("player") and v ~= inst then
+                    v.components.allachivevent:addOneJob(v, "killalterguardian_phase1")
+                end
+            end
+        end
+		if victim.prefab == "eyeofterror" then
+            self:addOneJob(inst, "killeyeofterror")
+            for k,v in pairs(ents) do
+                if v:HasTag("player") and v ~= inst then
+                    v.components.allachivevent:addOneJob(v, "killeyeofterror")
+                end
+            end
+        end
+        if victim.prefab == "twinofterror1" then
+            self:addOneJob(inst, "killtwinofterror1")
+            for k,v in pairs(ents) do
+                if v:HasTag("player") and v ~= inst then
+                    v.components.allachivevent:addOneJob(v, "killtwinofterror1")
+                end
+            end
+        end
+		if victim.prefab == "twinofterror2" then
+            self:addOneJob(inst, "killtwinofterror2")
+            for k,v in pairs(ents) do
+                if v:HasTag("player") and v ~= inst then
+                    v.components.allachivevent:addOneJob(v, "killtwinofterror2")
+                end
+            end
+        end
+        
         if victim.prefab == "glommer" then
             self:addOneJob(inst, "killglommer")
         end
@@ -1432,9 +1499,13 @@ function allachivevent:onkilledother(inst)
                 self:addOneJob(inst, "health1kill")
             end
             local bosslist = {"moose", "dragonfly", "beager", "deerclops", "stalker_atrium", "klaus", "crabking",
-                            "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross"}
+                            "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross","alterguardian_phase1",
+                        	"alterguardian_phase2","alterguardian_phase3","eyeofterror","twinofterror1","twinofterror2",
+                        	"blackbear","rhino3_red","rhino3_blue","rhino3_yellow","myth_goldfrog",--神话boss
+                            "medal_rage_krampus"} --暗夜坎普斯
             if findprefab(bosslist, victim.prefab) then
                 self.killboss = self.killboss + 1
+                TheNet:Announce(inst:GetDisplayName().." 击杀了【"..victim:GetDisplayName().."】")
                 if self.killboss % 5 == 0 then
                     SpawnPrefab("seffc").entity:SetParent(inst.entity)
                     local str = STRINGS.ALLACHIVCURRENCY

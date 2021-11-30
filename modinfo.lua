@@ -6,23 +6,20 @@ description = [[
 人物专属技能，加强人物特色，提升可玩性
 佩戴称号，各显风采
 详情请看创意工坊说明
-version:2.3.5 优化及重做部分专属
-version:2.3.6 修复开草有时候崩溃的bug
-version:2.3.7 修复女工2技能bug
-version:2.3.9 修复部分小型bug,角色平衡微调
-version:2.3.10 bug fixed
-version:2.3.11 新增部分技能
-version:2.3.14 调整厨子，奶奶，沃尔特专属
-version:2.3.21 优化一些性能，并解决一些带来的bug
-version:2.3.23 新mod开发中，当前mod后续不进行功能更新，仅修复mod
----fixed 解决存档不兼容问题
----final 稳定最终版，之后仅修复bug
+version:2.4 解决打蚁狮、温蒂激怒姐姐崩服问题
+version:2.6.1 解决一些崩服问题，加入新掉落物品了
+version:2.6.9 修复了双倍采集对作物失效问题
+version:2.6.10 新增难度模式
+version:2.6.11 修复旺达吸血技能无法生效的bug
+version:2.6.12 新增风滚草掉落物、新任务、兼容神话boss、补充热冷食任务的食物
 
 本mod最适合无资源世界开启,建议使用自带成就系统获得最大乐趣
-]]
-author = "五年"
 
-version = "2.3.23-final"
+月：部分新彩蛋和陷阱，参考了花样风滚草mod和能力勋章mod的代码，喜欢风滚草玩法的玩家不要错过了花样风滚草。
+]]
+author = "五年,月"
+
+version = "2.6.12final"
 
 api_version = 10
 
@@ -78,7 +75,8 @@ configuration_options =
 		options =
 		{
 			{description = "线性增强(ON)", data = 1, hover = "boss增强(随世界天数增强)"},
-			{description = "超级增强(ON)", data = 2, hover = "boss增强(慎用,无法单挑)"},
+			{description = "线性增强加强(ON)", data = 2, hover = "boss增强(随世界天数增强,增加难度)"},
+			{description = "超级增强(ON)", data = 3, hover = "boss增强(慎用,无法单挑)"},
 			{description = "关闭(OFF)", data = 0, hover = "boss正常"},
 		},
 		default = 0,

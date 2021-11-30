@@ -1,23 +1,24 @@
+--设置水上行走
 local function SetWereDrowning(inst, mode)
     --V2C: drownable HACKS, using "false" to override "nil" load behaviour
     --     Please refactor drownable to use POST LOAD timing.
-    if inst.components.drownable ~= nil then
+    if inst.components.drownable ~= nil then --溺水组件存在
         if mode == 1 then
-            if inst.components.drownable.enabled ~= false then
-                inst.components.drownable.enabled = false
-                inst.Physics:ClearCollisionMask()
-                inst.Physics:CollidesWith(COLLISION.GROUND)
-                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-                inst.Physics:CollidesWith(COLLISION.GIANTS)
-                inst.Physics:Teleport(inst.Transform:GetWorldPosition())
+            if inst.components.drownable.enabled ~= false then  --启用了
+                inst.components.drownable.enabled = false                   --关闭溺水
+                inst.Physics:ClearCollisionMask()                           --Physics物理 清除碰撞遮罩
+                inst.Physics:CollidesWith(COLLISION.GROUND)                 --与地面碰撞
+                inst.Physics:CollidesWith(COLLISION.OBSTACLES)              --与障碍物碰撞
+                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)         --与小型障碍物碰撞
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)             --与人物碰撞
+                inst.Physics:CollidesWith(COLLISION.GIANTS)                 --与巨人(有boss)碰撞
+                inst.Physics:Teleport(inst.Transform:GetWorldPosition())    --传送(自己的位置)
             end
         elseif inst.components.drownable.enabled == false then
-            inst.components.drownable.enabled = true
-            if not inst:HasTag("playerghost") then
+            inst.components.drownable.enabled = true                        --开启溺水
+            if not inst:HasTag("playerghost") then                          --不是 玩家幽灵 标签 
                 inst.Physics:ClearCollisionMask()
-                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.WORLD)                  --与世界碰撞
                 inst.Physics:CollidesWith(COLLISION.OBSTACLES)
                 inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
                 inst.Physics:CollidesWith(COLLISION.CHARACTERS)
@@ -141,6 +142,7 @@ local function currentice(self,ice) self.inst.currentice:set(ice) end
 local function currentgears(self,gears) self.inst.currentgears:set(gears) end
 local function currentdug_grass(self,dug_grass) self.inst.currentdug_grass:set(dug_grass) end
 local function currentdug_sapling(self,dug_sapling) self.inst.currentdug_sapling:set(dug_sapling) end
+local function currentdug_rock_avocado_bush(self,dug_rock_avocado_bush) self.inst.currentdug_rock_avocado_bush:set(dug_rock_avocado_bush) end
 local function currentdug_berrybush(self,dug_berrybush) self.inst.currentdug_berrybush:set(dug_berrybush) end
 local function currentblowdart_pipe(self,blowdart_pipe) self.inst.currentblowdart_pipe:set(blowdart_pipe) end
 local function currentgunpowder(self,gunpowder) self.inst.currentgunpowder:set(gunpowder) end
@@ -225,7 +227,7 @@ local allachivcoin = Class(function(self, inst)
     self.attackfrozen = 0
     self.attackdead = 0
     self.attackbroken = 0
-    self.waterwalk = 0
+    self.waterwalk = 0   --水上行走
 
     --特殊
     self.level120 = 0
@@ -269,6 +271,7 @@ local allachivcoin = Class(function(self, inst)
     self.gears = 0
     self.dug_grass = 0
     self.dug_sapling = 0
+    self.dug_rock_avocado_bush = 0
     self.dug_berrybush = 0
     self.blowdart_pipe = 0
     self.gunpowder = 0
@@ -370,6 +373,7 @@ nil,
     gears = currentgears,
     dug_grass = currentdug_grass,
     dug_sapling = currentdug_sapling,
+    dug_rock_avocado_bush=currentdug_rock_avocado_bush,
     dug_berrybush = currentdug_berrybush,
     blowdart_pipe = currentblowdart_pipe,
     gunpowder = currentgunpowder,
@@ -470,6 +474,7 @@ function allachivcoin:OnSave()
         gears = self.gears,
         dug_grass = self.dug_grass,
         dug_sapling = self.dug_sapling,
+        dug_rock_avocado_bush = self.dug_rock_avocado_bush,
         dug_berrybush = self.dug_berrybush,
         blowdart_pipe = self.blowdart_pipe,
         gunpowder = self.gunpowder,
@@ -573,6 +578,7 @@ function allachivcoin:OnLoad(data)
     self.gears = data.gears or 0
     self.dug_grass = data.dug_grass or 0
     self.dug_sapling = data.dug_sapling or 0
+    self.dug_rock_avocado_bush = data.dug_rock_avocado_bush or 0
     self.dug_berrybush = data.dug_berrybush or 0
     self.blowdart_pipe = data.blowdart_pipe or 0
     self.gunpowder = data.gunpowder or 0
@@ -1022,6 +1028,11 @@ function allachivcoin:pickmasterfn(inst)
                     item.components.stackable:SetStackSize(data.object.components.pickable.numtoharvest)
                 end
                 inst.components.inventory:GiveItem(item, nil, data.object:GetPosition())
+            elseif data.object.components.lootdropper ~= nil then --新版没有产品product，变成战利品了
+                for _, prefab in ipairs(data.object.components.lootdropper:GenerateLoot()) do
+                    local item = data.object.components.lootdropper:SpawnLootPrefab(prefab)
+                    inst.components.inventory:GiveItem(item, nil, data.object:GetPosition())
+                end
             end
         end
     end)
@@ -1640,7 +1651,7 @@ function allachivcoin:addfollowerfn(inst)
     if inst.components.ghostlybond ~= nil then
         inst.components.ghostlybond.oldchangebehaviourfn = inst.components.ghostlybond.changebehaviourfn
         inst.components.ghostlybond.changebehaviourfn = function(inst, ghost)
-            local res = inst.components.ghostlybond:oldchangebehaviourfn(ghost)
+            local res = inst.components.ghostlybond.oldchangebehaviourfn(inst, ghost)
             local allachivcoin = inst.components.allachivcoin
             if allachivcoin.abigaillevelup > 0 and allachivcoin.abigailcd <= 0 then
                 local level = inst.components.levelsystem and inst.components.levelsystem.level or 0

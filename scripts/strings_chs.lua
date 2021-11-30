@@ -1,6 +1,7 @@
 local strings = {}
 strings.WORLD = "世界"
 strings.PICKTUMBLEWEED = "从风滚草中开出了 "
+strings.PRANKRESULT = "丢失了 "
 strings.LIGHTING = " 天雷"
 strings.SEASON_CHANGE = " 季节错乱"
 strings.SANITY = " 精神打击 "
@@ -14,6 +15,14 @@ strings.CIRCLE = " 囚笼"
 strings.BOSSUPDATED = "怪物变强了"
 strings.PERISH = "腐烂陷阱"
 strings.BROKEN = "损坏陷阱"
+strings.BOX_GIFT="箱子彩蛋"
+strings.PACKING_GIFT="礼物"
+strings.SHIT="霉运蛋"
+strings.LUCK="好运来"
+strings.WEATHERCHANGED="变天"
+strings.KINGTREASURE="王的宝库"
+strings.PRANK="恶作剧"
+strings.CELESTIALFURY="天体震怒"
 
 strings.UNKNOWN_PACKAGE = "未知"
 strings.PRAY = "祈祷"
@@ -21,8 +30,10 @@ strings.PRAYED = "祈祷获得了"
 strings.BOOK_SEAN_READ = "神秘力量影响了这个世界"
 
 
+
 GLOBAL.STRINGS.TUM = strings
 
+GLOBAL.STRINGS.NAMES.OPALGEMSAMULET = "彩色护符"
 GLOBAL.STRINGS.NAMES.PACKAGE_STAFF = "空间权杖"
 GLOBAL.STRINGS.NAMES.PACKAGE_BALL = "空间包裹"
 GLOBAL.STRINGS.NAMES.PACKAGED = "已装满的包裹"
@@ -47,6 +58,7 @@ GLOBAL.STRINGS.NAMES.TUMBLEWEED_1 = "绿色风滚草"
 GLOBAL.STRINGS.NAMES.TUMBLEWEED_0 = "紫色风滚草"
 GLOBAL.STRINGS.NAMES.ACHIV_CLEAR = "任务完成卷"
 
+GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.OPALGEMSAMULET = "它感知发光的风滚草"
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.PACKAGE_STAFF = "它可以创造一个神秘空间"
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.PACKAGE_BALL = "它里面可以装下一座山"
 GLOBAL.STRINGS.CHARACTERS.GENERIC.DESCRIBE.PRAYER_SYMBOL = "祈祷上天的奖励"
@@ -73,6 +85,7 @@ GLOBAL.STRINGS.TALKER_ATTACKDEAD = "我刚刚完成了一次致命攻击!"
 GLOBAL.STRINGS.LEARN_NEW = "%s 学会了  %s"
 
 
+GLOBAL.STRINGS.RECIPE_DESC.OPALGEMSAMULET = "散发出寒冷的五彩光芒" 
 GLOBAL.STRINGS.RECIPE_DESC.BOOK_TREAT = "召唤复苏之风的魔法书" 
 GLOBAL.STRINGS.RECIPE_DESC.BOOK_KILL = "提供大量魔法伤害" 
 GLOBAL.STRINGS.RECIPE_DESC.BOOK_SEASON = "不喜欢这个季节吗" 

@@ -1549,6 +1549,11 @@ function uiachievement:loadlist()
 			"killtoadstool",
 			"killtoadstool_dark",
 			"killmalbatross",
+			"killcrabking",
+			"killeyeofterror",
+			"killtwinofterror1",
+			"killtwinofterror2",
+			"killalterguardian_phase1",		
 		},
 		cat11 = {
 			"buildpumpkin_lantern",
@@ -1823,6 +1828,10 @@ function uiachievement:loadcoinlist()
 			{
 				name = "dug_sapling",
 				current = self.owner.currentdug_sapling:value(),
+			},
+			{
+				name = "dug_rock_avocado_bush",
+				current = self.owner.currentdug_rock_avocado_bush:value(),
 			},
 			{
 				name = "dug_berrybush",
