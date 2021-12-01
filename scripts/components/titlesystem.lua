@@ -523,6 +523,17 @@ function Titlesystem:ApplayTilte(inst)
 	inst:ListenForEvent("onhitother", function(inst, data)
 		local damage = data.damage
 	    local target = data.target
+	    local weapon = data.weapon
+	    -- 检测装备，是否是偷窃刀或者带有偷窃的标签
+	    -- 还是直接检测攻击用的武器好嘞
+	    local toqie = false
+	    if weapon and (weapon.prefab=="stealingknife" or weapon:HasTag("toqie")) then toqie = true end
+		--[[for k,v in pairs(inst.components.inventory.equipslots) do
+	        if v and (v.prefab=="stealingknife" or v:HasTag("toqie")) then
+	            toqie = true
+	        end
+	    end--]]
+
 	    if target:HasTag("wall") then return end  --如果目标有"墙"标签 结束
 	    if target.components.health == nil then return end   --目标有血量组件吗
 	    local hp = target.components.health and target.components.health.currenthealth or 0
@@ -561,13 +572,14 @@ function Titlesystem:ApplayTilte(inst)
 	    		inst.components.hunger:DoDelta(-1)
 			end
 		end
-		if self.equip == 4 then
-			if math.random() < title_data["title4"]["steal"] and target.components.lootdropper ~= nil then  --随机0-1的数，小于0.01
+		if self.equip == 4 or toqie then
+
+			if math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
 				local item = nil
 
-				--
-				local  gl = math.random()
-				if gl >0.4 then 
+				local gl = math.random()
+				local threshold = toqie and 0.8 or 0.4
+				if gl > threshold then 
 					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
 					if lootdropper and #lootdropper > 0 then
                 		item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
@@ -601,7 +613,11 @@ function Titlesystem:ApplayTilte(inst)
 				]]    
 				--宣告贵重物品
     			if item ~= nil and needNotice(item.prefab) then
-        			TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
+    				if not toqie then
+        				TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
+        			else
+        				TheNet:Announce(self.inst:GetDisplayName().." 使用盗窃装备，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
+        			end
     			end
     			if inst.components.talker then 
     				inst.components.talker:Say("偷了 "..item:GetDisplayName(),2,true,true,false) 

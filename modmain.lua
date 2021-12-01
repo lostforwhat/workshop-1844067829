@@ -42,6 +42,7 @@ if TUNING.new_items then
         "package_staff",
         "prayer_symbol",
         --"opalgemsamulet",
+        "stealingknife",
     }
 else
     PrefabFiles = {}
@@ -418,7 +419,23 @@ AddPrefabPostInit("twinofterror2",function(inst)
     end
 end)
 
-
+-- 光草
+AddPrefabPostInit("tumbleweed_5",function(inst)
+    inst:DoTaskInTime(0.1,function(inst)
+        local x,y,z = inst.Transform:GetWorldPosition()
+        _G.TheNet:Announce("生成一个光草，坐标【"..math.floor(x).."，"..math.floor(z).."】")
+        
+    end)
+    inst:DoPeriodicTask(3,function()
+        local x,y,z = inst.Transform:GetWorldPosition()
+        local x2,y2,z2 = _G.ThePlayer.Transform:GetWorldPosition()
+        local x_,z_ = x-x2,z-z2
+        local dis = x_*x_ + z_*z_
+        print("坐标 "..math.floor(x)..","..math.floor(z).." 距离玩家"..math.sqrt(dis))
+    end,0)
+end)
+--控制台指令
+--c_teleport(-214,0,1, ThePlayer)
 --boss强化
 local function UpdateBoss()
     --添加多世界宣告支持
@@ -1049,6 +1066,9 @@ if TUNING.new_items then
 
     AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.PRAY, "give"))
     AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.PRAY,"give"))
+
+    -- 查看坐标
+    --AddAction()
 end
 
 
@@ -1354,6 +1374,7 @@ AddPlayerPostInit(function(inst)  --玩家添加组件 replica
     end,_G.TheWorld)
 end)
 ]]
+
 
 AddComponentPostInit("crop", function(self)
 local _Harvest = self.Harvest
