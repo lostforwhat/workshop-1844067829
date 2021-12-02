@@ -23,10 +23,10 @@ local achievement_system = GetModConfigData("achievement_system")--成就系统
 TUNING.vips = GetModConfigData("vip")--vip列表
 TUNING.vipurl = GetModConfigData("vipurl")
 
+
 require 'AllAchiv/allachivbalance'
 require 'AllAchiv/titlebalance'
 require "loot_table"
---_G.require "loot_list"
 
 local mlang = _G.LanguageTranslator.defaultlang
 if mlang == "zh" or mlang == "chs" then
@@ -41,7 +41,7 @@ if TUNING.new_items then
         "package_ball",
         "package_staff",
         "prayer_symbol",
-        --"opalgemsamulet",
+        "opalgemsamulet",
         "stealingknife",
     }
 else
@@ -419,21 +419,45 @@ AddPrefabPostInit("twinofterror2",function(inst)
     end
 end)
 
--- 光草
-AddPrefabPostInit("tumbleweed_5",function(inst)
-    inst:DoTaskInTime(0.1,function(inst)
-        local x,y,z = inst.Transform:GetWorldPosition()
-        _G.TheNet:Announce("生成一个光草，坐标【"..math.floor(x).."，"..math.floor(z).."】")
-        
+-- 开启新物品后，彩色护符存在
+if TUNING.new_items then
+    AddPrefabPostInit("world",function(inst)
+        if not GLOBAL.TheWorld.ismastersim then
+            return inst
+        end
+        local TUMBLEWEED_5 = {} -- 不需要被保存，每次开始游戏时，都会重新生成
+        local function AddTumbleweed_5(inst,data)
+            if not TUMBLEWEED_5[data.tumbleweed] then
+                TUMBLEWEED_5[data.tumbleweed] = true
+            end
+        end
+        local function RemoveTumbleweed_5(inst,data)
+            if TUMBLEWEED_5[data.tumbleweed] ~= nil then
+                TUMBLEWEED_5[data.tumbleweed] = nil
+            end
+        end
+        inst:DoTaskInTime(0,function(inst)
+            inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
+            inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
+        end)
     end)
-    inst:DoPeriodicTask(3,function()
-        local x,y,z = inst.Transform:GetWorldPosition()
-        local x2,y2,z2 = _G.ThePlayer.Transform:GetWorldPosition()
-        local x_,z_ = x-x2,z-z2
-        local dis = x_*x_ + z_*z_
-        print("坐标 "..math.floor(x)..","..math.floor(z).." 距离玩家"..math.sqrt(dis))
-    end,0)
-end)
+    AddPrefabPostInit("tumbleweed_5",function(inst)
+        if not GLOBAL.TheWorld.ismastersim then
+            return inst
+        end
+        inst:DoTaskInTime(0.2,function(inst)
+            local x,y,z = inst.Transform:GetWorldPosition()
+            -- _G.TheNet:Announce("生成一个光草，坐标【"..math.floor(x).."，"..math.floor(z).."】")
+            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+        end)
+
+        local Remove_ = inst.Remove
+        inst.Remove = function(...)
+            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+            Remove_(...)
+        end
+    end)
+end
 --控制台指令
 --c_teleport(-214,0,1, ThePlayer)
 --boss强化
@@ -1067,8 +1091,24 @@ if TUNING.new_items then
     AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.PRAY, "give"))
     AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.PRAY,"give"))
 
-    -- 查看坐标
-    --AddAction()
+    -- 传送动作
+    AddAction("SEE",_G.STRINGS.TUM.SEE,function(act)
+        if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.opal ~= nil then
+            act.invobject.components.rechargeable:SetCharge(0) -- 可有可无，毕竟这个物品会被删除
+            act.invobject.components.opal:StartPray(act.invobject,act.doer)
+            return true
+        end
+    end)
+    --客户端执行
+    --位于装备槽时可以用，卸下优先级低，冷却期间移除这个标签，冷却好了就加回去就好 
+    AddComponentAction("INVENTORY", "opal", function(inst,doer,actions,right)
+        if doer:HasTag("player") and inst:HasTag("opalgemsamulet") then
+            table.insert(actions, ACTIONS.SEE)
+        end
+    end)
+
+    AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.SEE, "give"))
+    AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.SEE,"give"))
 end
 
 
@@ -1186,8 +1226,10 @@ Assets = {
     Asset("ATLAS", "images/title/equip.xml"),
     Asset("IMAGE", "images/title/equip.tex"),
 
-    Asset("ATLAS", "images/opal_gems_amulet1.xml"),
-    Asset("IMAGE", "images/opal_gems_amulet1.tex"), --物品栏
+    Asset("ATLAS", "images/opalgemsamulet.xml"),
+    Asset("IMAGE", "images/opalgemsamulet.tex"), --物品栏
+    Asset("ATLAS", "images/opalgemsamulet2.xml"),
+    Asset("IMAGE", "images/opalgemsamulet2.tex"), --物品栏
 }
 
 --给玩家添加任务等级成就等组件
@@ -1982,7 +2024,7 @@ nil, -- numtogive
 )
 
 end
---[[
+
 if TUNING.new_items then
 AddRecipe("opalgemsamulet",{Ingredient("opalpreciousgem", 1),Ingredient("nightmarefuel", 5),Ingredient("thulecite", 4)},
 _G.RECIPETABS.ANCIENT, --远古科技
@@ -1992,9 +2034,9 @@ nil,
 true, 
 nil, 
 nil,
-"images/opal_gems_amulet1.xml","opal_gems_amulet1.tex")
+"images/opalgemsamulet.xml","opalgemsamulet.tex")
 end
-]]
+
 
 if TUNING.more_blueprint then
     AddRecipe("book_gardening", {Ingredient("papyrus", 2), Ingredient("seeds", 1), Ingredient("poop", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
@@ -2010,6 +2052,6 @@ if TUNING.more_blueprint then
     AddRecipe("mermthrone_construction", {Ingredient("boards", 5), Ingredient("rope", 5)}, RECIPETABS.TOWN, TECH.NONE, "mermthrone_construction_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
     AddRecipe("mermwatchtower", {Ingredient("boards", 5), Ingredient("tentaclespots", 1), Ingredient("spear", 2)}, RECIPETABS.TOWN, TECH.NONE, "mermwatchtower_placer", nil, nil, nil, "merm_builder", nil, nil, IsMarshLand)
     AddRecipe("turf_marsh", {Ingredient("cutreeds", 1), Ingredient("spoiled_food", 2)}, RECIPETABS.TOWN,  TECH.NONE, nil, nil, nil, nil, "merm_builder")
-    --AddRecipe("opalgemsamulet",{Ingredient("opalpreciousgem", 1),Ingredient("nightmarefuel", 5),Ingredient("thulecite", 4)}, _G.RECIPETABS.ANCIENT, _G.TECH.ANCIENT_FOUR, nil, nil, true, nil, nil,"images/opal_gems_amulet1.xml","opal_gems_amulet1.tex")
+    AddRecipe("opalgemsamulet",{Ingredient("opalpreciousgem", 1),Ingredient("nightmarefuel", 5),Ingredient("thulecite", 4)}, _G.RECIPETABS.ANCIENT, _G.TECH.ANCIENT_FOUR, nil, nil, true, nil, nil,"images/opalgemsamulet.xml","opalgemsamulet.tex")
 end
 

@@ -573,22 +573,21 @@ function Titlesystem:ApplayTilte(inst)
 			end
 		end
 		if self.equip == 4 or toqie then
-
-			if math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
+			if target.components.lootdropper and math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
 				local item = nil
 
 				local gl = math.random()
-				local threshold = toqie and 0.8 or 0.4
+				local threshold = toqie and 0.1 or 0.4 -- 偷窃刀更难获取到随机物品
 				if gl > threshold then 
-					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
+					local lootdropper = target.components.lootdropper:GenerateLoot() or nil  --生成战利品
 					if lootdropper and #lootdropper > 0 then
                 		item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
                 		item.Transform:SetPosition(target:GetPosition():Get())
+                	else
+                		item = SpawnPrefab("twigs")
                 	end
-                end
-
-				if item == nil then  --如果目标没有战利品，则从表中随机一份战利品
-        			item = randomItem(self.vip_level) or "ash"
+                else
+        			item = randomItem(self.vip_level) or "twigs"
         		end
 				--[[
 				local lootdropper = target.components.lootdropper:GenerateLoot()  --生成战利品
@@ -622,8 +621,7 @@ function Titlesystem:ApplayTilte(inst)
     			if inst.components.talker then 
     				inst.components.talker:Say("偷了 "..item:GetDisplayName(),2,true,true,false) 
     			end
-       			--TheNet:Say(, false)
-				if self.inst.components.inventory ~= nil then  --inst表示自己，自己有库存组件则添加到自己库存里
+				if self.inst.components.inventory ~= nil then
                 	self.inst.components.inventory:GiveItem(item)
             	end
 			end

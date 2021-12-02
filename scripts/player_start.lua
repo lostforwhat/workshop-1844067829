@@ -2,6 +2,7 @@
 local start_protect = TUNING.start_protect --开局保护
 local vips = TUNING.vips
 local more_blueprint = TUNING.more_blueprint
+local new_items = TUNING.new_items
 
 --给多少东西给玩家
 local function giveItemToPlayer(startInventory, num, prefab_name)
@@ -13,7 +14,6 @@ end
 --玩家初始物品（可根据自己需要自行修改）
 local function StartingInventory(inst, player)
     local startInventory = {}
-
     --初始进入的时间是冬天或者临近冬天的时候
     if
         GLOBAL.TheWorld.state.iswinter or
@@ -107,20 +107,43 @@ local function StartingInventory(inst, player)
     end
 end
 
+local function IsStart(name)
+    if not GLOBAL.TheWorld.components.worldstate.data.new_start[name] then
+        GLOBAL.TheWorld.components.worldstate.data.new_start[name] = true
+        return true
+    end
+    return false
+end
+
 --初始化
 AddPrefabPostInit(
     "world",
     function(inst)
         if GLOBAL.TheWorld.ismastersim then --判断是不是主机
+            if inst.components.worldstate and inst.components.worldstate.data and inst.components.worldstate.data.new_start == nil then --利用组件保存
+                inst.components.worldstate.data.new_start = {} -- 仅第一次进入游戏
+            end
             --监听玩家安置，给初始物品
             --if start_protect then
             --    inst:ListenForEvent("ms_playerspawn", StartingInventory, inst)
             --end
-            inst:ListenForEvent("ms_playerspawn", function(inst, player) 
+            inst:ListenForEvent("ms_playerspawn", function(inst, player)
                 if start_protect then
                     StartingInventory(inst, player)
                 end
+
+                if new_items then --开启新物品就会给
+                    local CurrentOnNewSpawn = player.OnNewSpawn or function() return true end -- 记录角色本身开局物品
+                    player.OnNewSpawn = function(...)
+                        if IsStart(player:GetDisplayName()) then
+                            player.components.inventory.ignoresound = true
+                            player.components.inventory:GiveItem(GLOBAL.SpawnPrefab("stealingknife")) --偷窃刀
+                        end
+                        return CurrentOnNewSpawn(...)
+                    end 
+                end
             end)
+
         end
     end
 )

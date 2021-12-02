@@ -6,16 +6,15 @@ local assets =
     Asset("IMAGE", "images/stealingknife.tex"),
 }
 
-local function onequip(inst, owner) --装备
+
+----------------------
+local function onequip(inst, owner) --装备时
     owner.AnimState:OverrideSymbol("swap_object", "swap_stealingknife", "material")
 								--替换的动画部件	使用的动画.zip	替换的贴图所在文件夹（注意这里也是素材图片文件夹的名字）
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
-
-
 end
-
-local function onunequip(inst, owner) --解除装备
+local function onunequip(inst, owner) --解除时
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
 end
@@ -45,12 +44,12 @@ local function fn()
 
     -- 武器组件
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(45) --设置伤害
+    inst.components.weapon:SetDamage(35) --设置伤害
 
     -- 耐久组件
     inst:AddComponent("finiteuses") 
-    inst.components.finiteuses:SetMaxUses(150)
-    inst.components.finiteuses:SetUses(150)
+    inst.components.finiteuses:SetMaxUses(300)
+    inst.components.finiteuses:SetUses(300)
 
     inst.components.finiteuses:SetOnFinished(inst.Remove) --没有耐久了移除武器
 

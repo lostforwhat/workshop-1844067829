@@ -835,6 +835,7 @@ end
 --Enter Game
 function allachivevent:intogamefn(inst)
     inst:DoTaskInTime(3, function()
+    	-- TUNING.new_start
         if AchievementData[inst:GetDisplayName()] ~= nil then --换人
             local achievements = AchievementData[inst:GetDisplayName()]
             for k,v in pairs(achievements) do
@@ -1502,7 +1503,7 @@ function allachivevent:onkilledother(inst)
                             "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross","alterguardian_phase1",
                         	"alterguardian_phase2","alterguardian_phase3","eyeofterror","twinofterror1","twinofterror2",
                         	"blackbear","rhino3_red","rhino3_blue","rhino3_yellow","myth_goldfrog",--神话boss
-                            "medal_rage_krampus"} --暗夜坎普斯
+                            } -- "medal_rage_krampus" 暗夜坎普斯
             if findprefab(bosslist, victim.prefab) then
                 self.killboss = self.killboss + 1
                 TheNet:Announce(inst:GetDisplayName().." 击杀了【"..victim:GetDisplayName().."】")

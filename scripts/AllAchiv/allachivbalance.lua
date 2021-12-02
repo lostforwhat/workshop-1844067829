@@ -1094,7 +1094,6 @@ recycle_table = {
 	["eyemaskhat"]=200,--眼面具
 	["shieldofterror"]=250,--恐怖盾牌
 	["milkywhites"]=10,--乳白物
-	--["opalgemsamulet"]=900,--彩色护符
 }
 
 if TUNING.new_items then

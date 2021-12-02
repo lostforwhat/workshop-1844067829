@@ -37,7 +37,7 @@ local function removeweapon(picker)--破坏武器
     if picker == nil or picker.components.inventory == nil then return end
     for k,v in pairs(picker.components.inventory.equipslots) do
         if v
-            and (v.components.weapon  or v:HasTag("weapon") or v.components.armor or v:HasTag("armor"))
+            and (v.components.weapon  or v:HasTag("weapon") or v.components.armor or v:HasTag("armor") or v:HasTag("toqie"))
             and not v:HasTag("myth_removebydespwn")   --没有神话标签
             and v.components.perishable == nil then
             v:Remove()

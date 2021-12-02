@@ -727,20 +727,6 @@ local function RandomType()
     end
 end
 
---[[
-local function RemoveList(inst)
-    local index = nil
-    for i,v in ipairs(MOD_INDICATORS) do
-        if v == inst then
-            index = i
-            break
-        end
-    end
-    if index then table.remove(MOD_INDICATORS, index) end
-    TUMBLEWEED_5_NUM = TUMBLEWEED_5_NUM - 1 > 0 and TUMBLEWEED_5_NUM -1 or nil
-end
-]]
-
 local function MakeAnyTumbleweed()
     local inst = fn()
     if not TheWorld.ismastersim then --not TheWorld.ismastersim 判断是否是客户端
@@ -758,15 +744,6 @@ local function MakeAnyTumbleweed()
     end
     inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
     inst.Light:Enable(level == 3)
-    --[[
-    if level==3 then 
-        TUMBLEWEED_5_NUM=TUMBLEWEED_5_NUM and TUMBLEWEED_5_NUM+1 or 1
-        --添加到对象指示器列表里
-        table.insert(MOD_INDICATORS, inst)
-        --注册监听删除事件
-        inst:ListenForEvent("onremove",RemoveList)    
-    end
-    ]]
     MakeLoot(inst)
     return inst
 end
@@ -791,19 +768,6 @@ local function MakeTumbleweed(level)
         end
         inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.Light:Enable(level == 3)
-        --[[
-        if level==3 then
-            print("这里")
-            TUMBLEWEED_5_NUM=TUMBLEWEED_5_NUM and TUMBLEWEED_5_NUM+1 or 1
-            print("计数",TUMBLEWEED_5_NUM)
-            --添加到对象指示器列表里
-            table.insert(MOD_INDICATORS, inst)
-            print("添加到表里了")
-            --注册监听删除事件
-            inst:ListenForEvent("onremove",RemoveList)
-            print("注册事件")
-        end
-        ]]
         MakeLoot(inst)
         return inst
     end
