@@ -298,6 +298,8 @@ local allachivcoin = Class(function(self, inst)
     self.memorykilldata = {}
     self.temphealthup = 0
     self.waterwalkstatus = 0
+    --
+    self.package_ball_max = 0
 end,
 nil,
 {
@@ -499,6 +501,9 @@ function allachivcoin:OnSave()
         lightpower = self.lightpower,
         aoestatus = self.aoestatus,
         memorykilldata = self.memorykilldata,
+
+        --
+        package_ball_max = self.package_ball_max
     }
     return data
 end
@@ -605,7 +610,7 @@ function allachivcoin:OnLoad(data)
     self.memorykilldata = data.memorykilldata or {}
 
     --fixbug
-
+    self.package_ball_max = data.package_ball_max or 0
 end
 
 --通用效果器 获取成功
@@ -3138,13 +3143,25 @@ function allachivcoin:getprefabs(inst, prefabname)
         end
         return
     end
+    -- 赌建造
     if prefabname == "package_ball" then
         if self.coinamount >= allachiv_coinuse["package_ball"] 
             and self.package_ball < allachiv_coindata_max["package_ball"] then
-            local tb = {"tumbleweedspawner", "oasislake", "pond_cave", "pond", "cavelight",
-                "ancient_altar", "pigking", "pigtorch", "lava_pond", "moonbase", "catcoonden"}
+            -- 风滚草刷新点、湖泊、洞穴池塘、青蛙池塘、洞穴光、格鲁姆雕像、远古伪科学站、猪王、猪头炬、岩浆池、月台、空心树洞、海象营地
+            local tb = {"tumbleweedspawner", "oasislake", "pond_cave", "pond", "cavelight", "statueglommer",
+                "ancient_altar", "pigking", "pigtorch", "lava_pond", "moonbase", "catcoonden", "walrus_camp"}
+            local tb2 = {"dragonfly_spawner", "crabking_spawner", "beequeenhive", "antlion_spawner"}--龙蝇、帝王蟹、蜂后、蚁狮刷新点
             local package_ball = SpawnPrefab("package_ball")
-            local target = SpawnPrefab(tb[math.random(#tb)])
+            local target = nil
+            local gl = math.random()
+            if self.package_ball_max >= 5 or gl > 0.8 then
+                target = SpawnPrefab(tb2[math.random(#tb2)])
+                self.package_ball_max = 0
+            else
+                target = SpawnPrefab(tb[math.random(#tb)])
+                self.package_ball_max = self.package_ball_max + 1
+            end
+
             package_ball.components.packer:Pack(target)
             inst.components.inventory:GiveItem(package_ball)
             self.package_ball = self.package_ball + 1

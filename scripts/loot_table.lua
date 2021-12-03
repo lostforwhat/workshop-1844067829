@@ -212,6 +212,7 @@ new_loot = {
         {chance = 0.1, item = "spore_tall"},--蓝色孢子
         {chance = 0.1, item = "lightflier"},--球状光虫
         {chance = 0.04, item = "livingtree"},--完全正常的树
+        {chance = 0.01, item = "phlegm"},--脓鼻涕
     },
 
 s_loot = {
@@ -452,8 +453,8 @@ d_loot = {
         {chance = 0.004, item = "moonglass_wobster_den"}, -- 月光玻璃窝
         {chance = 0.002, item = "gingerbreadhouse"}, -- 姜饼猪屋
         {chance = 0.01, item = "moonspider_spike"},--月亮蜘蛛钉
-        {chance = 0.09, item = "trap_teeth_maxwell"},--麦斯威尔的犬牙陷阱
-        {chance = 0.06, item = "beemine_maxwell"},--麦斯威尔的蚊子陷阱
+        {chance = 0.01, item = "trap_teeth_maxwell"},--麦斯威尔的犬牙陷阱
+        {chance = 0.02, item = "beemine_maxwell"},--麦斯威尔的蚊子陷阱
     },
 
 dd_loot = {
@@ -494,8 +495,8 @@ big_boss_loot = {
         --{chance = 0.03, item = "stalker_forest", aggro = true},--森林守护者
         --{chance = 0.005, item = "alterguardian_phase1", aggro = true},--天体英雄
 
-        {chance = 0.03, item = "malbatross", aggro = true},--邪天翁
-        {chance = 0.01, item = "crabking", aggro = true},--帝王蟹
+        -- {chance = 0.03, item = "malbatross", aggro = true},--邪天翁
+        -- {chance = 0.01, item = "crabking", aggro = true},--帝王蟹
 
         {chance = 0.03, item = "eyeofterror", aggro = true},--恐怖之眼
 
@@ -516,6 +517,11 @@ cave_boss_loot = {
         {chance = 0.01, item = "stalker", aggro = true},--复活的骨架
         {chance = 0.01, item = "minotaur", aggro = true},--远古守护者
         {chance = 0.01, item = "toadstool", aggro = true},--蘑菇蛤
+        {chance = 0.01, item = "toadstool_dark", aggro = true},--毒蘑菇蛤
+    },
+forest_boss_loot = {
+        {chance = 0.01, item = "malbatross", aggro = true},--邪天翁
+        {chance = 0.01, item = "crabking", aggro = true},--帝王蟹
     },
 
 trap_loot = { --陷阱
@@ -566,10 +572,10 @@ new_items_loot = { --新物品
         {chance = 0.01, item="book_sleep"}, --催眠书
         {chance = 0.01, item="book_gardening"}, --园艺书
         {chance = 0.001, item="achiv_clear"}, --任务卷轴
-        {chance = 0.001, item="book_season"}, --遗失法典
+        {chance = 0.003, item="book_season"}, --遗失法典
         {chance = 0.006, item="potion_luck"}, --幸运药水
         {chance = 0.004, item="potion_achiv"}, --神秘药水
-        
-	--{chance = 0.004, item="opalgemsamulet"}, --彩色护符 
+        {chance = 0.009, item="stealingknife"}, --偷窃刀
+	    {chance = 0.001, item="opalgemsamulet"}, --彩色护符 
     }
 }

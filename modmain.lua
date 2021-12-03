@@ -420,44 +420,44 @@ AddPrefabPostInit("twinofterror2",function(inst)
 end)
 
 -- 开启新物品后，彩色护符存在
-if TUNING.new_items then
-    AddPrefabPostInit("world",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        local TUMBLEWEED_5 = {} -- 不需要被保存，每次开始游戏时，都会重新生成
-        local function AddTumbleweed_5(inst,data)
-            if not TUMBLEWEED_5[data.tumbleweed] then
-                TUMBLEWEED_5[data.tumbleweed] = true
-            end
-        end
-        local function RemoveTumbleweed_5(inst,data)
-            if TUMBLEWEED_5[data.tumbleweed] ~= nil then
-                TUMBLEWEED_5[data.tumbleweed] = nil
-            end
-        end
-        inst:DoTaskInTime(0,function(inst)
-            inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
-            inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
-        end)
-    end)
-    AddPrefabPostInit("tumbleweed_5",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        inst:DoTaskInTime(0.2,function(inst)
-            local x,y,z = inst.Transform:GetWorldPosition()
-            -- _G.TheNet:Announce("生成一个光草，坐标【"..math.floor(x).."，"..math.floor(z).."】")
-            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-        end)
+-- if TUNING.new_items then
+--     AddPrefabPostInit("world",function(inst)
+--         if not GLOBAL.TheWorld.ismastersim then
+--             return inst
+--         end
+--         local TUMBLEWEED_5 = {} -- 不需要被保存，每次开始游戏时，都会重新生成
+--         local function AddTumbleweed_5(inst,data)
+--             if not TUMBLEWEED_5[data.tumbleweed] then
+--                 TUMBLEWEED_5[data.tumbleweed] = true
+--             end
+--         end
+--         local function RemoveTumbleweed_5(inst,data)
+--             if TUMBLEWEED_5[data.tumbleweed] ~= nil then
+--                 TUMBLEWEED_5[data.tumbleweed] = nil
+--             end
+--         end
+--         inst:DoTaskInTime(0,function(inst)
+--             inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
+--             inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
+--         end)
+--     end)
+--     AddPrefabPostInit("tumbleweed_5",function(inst)
+--         if not GLOBAL.TheWorld.ismastersim then
+--             return inst
+--         end
+--         inst:DoTaskInTime(0.2,function(inst)
+--             local x,y,z = inst.Transform:GetWorldPosition()
+--             -- _G.TheNet:Announce("生成一个光草，坐标【"..math.floor(x).."，"..math.floor(z).."】")
+--             GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+--         end)
 
-        local Remove_ = inst.Remove
-        inst.Remove = function(...)
-            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
-            Remove_(...)
-        end
-    end)
-end
+--         local Remove_ = inst.Remove
+--         inst.Remove = function(...)
+--             GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+--             Remove_(...)
+--         end
+--     end)
+-- end
 --控制台指令
 --c_teleport(-214,0,1, ThePlayer)
 --boss强化

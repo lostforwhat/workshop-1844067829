@@ -251,6 +251,12 @@ local function spawnPlayerGift(picker)
             picker.components.inventory:GiveItem(item)
         end
     end
+    if picker.prefab == "wanda" then
+        for k=1,2 do
+            local item = GLOBAL.SpawnPrefab("pocketwatch_parts") --时间碎片
+            picker.components.inventory:GiveItem(item)
+        end
+    end
 end
 
 local function needNotice(goods)
@@ -274,8 +280,10 @@ local function needNotice(goods)
         "package_staff",
         "prayer_symbol",
         "minotaurhorn",
+        "deerclops_eyeball",
         "yellowstaff",
         "greenstaff",
+        "greenamulet",
         "orangestaff",
         "eyeturret_item",
         "ruins_bat",
@@ -315,6 +323,8 @@ local function needNotice(goods)
         "twinofterror2",
         "crabking",
         "malbatross",
+        "stealingknife",
+        "opalgemsamulet",
     }
     for i, v in ipairs(notice_goods) do
         if goods == v then 
@@ -498,7 +508,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
             end
         end
         if name == "monster_circle" then --怪物陷阱
-            local monster_tb = {"spider", "squid","hound", "firehound", "icehound", "tallbird", "frog", "merm", "bat", "bee"}
+            local monster_tb = {"spider", "squid","hound", "firehound", "icehound", "tallbird", "frog", "merm", "bat", "bee", "perd"}
             local monster = monster_tb[math.random(#monster_tb)]
             local num = 6
             for k=1,num do
@@ -944,9 +954,9 @@ AddPrefabPostInit(
                 local x, y, z = target.Transform:GetWorldPosition()
 
                 local playerage = picker.components.age:GetAgeInDays() or 0 --玩家天数
-                local san = picker.components and picker.components.sanity and picker.components.sanity:GetPercent() or 0 --san值
+                local san = picker.components and picker.components.sanity and picker.components.sanity:GetPercent() or 0 --san值百分比
                 local luck = picker.components and picker.components.luck and picker.components.luck:GetLuck() or 1
-                san = math.max(san, 0.05)
+                san = math.min(san+0.5, 1) --维持在 0.5~1之间
 
                 local world_chance = math.floor(today*0.01 + playerage*0.04)
                 if picker.components.titlesystem and picker.components.titlesystem.equip == 1 then
@@ -970,14 +980,14 @@ AddPrefabPostInit(
                 elseif lucky_level == 1 then
                     new_chance = 40
                     s_chance = 200
-                    ss_chance = 200
+                    ss_chance = 400
                 elseif lucky_level == 2 then
-                    s_chance = 100
-                    ss_chance = 200
+                    s_chance = 200--100
+                    ss_chance = 500--200
                     dd_chance = 0
                     d_chance = 0
                 elseif lucky_level ==3 then
-                    ss_chance = 1000
+                    ss_chance = 1500
                     dd_chance = 0
                     d_chance = 0
                 else
@@ -1008,6 +1018,7 @@ AddPrefabPostInit(
                         if GLOBAL.TheWorld:HasTag("cave") then
                             insertLoot(loot_table.cave_boss_loot, drop_chance*dd_chance)
                         else
+                            insertLoot(loot_table.forest_boss_loot, drop_chance*dd_chance) --添加森林世界才出的boss
                             insertLoot(loot_table.cave_boss_loot, drop_chance)
                         end
                     end

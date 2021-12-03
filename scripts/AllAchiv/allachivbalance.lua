@@ -1103,4 +1103,7 @@ if TUNING.new_items then
 	recycle_table["potion_green"] = 10
 	recycle_table["potion_blue"] = 20
 	recycle_table["achiv_clear"] = 500
+	recycle_table["book_season"] = 1000
+	recycle_table["opalgemsamulet"] = 900
+	recycle_table["stealingknife"] = 500
 end

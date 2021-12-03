@@ -18,7 +18,7 @@ local function delivery(inst,owner)
     if #tum_5>0 then
         owner.components.talker:Say("这个世界存在 "..#tum_5.." 个发光的风滚草")
         local x,y,z = tum_5[1].Transform:GetWorldPosition() --直接飞到第一个,或者反过来，光草到玩家边上
-        owner.Transform:SetPosition(x, 0, z)
+        owner.Transform:SetPosition(x, 0, z) -- 需要调整一下位置比较好，不然可能把光草挤海里
         local opal2 = SpawnPrefab("opalgemsamulet2")
         --设置耐久
         opal2.components.fueled.currentfuel = inst.components.fueled.currentfuel
@@ -168,7 +168,7 @@ local function Make(name,Fn,assets)
             end
         end
 
-        --
+        -- 传送到光草组件
         inst:AddComponent("opal")
         inst.components.opal:SetPrayFn(Fn)
 
