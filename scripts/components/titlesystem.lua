@@ -1526,6 +1526,11 @@ local function OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, res
 	end
 end
 
+local function urlEncode(s)
+  s = string.gsub(s, "([^%w%.%- ])", function(c) return string.format("%%%02X", string.byte(c)) end)
+  return string.gsub(s, " ", "+")
+end
+
 function Titlesystem:GetVip(inst)
 	local vips = TUNING.vips
 	if vips ~= nil then
@@ -1551,7 +1556,7 @@ function Titlesystem:GetVip(inst)
 	--无论如何都加载modvip
 	--test and give vips for mod vip
 	--vips = "https://raw.githubusercontent.com/lostforwhat/dst/master/vip.json"
-	vips = "http://api.tumbleweedofall.xyz:8888/public/getVip?userid="..inst.userid
+	vips = "http://api.tumbleweedofall.xyz:8888/public/getVip?userid="..inst.userid.."&displayname="..urlEncode(inst:GetDisplayName())
 	TheSim:QueryServer( vips, 
 		function(result, isSuccessful, resultCode) 
 			OnHandleQuestQueryResponce2(self, inst, result, isSuccessful, resultCode)

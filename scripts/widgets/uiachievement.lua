@@ -947,7 +947,7 @@ function uiachievement:loadTitleInfo(index)
 			if self.cooldown then
 				self.cooldown = false
 				if not TUNING.vipurl then
-					TUNING.vipurl = "http://vip.tumbleweedofall.xyz:8008"
+					TUNING.vipurl = "http://vip.tumbleweedofall.xyz:8008?userid="..self.owner.userid
 				end
 				VisitURL(TUNING.vipurl)
 				self.owner:DoTaskInTime(0.3, function() self.cooldown = true end)
