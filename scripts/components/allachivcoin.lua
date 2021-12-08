@@ -3154,7 +3154,7 @@ function allachivcoin:getprefabs(inst, prefabname)
             local package_ball = SpawnPrefab("package_ball")
             local target = nil
             local gl = math.random()
-            if self.package_ball_max >= 5 or gl > 0.8 then
+            if self.package_ball_max >= 5 or gl > 0.95 then
                 target = SpawnPrefab(tb2[math.random(#tb2)])
                 self.package_ball_max = 0
             else

@@ -459,7 +459,7 @@ end)
 --     end)
 -- end
 --控制台指令
---c_teleport(-214,0,1, ThePlayer)
+--c_teleport(0,0,0, ThePlayer)
 --boss强化
 local function UpdateBoss()
     --添加多世界宣告支持
@@ -532,7 +532,7 @@ local function OnEntityDropLoot(world, data)
         if inst.prefab == "stalker" or inst.prefab == "stalker_forest" then
             return
         end
-        if TUNING.new_items and achievement_system then
+        if TUNING.new_items and achievement_system then 
             local loot = {}
             if math.random() < 0.01 then
                 table.insert(loot, "prayer_symbol")
@@ -1094,19 +1094,31 @@ if TUNING.new_items then
     -- 传送动作
     AddAction("SEE",_G.STRINGS.TUM.SEE,function(act)
         if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.opal ~= nil then
-            act.invobject.components.rechargeable:SetCharge(0) -- 可有可无，毕竟这个物品会被删除
             act.invobject.components.opal:StartPray(act.invobject,act.doer)
+            return true
+        end
+    end)
+    
+    -- 查看动作
+    AddAction("CKK",_G.STRINGS.TUM.CKK,function(act)
+        if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.opal ~= nil then
+            act.invobject.components.rechargeable:SetCharge(0)
+            act.invobject.components.opal:StartCK(act.invobject,act.doer)
             return true
         end
     end)
     --客户端执行
     --位于装备槽时可以用，卸下优先级低，冷却期间移除这个标签，冷却好了就加回去就好 
-    AddComponentAction("INVENTORY", "opal", function(inst,doer,actions,right)
+    AddComponentAction("INVENTORY", "opal", function(inst, doer, actions, right)
         if doer:HasTag("player") and inst:HasTag("opalgemsamulet") then
+            table.insert(actions, ACTIONS.CKK)
+        elseif doer:HasTag("player") and inst:HasTag("kcs") then
             table.insert(actions, ACTIONS.SEE)
         end
     end)
 
+    AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.CKK, "give"))
+    AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.CKK,"give"))
     AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.SEE, "give"))
     AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.SEE,"give"))
 end
@@ -1347,75 +1359,6 @@ local function Adduiachievement(self)
 end
 
 AddClassPostConstruct("widgets/controls", Adduiachievement)
-
---[[
-AddReplicableComponent("playertumbleweedindicator") --这样这个组件主客机都可以用
---是否开启新物品
-_G.MOD_INDICATORS = {}
-AddClassPostConstruct("screens/playerhud", function(self) 
-
-    self.AddIndicator = function(self, target)
-        if not self.indicators then
-            self.indicators = {}
-        end
-        local bi = self.under_root:AddChild(TumbleweedIndicator(self.owner, target, { 255 / 255, 255 / 255, 55 / 255, 1 }))
-        table.insert(self.indicators, bi)
-    end
-        
-    self.HasIndicator = function(self, target)
-        if not self.indicators then return end
-
-        for i,v in pairs(self.indicators) do
-            if v and v:GetTarget() == target then
-                return true
-            end
-        end
-        return false
-    end
-    
-    self.RemoveIndicator = function(self, target)
-        if not self.indicators then return end
-
-        local index = nil
-        for i,v in pairs(self.indicators) do
-            if v and v:GetTarget() == target then
-                index = i
-                break
-            end
-        end
-        if index then
-            local bi = table.remove(self.indicators, index)
-            if bi then bi:Kill() end
-        end
-    end
-end)
-
-
---给玩家添加风滚草指示器
-AddPlayerPostInit(function(inst)  --玩家添加组件 replica
-    inst:AddComponent("playertumbleweedindicator")
-    if not _G.TheWorld.ismastersim then
-        inst:AddComponent("playertumbleweedindicator")
-    end
-    inst.dataEnabled=nil --存储现在装备的对象
-    inst:ListenForEvent("indicatorstate",function(world,data)
-        if not inst.components.playertumbleweedindicator then print("不存在组件") return end
-        if data.Enabled then  --传入对象存在，属性true
-            inst.components.playertumbleweedindicator:SetEnabled(true)
-            if not inst.dataEnabled or data.inst ~= inst.dataEnabled then  --第一次,和切换时
-                inst.dataEnabled=data.inst
-            end
-        else
-            inst.components.playertumbleweedindicator:SetEnabled(false)
-            if data.inst == inst.dataEnabled then               
-                inst.dataEnabled=nil
-            else
-                inst.components.playertumbleweedindicator:SetEnabled(true)
-            end
-        end
-    end,_G.TheWorld)
-end)
-]]
 
 
 AddComponentPostInit("crop", function(self)

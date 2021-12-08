@@ -508,7 +508,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
             end
         end
         if name == "monster_circle" then --怪物陷阱
-            local monster_tb = {"spider", "squid","hound", "firehound", "icehound", "tallbird", "frog", "merm", "bat", "bee", "perd"}
+            local monster_tb = {"spider", "squid","hound", "firehound", "icehound", "tallbird", "frog", "merm", "bat", "bee"}
             local monster = monster_tb[math.random(#monster_tb)]
             local num = 6
             for k=1,num do
@@ -870,7 +870,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
             else
                 return --没有幸运组件，说明没有开启成就系统
             end
-            --直接san值,固定60点
+            --直接增加san值,固定60点
             if picker.components.sanity~=nil then
                 picker.components.sanity:DoDelta(60)
             end

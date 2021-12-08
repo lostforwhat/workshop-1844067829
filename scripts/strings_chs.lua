@@ -27,6 +27,7 @@ strings.CELESTIALFURY="天体震怒"
 strings.UNKNOWN_PACKAGE = "未知"
 strings.PRAY = "祈祷"
 strings.SEE = "传送"
+strings.CKK = "查看"
 strings.PRAYED = "祈祷获得了"
 strings.BOOK_SEAN_READ = "神秘力量影响了这个世界"
 

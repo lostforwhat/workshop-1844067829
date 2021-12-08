@@ -1,4 +1,4 @@
-return {
+return { -- NAMES.trinket_3
 new_loot = {
         {chance = 5, item = "log"},--木头
         {chance = 1, item = "charcoal"},--木炭
@@ -187,6 +187,7 @@ new_loot = {
         {chance = 0.1, item = "lantern"},--提灯
         {chance = 0.1, item = "deer_antler"},--鹿角
         {chance = 2, item = "butterfly"},--蝴蝶
+        {chance = 0.1, item = "fireflies"},--萤火虫
         {chance = 1.8, item = "perd"},--火鸡
         {chance = 1, item = "bee", aggro = true},--蜜蜂   
         {chance = 0.1, item = "beefalo", aggro = true},--牛
@@ -328,6 +329,11 @@ s_loot = {
         {chance = 0.5, item = "blueprint"},--蓝图
         {chance = 0.02, item = "trident"},--三叉戟
 
+        {chance = 0.01, item="book_tentacles"}, --触手书
+        {chance = 0.01, item="book_birds"}, --鸟书
+        {chance = 0.01, item="book_brimstone"}, --末日书
+        {chance = 0.01, item="book_sleep"}, --催眠书
+
         {chance = 0.02, item = "chessjunk"},--损坏的发条装置
         {chance = 0.02, item = "chessjunk1"},--损坏的发条装置1
         {chance = 0.02, item = "chessjunk2"},--损坏的发条装置2
@@ -421,7 +427,6 @@ d_loot = {
         {chance = 0.4, item = "merm", aggro = true},--鱼人
         {chance = 0.1, item = "squid", aggro = true},--鱿鱼
         --{chance = 0.4, item = "mushgnome", aggro = true},--蘑菇地精
-        {chance = 0.1, item = "molebat", aggro = true},--裸鼹鼠蝙蝠
         {chance = 0.3, item = "spider_warrior", aggro = true},--蜘蛛战士
         {chance = 0.25, item = "spider_hider", aggro = true},--蜘蛛2
         {chance = 0.25, item = "spider_spitter", aggro = true},--蜘蛛3
@@ -445,7 +450,6 @@ d_loot = {
         {chance = 0.002, item = "monkeybarrel"}, -- 猴子桶
         {chance = 0.002, item = "catcoonden"}, --中空树桩
         {chance = 0.002, item = "pigtorch"}, -- 猪人火炬
-        {chance = 0.01, item = "spiderhole"}, -- 蜘蛛岩
         {chance = 0.002, item = "houndmound"}, -- 猎犬丘
         {chance = 0.002, item = "wasphive"}, -- 杀人蜂巢
         {chance = 0.004, item = "beehive"}, -- 蜂窝
@@ -487,7 +491,7 @@ big_boss_loot = {
         {chance = 0.01, item = "beequeen", aggro = true},--蜂后
         --{chance = 0.01, item = "toadstool", aggro = true},--蘑菇蛤
         {chance = 0.03, item = "deerclops", aggro = true},--巨鹿
-        {chance = 0.05, item = "moose", aggro = true},--鹿鸭
+        {chance = 0.05, item = "moose", aggro = true},--鹿鸭\麋鹿鹅
         {chance = 0.02, item = "warg", aggro = true},--座狼
         {chance = 0.03, item = "bearger", aggro = true},--熊大
         --{chance = 0.01, item = "stalker_atrium", aggro = true},--远古影织者
@@ -504,7 +508,11 @@ big_boss_loot = {
         {chance = 0.03, item = "twinofterror2", aggro = true},--机械之眼2 魔焰眼
     },
 
- cave_loot = {
+cave_loot = {
+        {chance = 0.09, item = "mushroombomb"},--炸弹蘑菇
+        {chance = 0.09, item = "mushroombomb_dark"},--悲惨的炸弹蘑菇 
+        {chance = 0.01, item = "spiderhole"}, -- 蜘蛛岩
+        {chance = 0.1, item = "molebat", aggro = true},--裸鼹鼠蝙蝠
         {chance = 0.1, item = "bat", aggro = true},--蝙蝠
         {chance = 0.14, item = "monkey", aggro = true},--猴子
         {chance = 0.08, item = "slurtle", aggro = true},--蜗牛1
@@ -566,16 +574,12 @@ gift_loot = { --彩蛋
 new_items_loot = { --新物品
         {chance = 0.001, item="package_staff"}, --空间魔杖
         {chance = 0.004, item="prayer_symbol"}, --祈祷符
-        {chance = 0.01, item="book_tentacles"}, --触手书
-        {chance = 0.01, item="book_birds"}, --鸟书
-        {chance = 0.01, item="book_brimstone"}, --末日书
-        {chance = 0.01, item="book_sleep"}, --催眠书
         {chance = 0.01, item="book_gardening"}, --园艺书
         {chance = 0.001, item="achiv_clear"}, --任务卷轴
         {chance = 0.003, item="book_season"}, --遗失法典
         {chance = 0.006, item="potion_luck"}, --幸运药水
         {chance = 0.004, item="potion_achiv"}, --神秘药水
         {chance = 0.009, item="stealingknife"}, --偷窃刀
-	    {chance = 0.001, item="opalgemsamulet"}, --彩色护符 
+	{chance = 0.001, item="opalgemsamulet"}, --彩色护符 
     }
 }

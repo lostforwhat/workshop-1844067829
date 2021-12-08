@@ -52,9 +52,9 @@ STRINGS.TITLE={
 		id="title4",
 		name="心灵手巧", 
 		desc={
-			"完成全部建造任务",
-			"完成全部伤害要求任务",
-			"完成全部交友任务"
+			"完成全部建造成就",
+			"完成全部伤害要求成就",
+			"完成全部交友成就"
 		},
 		common={
 			"狩猎:击杀有"..(title_data["title4"]["drop"]*100).."%概率双倍掉落",
@@ -62,7 +62,7 @@ STRINGS.TITLE={
 			"精工:【薇诺娜】提升投石机科技力量"
 		},
 		equip={
-			"探云:攻击有"..(title_data["title4"]["steal"]*100).."%概率偷取随机物品",
+			"探云:攻击有"..(title_data["title4"]["steal"]*100).."%概率偷取物品",
 			--"偷袭:背后攻击敌人时,必定暴击且【探云】成功概率翻倍"
 		},
 		level=3,
@@ -71,8 +71,8 @@ STRINGS.TITLE={
 		id="title5",
 		name="杀戮之心", 
 		desc={
-			"完成所有除大型BOSS外的击杀任务",
-			"完成隐藏任务【超级暴击】",
+			"完成所有除大型BOSS外的击杀成就",
+			"完成隐藏成就【超级暴击】",
 			"击杀暴怒克劳斯",
 			--"击杀冬天的熊獾",
 		},
@@ -91,7 +91,7 @@ STRINGS.TITLE={
 		id="title6",
 		name="死神附体", 
 		desc={
-			"完成超鬼任务",
+			"完成成就【超鬼】",
 			"前"..title_data["title6"]["cycle"].."天内死亡超过"..title_data["title6"]["death"].."次"
 		},
 		common={
@@ -108,8 +108,8 @@ STRINGS.TITLE={
 		id="title7",
 		name="生生不息", 
 		desc={
-			"完成任务【救世主】",
-			"完成任务【生生不息】",
+			"完成成就【救世主】",
+			"完成成就【生生不息】",
 			"前"..title_data["title7"]["cycle"].."天内死亡小于"..title_data["title7"]["death"].."次"
 		},
 		common={
@@ -125,7 +125,7 @@ STRINGS.TITLE={
 		id="title8",
 		name="不离不弃", 
 		desc={
-			"完成隐藏任务【忠实的草迷】",
+			"完成隐藏成就【忠实的草迷】",
 			"生存超过"..title_data["title8"]["age"].."天",
 		},
 		common={
@@ -197,7 +197,7 @@ STRINGS.TITLE={
 		id="title12",
 		name="王者之巅", 
 		desc={
-			"完成所有成就任务",
+			"完成所有成就成就",
 			"生存天数大于"..title_data["title12"]["age"],
 			"等级大于"..title_data["title12"]["level"],
 		},

@@ -406,7 +406,7 @@ STRINGS.PERKNAME={
 ["warlyup"] = "沃利-庖丁解牛",
 ["memorykill"] = "孰能生巧",
 ["wormwoodup"] = "沃姆伍德-自然之力",
-["wickerbottomup"] = "维克波顿-新书籍",
+["wickerbottomup"] = "维克巴顿-新书籍",
 
 ["callback"] = "召回",
 ["potion"] = "威尔逊-科学药剂",
@@ -602,7 +602,7 @@ STRINGS.ALLACHIVDESC={
 ["speed160"] = "速度值达到160%以上",
 ["speed50"] = "速度值达到50%以下",
 ["usecoin300"] = "消耗成就点"..allachiv_eventdata["usecoin300"].."点",
-["killmoonpig10"] = "满月时击杀疯猪"..allachiv_eventdata["killmoonpig10"].."次",
+["killmoonpig10"] = "满月时击杀月亮疯猪"..allachiv_eventdata["killmoonpig10"].."次",
 ["demage1000"] = "单次攻击造成至少伤害1000 "..allachiv_eventdata["demage1000"].."次",
 ["demagekill"] = "致死击杀boss"..allachiv_eventdata["demage300"].."次",
 

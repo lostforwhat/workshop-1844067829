@@ -96,7 +96,7 @@ local function needNotice(goods)
     return false
 end
 
-local function randomItem(value)--传入vip等级
+local function randomItem(value,luck)--传入vip等级
 	--[[
 	local num = GetTableLength(recycle_table)
 	local rand = math.random(1, num)
@@ -119,17 +119,20 @@ local function randomItem(value)--传入vip等级
 	--高级物品表
 	local types2 = {"ss_loot","cave_loot","dd_loot","d_loot"}
 	--稀有物品表
-	local types3 = {"new_items_loot"}
+	local types3 = {"new_items_loot","ss_loot"}
 	--选择的物品表
 	local types = nil
     
-    value= value or 0
+    local value = value or 0
+    local luck = luck or 1
+
+    local excess = 0.05*(value/(value+1)) + 0.05*(luck/100)
     --根据算法，选择物品表
     local  gl = math.random()
 
-    if  gl<= 0.05+0.1*(value/(value+1)) and TUNING.new_items then  --是否开启新物品啊
+    if  gl<= 0.05+excess and TUNING.new_items then  --是否开启新物品啊
     	types=types3
-    elseif gl<= 0.1+0.1*(value/(value+1)) then
+    elseif gl<= 0.1+excess then
     	types=types2
     else
     	types=types1
@@ -467,23 +470,24 @@ function Titlesystem:ApplayTilte(inst)
         	self.sanityup = math.min(math.floor(age/10), 100)
         	self.hungerup = math.min(math.floor(age/10), 100)
         end
-        if self.equip == 12 then
-        	local item = randomItem(500+self.vip_level*20) or SpawnPrefab("ash")
+		if self.equip == 12 then
+        	local luck = inst.components and inst.components.luck and inst.components.luck:GetLuck() or 1
+        	local item = nil
         	if math.random() < 0.01 then
         		local tb = {"tumbleweedspawner", "moonbase", "pond_cave", 
         		"ancient_altar", "pigking", "pigtorch"}
         		local package_ball = SpawnPrefab("package_ball")
-        		local target = SpawnPrefab(tb[math.random(#tb)])
-        		package_ball.components.packer:Pack(target)
+        		item = SpawnPrefab(tb[math.random(#tb)])
+        		package_ball.components.packer:Pack(item)
         		inst.components.inventory:GiveItem(package_ball)
-        		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..package_ball:GetDisplayName().."】")
         	else
+        		item = randomItem(500+self.vip_level*20,luck) or SpawnPrefab("ash")
         		inst.components.inventory:GiveItem(item)
         	end
 			--宣告贵重物品
     		if item ~= nil and needNotice(item.prefab) then
         		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..item:GetDisplayName().."】")
-    		elseif inst.components.talker then 
+    		elseif item ~= nil and inst.components.talker then 
     			inst.components.talker:Say("【每日物资】 "..item:GetDisplayName(),2,true,true,false) 
     		end
         end
@@ -587,7 +591,8 @@ function Titlesystem:ApplayTilte(inst)
                 		item = SpawnPrefab("twigs")
                 	end
                 else
-        			item = randomItem(self.vip_level) or "twigs"
+                	local luck = inst.components and inst.components.luck and inst.components.luck:GetLuck() or 1
+        			item = randomItem(self.vip_level,luck) or "twigs"
         		end
 				--[[
 				local lootdropper = target.components.lootdropper:GenerateLoot()  --生成战利品

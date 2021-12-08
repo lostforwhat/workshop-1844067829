@@ -43,21 +43,21 @@ local function DoPlant(prayers, inst)
     end
     local px,py,pz= prayers.Transform:GetWorldPosition()
     local names = {
-        "flower",
-        "carrot_planted",
-        "cave_fern",
-        "red_mushroom",
-        "green_mushroom",
-        "blue_mushroom",
-        "reeds",
-        "cactus",
-        "lichen",
-        "cave_banana_tree",
-        "flower_cave_triple",
-        "flower_cave_double",
-        "flower_cave",
-        "wormlight_plant",
-        "moon_tree_blossom_worldgen"
+        "flower",--花
+        "carrot_planted",--胡萝卜
+        "cave_fern",--蕨类植物
+        "red_mushroom",--红蘑菇
+        "green_mushroom",--绿蘑菇
+        "blue_mushroom",--蓝蘑菇
+        "reeds",--芦苇
+        "cactus",--仙人掌
+        "lichen",--洞穴苔藓
+        "cave_banana_tree",--洞穴香蕉
+        "flower_cave_triple",--三生荧光花
+        "flower_cave_double",--双生荧光花
+        "flower_cave",--荧光花
+        "wormlight_plant",--神秘植物
+        "moon_tree_blossom_worldgen"--月树花
     }
     if c_countprefabs("tallbirdnest", true) < 20 then
         table.insert(names, "tallbirdnest")

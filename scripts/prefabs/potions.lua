@@ -65,6 +65,7 @@ local function takeglommerfuel(player)
 	if glommer then
 		local x,y,z = glommer.Transform:GetWorldPosition()
 		local fuel = SpawnPrefab("glommerfuel")
+		fuel.Transform:SetPosition(x,0,z)
 		fuel.components.stackable:SetStackSize(math.random(5))
 		glommer.sg:GoToState("goo", fuel)
 	end

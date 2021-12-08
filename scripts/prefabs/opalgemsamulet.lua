@@ -7,8 +7,7 @@ local assets =
     Asset("ATLAS", "images/opalgemsamulet2.xml"), --物品栏
 }
 
-
-local function delivery(inst,owner)
+local function ck(inst,owner)
     local tum_5 = {}
     for _, ent in pairs(Ents) do
         if ent:IsValid() and ent.prefab == "tumbleweed_5" then
@@ -17,8 +16,23 @@ local function delivery(inst,owner)
     end
     if #tum_5>0 then
         owner.components.talker:Say("这个世界存在 "..#tum_5.." 个发光的风滚草")
-        local x,y,z = tum_5[1].Transform:GetWorldPosition() --直接飞到第一个,或者反过来，光草到玩家边上
-        owner.Transform:SetPosition(x, 0, z) -- 需要调整一下位置比较好，不然可能把光草挤海里
+        inst:AddTag("kcs")
+        return tum_5[1]
+    else
+        owner.components.talker:Say("这个世界没有发光的风滚草")
+        inst:RemoveTag("kcs")
+    end
+
+    return nil
+end
+
+
+local function delivery(inst,owner)
+    local tum = ck(inst,owner)
+    if tum~=nil then
+        local x,y,z = tum.Transform:GetWorldPosition()
+        owner.Transform:SetPosition(x, 0, z)
+        inst:RemoveTag("kcs")
         local opal2 = SpawnPrefab("opalgemsamulet2")
         --设置耐久
         opal2.components.fueled.currentfuel = inst.components.fueled.currentfuel
@@ -28,25 +42,15 @@ local function delivery(inst,owner)
         opal2.components.opal.state = true
         owner.components.inventory:Equip(opal2)
         inst:Remove()
-    else
-        owner.components.talker:Say("这个世界没有发光的风滚草")
     end
 end
 local function delivery2(inst,owner)
-    local tum_5 = {}
-    for _, ent in pairs(Ents) do
-        if ent:IsValid() and ent.prefab == "tumbleweed_5" then
-            table.insert(tum_5,ent)
-        end
-    end
-    if #tum_5>0 then
-        owner.components.talker:Say("这个世界存在 "..#tum_5.." 个发光的风滚草")
-        local x,y,z = tum_5[1].Transform:GetWorldPosition() --直接飞到第一个,或者反过来，光草到玩家边上
+    local tum = ck(inst,owner)
+    if tum~=nil then
+        local x,y,z = tum.Transform:GetWorldPosition()
         owner.Transform:SetPosition(x, 0, z)
-
+        inst:RemoveTag("kcs")
         inst:Remove()
-    else
-        owner.components.talker:Say("这个世界没有发光的风滚草")
     end
 end
 
@@ -54,7 +58,6 @@ end
 
 local function onequip(inst, owner)  --装备
     owner.AnimState:OverrideSymbol("swap_body", "torso_amulets_my", "opal_gems_amulet")
-
     if inst.components.fueled ~= nil and inst.components.fueled.currentfuel > 0 then  --燃料组件,存在,并且当前燃料大于0时     
         inst.Light:SetRadius(2.25) 
         inst.Light:Enable(true)
@@ -74,6 +77,9 @@ local function onunequip(inst, owner) --卸载
     inst.Light:Enable(false)
     if inst:HasTag("opalgemsamulet") then
         inst:RemoveTag("opalgemsamulet")
+    end 
+    if inst:HasTag("kcs") then
+        inst:RemoveTag("kcs")
     end 
     inst.components.opal.state = false
 end
@@ -144,8 +150,11 @@ local function Make(name,Fn,assets)
         inst.components.inventoryitem:SetSinks(true)
         inst.components.inventoryitem.imagename = name --图像,像素大小64*64
         inst.components.inventoryitem.atlasname = "images/"..name..".xml" --图集
-        inst.components.inventoryitem:SetOnDroppedFn(function(inst) inst.Light:SetRadius(.5) end) --设置丢下方法
-
+        --设置丢下方法
+        inst.components.inventoryitem:SetOnDroppedFn(function(inst) 
+            inst.Light:SetRadius(.5) 
+        end) 
+         
         --耐久组件
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE  --设置补充为噩梦燃料 补充30*6
@@ -171,13 +180,14 @@ local function Make(name,Fn,assets)
         -- 传送到光草组件
         inst:AddComponent("opal")
         inst.components.opal:SetPrayFn(Fn)
+        inst.components.opal:SetCKFn(ck)
 
 
         -- 添加冷却组件
         inst:AddComponent("rechargeable") 
         inst.components.rechargeable:SetOnDischargedFn(unavailable)
         inst.components.rechargeable:SetOnChargedFn(usable)
-        inst.components.rechargeable:SetChargeTime(30)
+        inst.components.rechargeable:SetChargeTime(45)
 
         --热学组件
         inst:AddComponent("heater")
