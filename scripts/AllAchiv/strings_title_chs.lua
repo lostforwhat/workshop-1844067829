@@ -197,7 +197,7 @@ STRINGS.TITLE={
 		id="title12",
 		name="王者之巅", 
 		desc={
-			"完成所有成就成就",
+			"完成所有成就，重复成就和隐藏成就除外",
 			"生存天数大于"..title_data["title12"]["age"],
 			"等级大于"..title_data["title12"]["level"],
 		},

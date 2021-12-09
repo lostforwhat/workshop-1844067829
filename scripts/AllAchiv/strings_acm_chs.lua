@@ -56,6 +56,9 @@ STRINGS.GUI={
 ["cat14"] = "14",
 ["cat15"] = "R",
 
+["help"] = "帮助",
+["star"] = "查看任务进度",
+
 ["abilities1"] = "属性",
 ["abilities2"] = "特殊",
 ["abilities3"] = "专属",

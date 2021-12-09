@@ -31,6 +31,14 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.achievement_bg.title = self.mainui.achievement_bg:AddChild(Text(TITLEFONT, 64))
 	self.mainui.achievement_bg.title:SetPosition(-50, 415, 0)
 	self.mainui.achievement_bg.title:SetString(STRINGS.GUI["achievementTitle"])
+
+	self.mainui.achievement_bg.help = self.mainui.achievement_bg:AddChild(ImageButton("images/hud/star.xml", "star.tex"))
+	self.mainui.achievement_bg.help:SetPosition(420, 415, 0)
+	self.mainui.achievement_bg.help:SetScale(.65,.65,1)
+	self.mainui.achievement_bg.help:SetTooltip(STRINGS.GUI["help"])
+	self.mainui.achievement_bg.help:SetOnClick(function()
+		VisitURL("https://www.tumbleweedofall.xyz/extend/old", false)
+	end)
 	
 	self.mainui.achievement_bg.coinamount = self.mainui.achievement_bg:AddChild(Text(NUMBERFONT, 45, self.owner.currentcoinamount:value()))
 	self.mainui.achievement_bg.coinamount:SetPosition(55, 415, 0)
@@ -38,6 +46,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.achievement_bg.star = self.mainui.achievement_bg:AddChild(ImageButton("images/hud/star.xml", "star.tex"))
 	self.mainui.achievement_bg.star:SetPosition(90, 415, 0)
 	self.mainui.achievement_bg.star:SetScale(.5,.5,1)
+	self.mainui.achievement_bg.star:SetTooltip(STRINGS.GUI["star"])
 
 	self.cooldown = true
 	self.mainui.achievement_bg.star:SetOnClick(function() 
