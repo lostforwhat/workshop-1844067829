@@ -6,33 +6,39 @@ local assets =
     Asset("ATLAS", "images/opalgemsamulet.xml"), --物品栏
     Asset("ATLAS", "images/opalgemsamulet2.xml"), --物品栏
 }
-
-local function ck(inst,owner)
-    local tum_5 = {}
-    for _, ent in pairs(Ents) do
-        if ent:IsValid() and ent.prefab == "tumbleweed_5" then
-            table.insert(tum_5,ent)
+local function IsLandAtPoint(x,y,z)
+    for k=1,8 do
+        local angle = k * 2 * PI / 8
+        local x_ = 2*math.cos(angle)+x
+        local z_ = 2*math.cos(angle)+z
+        if TheWorld.Map:IsPassableAtPoint(x_, y, z_) then
+            return x_,z_
         end
     end
-    if #tum_5>0 then
-        owner.components.talker:Say("这个世界存在 "..#tum_5.." 个发光的风滚草")
+    return x,z
+end
+
+local function check(inst,owner)
+    local tum_5 = TheWorld.tumbleweed_5
+    if GetTableSize(tum_5)>0 then
+        owner.components.talker:Say("这个世界存在 "..GetTableSize(tum_5).." 个发光的风滚草")
         inst:AddTag("kcs")
-        return tum_5[1]
+        return GetRandomItem(tum_5)
     else
         owner.components.talker:Say("这个世界没有发光的风滚草")
         inst:RemoveTag("kcs")
     end
-
     return nil
 end
 
 
 local function delivery(inst,owner)
-    local tum = ck(inst,owner)
+    local tum = check(inst,owner)
     if tum~=nil then
         local x,y,z = tum.Transform:GetWorldPosition()
+        x,z = IsLandAtPoint(x,y,z)
         owner.Transform:SetPosition(x, 0, z)
-        inst:RemoveTag("kcs")
+        -- inst:RemoveTag("kcs")
         local opal2 = SpawnPrefab("opalgemsamulet2")
         --设置耐久
         opal2.components.fueled.currentfuel = inst.components.fueled.currentfuel
@@ -45,11 +51,12 @@ local function delivery(inst,owner)
     end
 end
 local function delivery2(inst,owner)
-    local tum = ck(inst,owner)
+    local tum = check(inst,owner)
     if tum~=nil then
         local x,y,z = tum.Transform:GetWorldPosition()
+        x,z = IsLandAtPoint(x,y,z)
         owner.Transform:SetPosition(x, 0, z)
-        inst:RemoveTag("kcs")
+        -- inst:RemoveTag("kcs")
         inst:Remove()
     end
 end

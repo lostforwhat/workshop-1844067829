@@ -518,6 +518,11 @@ local function OnLoad(inst, data)
         end
         inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.Light:Enable(level == 3)
+        if level == 3 then
+            inst:DoTaskInTime(0,function(inst)
+                TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+            end)
+        end
         MakeLoot(inst)
     end
 end

@@ -576,10 +576,10 @@ new_items_loot = { --新物品
         {chance = 0.004, item="prayer_symbol"}, --祈祷符
         {chance = 0.01, item="book_gardening"}, --园艺书
         {chance = 0.001, item="achiv_clear"}, --任务卷轴
-        {chance = 0.003, item="book_season"}, --遗失法典
+        {chance = 0.001, item="book_season"}, --遗失法典
         {chance = 0.006, item="potion_luck"}, --幸运药水
         {chance = 0.004, item="potion_achiv"}, --神秘药水
         {chance = 0.009, item="stealingknife"}, --偷窃刀
-	{chance = 0.001, item="opalgemsamulet"}, --彩色护符 
+	    {chance = 0.001, item="opalgemsamulet"}, --彩色护符 
     }
 }

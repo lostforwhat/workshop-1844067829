@@ -577,13 +577,13 @@ function Titlesystem:ApplayTilte(inst)
 			end
 		end
 		if self.equip == 4 or toqie then
-			if target.components.lootdropper and math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
+			if target.components.lootdropper ~= nil and math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
 				local item = nil
 
 				local gl = math.random()
 				local threshold = toqie and 0.1 or 0.4 -- 偷窃刀更难获取到随机物品
 				if gl > threshold then 
-					local lootdropper = target.components.lootdropper:GenerateLoot() or nil  --生成战利品
+					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
 					if lootdropper and #lootdropper > 0 then
                 		item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
                 		item.Transform:SetPosition(target:GetPosition():Get())
@@ -1153,9 +1153,6 @@ function Titlesystem:CheckTitles(inst)
 			or achivname=="killbeager" or achivname=="killdeerclops") and self.desc[2][2] ~= 1 then
 			self.desc[2][2] = 1
 		end
-		if (achivname=="cookwaffles" or achivname=="cookbananapop") and self.desc[3][1] ~= 1 then
-			self.desc[3][1] = 1
-		end
 		if (achivname=="eat8888" or (achivname=="eat666" and inst.prefab=="warly")) and self.desc[3][2] ~= 1 then
 			self.desc[3][2] = 1
 		end
@@ -1163,6 +1160,9 @@ function Titlesystem:CheckTitles(inst)
 			self.desc[3][3] = 1
 		end
 		local achiv = inst.components.allachivevent
+		if achiv["cookwaffles"] == allachiv_eventdata["cookwaffles"] and achiv["cookbananapop"] == allachiv_eventdata["cookbananapop"] and self.desc[3][1] ~= 1 then
+			self.desc[3][1] = 1
+		end
 		if string.find(achivname, "build") then
 			if achiv["buildpumpkin_lantern"]==allachiv_eventdata["buildpumpkin_lantern"] and
 				achiv["buildruinshat"]==allachiv_eventdata["buildruinshat"] and

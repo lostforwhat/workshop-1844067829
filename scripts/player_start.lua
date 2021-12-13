@@ -135,7 +135,7 @@ AddPrefabPostInit(
                 if new_items then --开启新物品就会给
                     local CurrentOnNewSpawn = player.OnNewSpawn or function() return true end -- 记录角色本身开局物品
                     player.OnNewSpawn = function(...)
-                        if IsStart(player:GetDisplayName()) then
+                        if IsStart(player.userid) then
                             player.components.inventory.ignoresound = true
                             player.components.inventory:GiveItem(GLOBAL.SpawnPrefab("stealingknife")) --偷窃刀
                         end
