@@ -410,6 +410,7 @@ STRINGS.PERKNAME={
 ["memorykill"] = "孰能生巧",
 ["wormwoodup"] = "沃姆伍德-自然之力",
 ["wickerbottomup"] = "维克巴顿-新书籍",
+["wandaup"] = "旺达-新钟表技术",
 
 ["callback"] = "召回",
 ["potion"] = "威尔逊-科学药剂",
@@ -751,6 +752,7 @@ STRINGS.PERKDESC={
 ["memorykill"] = "沃利熟记掠杀的快感，永久增加对该生物的伤害",
 ["wormwoodup"] = "沃姆伍德获得大自然的祝福,不同季节获得特殊能力",
 ["wickerbottomup"] = "图书管理员可以制作新的魔法书",
+["wandaup"] = "旺达可以制作新的钟表物品",
 ["callback"] = "召回指定的随从【G键使用】",
 ["potion"] = "疯狂科学家药剂",
 ["lightpower"] = "wx78短路状态获得远程电流攻击能力(过载时效果翻倍)",

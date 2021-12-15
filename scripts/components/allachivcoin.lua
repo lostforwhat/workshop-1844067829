@@ -124,6 +124,7 @@ local function currentwoodieup(self,woodieup) self.inst.currentwoodieup:set(wood
 local function currentwarlyup(self,warlyup) self.inst.currentwarlyup:set(warlyup) end
 local function currentwormwoodup(self,wormwoodup) self.inst.currentwormwoodup:set(wormwoodup) end
 local function currentwickerbottomup(self,wickerbottomup) self.inst.currentwickerbottomup:set(wickerbottomup) end
+local function currentwandaup(self,wandaup) self.inst.currentwandaup:set(wandaup) end
 local function currentcallback(self,callback) self.inst.currentcallback:set(callback) end
 local function currentpotion(self,potion) self.inst.currentpotion:set(potion) end
 local function currentlightpower(self,lightpower) self.inst.currentlightpower:set(lightpower) end
@@ -251,6 +252,7 @@ local allachivcoin = Class(function(self, inst)
     self.woodieup = 0
     self.warlyup = 0
     self.wormwoodup = 0
+    self.wandaup = 0
     self.wickerbottomup = 0
     self.callback = 0
     self.potion = 0
@@ -360,6 +362,7 @@ nil,
     warlyup = currentwarlyup,
     wormwoodup = currentwormwoodup,
     wickerbottomup = currentwickerbottomup,
+    wandaup = currentwandaup,
     hitattack = currenthitattack,
     memorykill = currentmemorykill,
     throwrock = currentthrowrock,
@@ -461,6 +464,7 @@ function allachivcoin:OnSave()
         warlyup = self.warlyup,
         wormwoodup = self.wormwoodup,
         wickerbottomup = self.wickerbottomup,
+        wandaup = self.wandaup,
         hitattack = self.hitattack,
         memorykill = self.memorykill,
         throwrock = self.throwrock,
@@ -568,6 +572,7 @@ function allachivcoin:OnLoad(data)
     self.warlyup = data.warlyup or 0
     self.wormwoodup = data.wormwoodup or 0
     self.wickerbottomup = data.wickerbottomup or 0
+    self.wandaup = data.wandaup or 0
     self.hitattack = data.hitattack or 0
     self.memorykill = data.memorykill or 0
     self.throwrock = data.throwrock or 0
@@ -3005,6 +3010,22 @@ function allachivcoin:wickerbottomupfn(inst)
     end
 end
 
+function allachivcoin:wandaupcoin(inst) -- 点击专属技能
+    if self.wandaup < 1 and self.coinamount >= allachiv_coinuse["wandaup"] then
+        self.wandaup = 1
+        self.starsspent = self.starsspent + allachiv_coinuse["wandaup"] -- 记录已经消耗的成就点
+        self:coinDoDelta(-allachiv_coinuse["wandaup"]) --消耗成就点
+        self:ongetcoin(inst) -- 播放声音
+        inst:AddTag("achivwatchmaker") -- 角色添加对应标签
+    end
+end
+
+function allachivcoin:wandaupfn(inst) -- 进入游戏执行
+    if self.wandaup > 0 and not inst:HasTag("achivwatchmaker") then
+        inst:AddTag("achivwatchmaker")
+    end
+end
+
 function allachivcoin:potioncoin(inst)
     if self.potion < 1 and self.coinamount >= allachiv_coinuse["potion"] then
         self.potion = 1
@@ -3391,6 +3412,7 @@ function allachivcoin:removecoin(inst)
     self.warlyup = 0
     self.wormwoodup = 0
     self.wickerbottomup = 0
+    self.wandaup = 0
     self.callback = 0
     self.potion = 0
     self.lightpower = 0
@@ -3554,6 +3576,7 @@ function allachivcoin:Init(inst)
         self:stopregenfn(inst)
         self:attackfrozenfn(inst)
         self:wickerbottomupfn(inst)
+        self:wandaupfn(inst)
         self:soulmorefn(inst)
         --self:wescheatfn(inst)
         self:winnonaupfn(inst)

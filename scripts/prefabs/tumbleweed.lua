@@ -516,14 +516,15 @@ local function OnLoad(inst, data)
         if inst.components.named == nil then
             inst:AddComponent("named")
         end
+        print("风滚草",STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.Light:Enable(level == 3)
+        MakeLoot(inst)
         if level == 3 then
-            inst:DoTaskInTime(0,function(inst)
+            inst:DoTaskInTime(2,function(inst)
                 TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
             end)
         end
-        MakeLoot(inst)
     end
 end
 

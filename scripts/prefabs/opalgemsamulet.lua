@@ -130,8 +130,6 @@ local function Make(name,Fn,assets)
             return inst
         end
 
-        inst:ListenForEvent("opalgemsamuletstate",function(inst,data) TheWorld:PushEvent("indicatorstate",{inst=inst,Enabled=inst.state:value()}) end)
-
         inst.Light:SetRadius(.5) --设置半径
         inst.Light:SetFalloff(.7) --设置衰减
         inst.Light:SetIntensity(.65) --设置强度
@@ -187,12 +185,12 @@ local function Make(name,Fn,assets)
         -- 传送到光草组件
         inst:AddComponent("opal")
         inst.components.opal:SetPrayFn(Fn)
-        inst.components.opal:SetCKFn(ck)
+        inst.components.opal:SetCKFn(check)
 
 
         -- 添加冷却组件
         inst:AddComponent("rechargeable") 
-        inst.components.rechargeable:SetOnDischargedFn(unavailable)
+        inst.components.rechargeable:SetOnDischargedFn(unavailable) 
         inst.components.rechargeable:SetOnChargedFn(usable)
         inst.components.rechargeable:SetChargeTime(45)
 

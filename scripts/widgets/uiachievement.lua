@@ -2034,6 +2034,12 @@ function uiachievement:loadcoinlist()
 				current = self.owner.currentwickerbottomup:value(),
 			}
 		},
+		wanda = {
+			{
+				name = "wandaup",
+				current = self.owner.currentwandaup:value(),
+			}
+		},
 		walter = {
 			{
 				name = "quickshot",

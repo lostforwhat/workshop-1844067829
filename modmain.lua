@@ -10,7 +10,6 @@ local NODE_TYPE = GLOBAL.NODE_TYPE
 local StartThread = GLOBAL.StartThread
 local Sleep = GLOBAL.Sleep
 local SetSharedLootTable = GLOBAL.SetSharedLootTable
-local TumbleweedIndicator = require ("widgets/tumbleweedindicator")
 
 TUNING.start_protect=GetModConfigData("start_protect")--开局保护设置
 TUNING.drop_chance=GetModConfigData("drop_chance")--物品掉落率
@@ -43,6 +42,7 @@ if TUNING.new_items then
         "prayer_symbol",
         "opalgemsamulet",
         "stealingknife",
+        "statusclock",
     }
 else
     PrefabFiles = {}
@@ -111,7 +111,64 @@ _G.ToStringEx = function(value)
     end
 end
 
+-- 开启新物品后，彩色护符存在
+if TUNING.new_items then
+    AddPrefabPostInit("world",function(inst)
+        if not GLOBAL.TheWorld.ismastersim then
+            return inst
+        end
+        --不需要被保存，每次开始游戏时，都会重新生成
+        inst.tumbleweed_5 = {}
+        local function AddTumbleweed_5(inst,data)
+            if not inst.tumbleweed_5[data.tumbleweed.GUID] then
+                inst.tumbleweed_5[data.tumbleweed.GUID] = data.tumbleweed
+            end
+        end
+        local function RemoveTumbleweed_5(inst,data)
+            if inst.tumbleweed_5[data.tumbleweed.GUID] ~= nil then
+                inst.tumbleweed_5[data.tumbleweed.GUID] = nil
+            end
+        end
+        inst:DoTaskInTime(0,function(inst)
+            inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
+            inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
+        end)
+    end)
+    AddPrefabPostInit("tumbleweed",function(inst)
+        if not GLOBAL.TheWorld.ismastersim then
+            return inst
+        end
+        inst:DoTaskInTime(0,function(inst)
+            if inst.level ~= 3 then return end
+            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+        end)
 
+        local Remove_ = inst.Remove
+        inst.Remove = function(...)
+            if inst.level ~= 3 then Remove_(...) return end
+            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+            Remove_(...)
+        end
+    end)
+    AddPrefabPostInit("tumbleweed_5",function(inst)
+        if not GLOBAL.TheWorld.ismastersim then
+            return inst
+        end
+        inst:DoTaskInTime(0,function(inst)
+            if inst.level ~= 3 then return end
+            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+        end)
+
+        local Remove_ = inst.Remove
+        inst.Remove = function(...)
+            if inst.level ~= 3 then Remove_(...) return end
+            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+            Remove_(...)
+        end
+    end)
+end
+--控制台指令
+--c_teleport(0,0,0, ThePlayer)
 
 local function ResetBoss(stronger_health, stronger_speed, stronger_attack,stronger_period,stronger_aoe)
     --ResetBoss(2.25, 2.5, 1.25, 1.2, 4)
@@ -404,65 +461,6 @@ AddPrefabPostInit("twinofterror2",function(inst)
     end
 end)
 
--- AddComponentPostInit("")
--- 开启新物品后，彩色护符存在
-if TUNING.new_items then
-    AddPrefabPostInit("world",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        --不需要被保存，每次开始游戏时，都会重新生成
-        inst.tumbleweed_5 = {}
-        local function AddTumbleweed_5(inst,data)
-            if not inst.tumbleweed_5[data.tumbleweed.GUID] then
-                inst.tumbleweed_5[data.tumbleweed.GUID] = data.tumbleweed
-            end
-        end
-        local function RemoveTumbleweed_5(inst,data)
-            if inst.tumbleweed_5[data.tumbleweed.GUID] ~= nil then
-                inst.tumbleweed_5[data.tumbleweed.GUID] = nil
-            end
-        end
-        inst:DoTaskInTime(0,function(inst)
-            inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
-            inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
-        end)
-    end)
-    AddPrefabPostInit("tumbleweed",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        inst:DoTaskInTime(0,function(inst)
-            if inst.level ~= 3 then return end
-            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-        end)
-
-        local Remove_ = inst.Remove
-        inst.Remove = function(...)
-            if inst.level ~= 3 then Remove_(...) return end
-            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
-            Remove_(...)
-        end
-    end)
-    AddPrefabPostInit("tumbleweed_5",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        inst:DoTaskInTime(0,function(inst)
-            if inst.level ~= 3 then return end
-            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-        end)
-
-        local Remove_ = inst.Remove
-        inst.Remove = function(...)
-            if inst.level ~= 3 then Remove_(...) return end
-            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
-            Remove_(...)
-        end
-    end)
-end
---控制台指令
---c_teleport(0,0,0, ThePlayer)
 --boss强化
 local function UpdateBoss()
     --添加多世界宣告支持
@@ -1114,9 +1112,13 @@ if TUNING.new_items then
     --位于装备槽时可以用，卸下优先级低，冷却期间移除这个标签，冷却好了就加回去就好 
     AddComponentAction("INVENTORY", "opal", function(inst, doer, actions, right)
         if doer:HasTag("player") and inst:HasTag("opalgemsamulet") then
-            table.insert(actions, ACTIONS.CKK)
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) or inst:HasTag("pocketwatch_mountedcast") then -- 乘骑状态不让使用
+                table.insert(actions, ACTIONS.CKK)
+            end
         elseif doer:HasTag("player") and inst:HasTag("kcs") then
-            table.insert(actions, ACTIONS.SEE)
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) or inst:HasTag("pocketwatch_mountedcast") then
+                table.insert(actions, ACTIONS.SEE)
+            end
         end
     end)
 
@@ -1124,6 +1126,39 @@ if TUNING.new_items then
     AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.CKK,"give"))
     AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.SEE, "give"))
     AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.SEE,"give"))
+
+    --记录动作
+    AddAction("RECORD",_G.STRINGS.TUM.RECORD,function(act)
+        if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.access ~= nil then
+            act.invobject.components.access:Record(act.invobject,act.doer)
+            return true
+        end
+    end)
+    --读取动作
+    AddAction("READ_MOD",_G.STRINGS.TUM.READ_MOD,function(act)
+        if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.access ~= nil then
+            if act.invobject.components.access:Read(act.invobject,act.doer) then -- 读取成功后执行
+                act.invobject.components.rechargeable:SetCharge(0)
+            end
+            return true
+        end
+    end)
+    AddComponentAction("INVENTORY", "access", function(inst,doer,actions,right)
+        if doer:HasTag("achivwatchmaker") and _G.TheInput:IsKeyDown(_G.KEY_CTRL) and doer:HasTag("pocketwatchcaster") then
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) or inst:HasTag("pocketwatch_mountedcast") then -- 乘骑状态不让使用
+                table.insert(actions, ACTIONS.RECORD)
+            end
+        elseif doer:HasTag("achivwatchmaker") and doer:HasTag("pocketwatchcaster") and inst:HasTag("pocketwatch_inactive") then
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) or inst:HasTag("pocketwatch_mountedcast") then
+                table.insert(actions, ACTIONS.READ_MOD)
+            end
+        end
+    end)
+
+    AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.RECORD, "give"))
+    AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.RECORD,"give"))
+    AddStategraphActionHandler("wilson",ActionHandler(ACTIONS.READ_MOD, "pocketwatch_cast"))
+    AddStategraphActionHandler("wilson_client",ActionHandler(ACTIONS.READ_MOD,"pocketwatch_cast"))
 end
 
 
@@ -1246,10 +1281,9 @@ Assets = {
     Asset("ATLAS", "images/opalgemsamulet2.xml"),
     Asset("IMAGE", "images/opalgemsamulet2.tex"), --物品栏
 }
-
 --给玩家添加任务等级成就等组件
 AddPlayerPostInit(function(inst)
-
+    if _G.TheWorld.ismastersim then inst:DoPeriodicTask(0,function(inst) if inst.components.oldager then inst.components.oldager:AddValidHealingCause("statusclock") end end) end
     for k,v in pairs(_G.allachiv_eventdata) do
         local checkfnname = "check"..k
         inst[checkfnname] = GLOBAL.net_shortint(inst.GUID, checkfnname)
@@ -1967,6 +2001,17 @@ nil, -- nounlock
 nil, -- numtogive
 "potionbuilder", -- builder_tag
 "images/potions/potion_red.xml"
+)
+
+AddRecipe("statusclock", {Ingredient("pocketwatch_parts",1),Ingredient("yellowgem",3)},
+CUSTOM_RECIPETABS.CLOCKMAKER, 
+TECH.NONE, 
+nil, 
+nil, -- min_spacing
+nil, -- nounlock
+nil, -- numtogive
+"achivwatchmaker", --"旺达专属标签",
+"images/statusclock.xml"
 )
 
 end

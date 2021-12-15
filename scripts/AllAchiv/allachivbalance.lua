@@ -652,6 +652,7 @@ allachiv_coinuse={
 ["memorykill"] = 60,
 ["wormwoodup"] = 45,
 ["wickerbottomup"] = 55,
+["wandaup"] = 45,
 ["callback"] = 10,
 ["potion"] = 30,
 ["lightpower"] = 45,
