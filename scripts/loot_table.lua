@@ -214,6 +214,7 @@ new_loot = {
         {chance = 0.1, item = "lightflier"},--球状光虫
         {chance = 0.04, item = "livingtree"},--完全正常的树
         {chance = 0.01, item = "phlegm"},--脓鼻涕
+        {chance = 0.1, item = "eel"},--鳗鱼
     },
 
 s_loot = {
@@ -227,7 +228,7 @@ s_loot = {
         {chance = 0.04, item = "dragonpie"},--火龙果馅饼
         {chance = 0.05, item = "taffy"},--太妃糖
         {chance = 0.05, item = "pumpkincookie"},--南瓜饼
-        {chance = 0.15, item = "kabobs"},--肉串
+        {chance = 0.15, item = "kabobs"},--肉串 变暖
         {chance = 0.05, item = "powcake"},--芝士蛋糕
         {chance = 0.02, item = "mandrakesoup"},--曼德拉草汤
         {chance = 0.04, item = "baconeggs"},--培根煎蛋
@@ -262,7 +263,6 @@ s_loot = {
         {chance = 0.05, item = "lobsterbisque"},--龙虾汤
         {chance = 0.09, item = "lobsterdinner"},--龙虾正餐
         {chance = 0.3, item = "tillweedsalve"},--犁地草膏
-        {chance = 0.1, item = "eel"},--鳗鱼
         {chance = 0.03, item = "unagi"},--鳗鱼料理
         {chance = 0.07, item = "vegstinger"},--蔬菜鸡尾酒
         {chance = 0.13, item = "voltgoatjelly"},--伏特羊肉冻

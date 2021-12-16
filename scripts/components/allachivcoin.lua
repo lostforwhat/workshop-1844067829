@@ -3523,7 +3523,9 @@ function allachivcoin:resetbuff(inst)
     if inst.prefab == "walter" then
 
     end
-
+    if inst.prefab == "wanda" then
+        inst:RemoveTag("achivwatchmaker")
+    end
     inst.components.moisture.maxMoistureRate = .75
     self.maxMoistureRate = inst.components.moisture.maxMoistureRate
 	

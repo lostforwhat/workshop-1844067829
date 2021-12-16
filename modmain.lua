@@ -139,13 +139,13 @@ if TUNING.new_items then
             return inst
         end
         inst:DoTaskInTime(0,function(inst)
-            if inst.level ~= 3 then return end
+            if inst.components.tumlevel.level ~= 3 then return end
             GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
         end)
 
         local Remove_ = inst.Remove
         inst.Remove = function(...)
-            if inst.level ~= 3 then Remove_(...) return end
+            if inst.components.tumlevel.level ~= 3 then Remove_(...) return end
             GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
             Remove_(...)
         end
@@ -155,13 +155,13 @@ if TUNING.new_items then
             return inst
         end
         inst:DoTaskInTime(0,function(inst)
-            if inst.level ~= 3 then return end
+            if inst.components.tumlevel.level ~= 3 then return end
             GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
         end)
 
         local Remove_ = inst.Remove
         inst.Remove = function(...)
-            if inst.level ~= 3 then Remove_(...) return end
+            if inst.components.tumlevel.level then Remove_(...) return end
             GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
             Remove_(...)
         end
@@ -1284,14 +1284,14 @@ Assets = {
 --给玩家添加任务等级成就等组件
 AddPlayerPostInit(function(inst)
     if _G.TheWorld.ismastersim then inst:DoPeriodicTask(0,function(inst) if inst.components.oldager then inst.components.oldager:AddValidHealingCause("statusclock") end end) end
-    for k,v in pairs(_G.allachiv_eventdata) do
+    for k,v in pairs(_G.allachiv_eventdata) do -- 成就的任务系统
         local checkfnname = "check"..k
         inst[checkfnname] = GLOBAL.net_shortint(inst.GUID, checkfnname)
     end
 
     inst.checktempachiv = GLOBAL.net_string(inst.GUID, "checktempachiv")
     
-    for k,v in pairs(_G.allachiv_coinuse) do
+    for k,v in pairs(_G.allachiv_coinuse) do -- 消耗成就点系统
         local currentname = "current"..k
         inst[currentname] = GLOBAL.net_shortint(inst.GUID, currentname)
     end

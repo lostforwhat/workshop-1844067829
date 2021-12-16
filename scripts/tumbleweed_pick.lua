@@ -969,30 +969,31 @@ AddPrefabPostInit(
                 local d_chance = 1
                 local dd_chance = 1
 
-                local lucky_level = target.level or 0
-                --print("lucky_level:"..lucky_level)
-                if lucky_level == -1 then
+                local lucky_level = target.components.tumlevel.level or 0
+                if lucky_level == -1 then -- 绿色
                     d_chance = 20 + (world_chance * 2)
                     dd_chance = 10 + world_chance
-                elseif lucky_level == -2 then
+                elseif lucky_level == -2 then --紫色
                     d_chance = 40 + world_chance
                     dd_chance = 50 + (world_chance * 2)
-                elseif lucky_level == 1 then
+                elseif lucky_level == 1 then -- 粉红色
                     new_chance = 40
                     s_chance = 200
-                    ss_chance = 400
-                elseif lucky_level == 2 then
+                    ss_chance = 200
+                elseif lucky_level == 2 then -- 橙色
                     s_chance = 200--100
-                    ss_chance = 500--200
+                    ss_chance = 400--200
                     dd_chance = 0
                     d_chance = 0
-                elseif lucky_level ==3 then
+                elseif lucky_level == 3 then -- 发光
                     ss_chance = 1500
+                    s_chance = 0.5
                     dd_chance = 0
                     d_chance = 0
-                else
+                    new_chance = 0.1
+                else -- 普通
                     d_chance = 1 + math.min(world_chance, 29)
-                    dd_chance = 1 + math.min(world_chance, 19)
+                    dd_chance = 1 + math.min(world_chance, 19) 
                 end
 
                 new_chance = new_chance * (luck*0.05 + 1) * san
@@ -1003,7 +1004,7 @@ AddPrefabPostInit(
                 insertLoot(loot_table.s_loot, drop_chance*s_chance)
                 insertLoot(loot_table.ss_loot, drop_chance*ss_chance)
                 insertLoot(loot_table.gift_loot, drop_chance*ss_chance)
-                if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then
+                if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then -- 是否洞穴
                     insertLoot(loot_table.cave_loot, drop_chance*world_chance)
                 else
                     insertLoot(loot_table.cave_loot, drop_chance)
@@ -1044,6 +1045,12 @@ AddPrefabPostInit(
                 if titles[13] == 1 then
                     num_loots = num_loots + 1
                 end
+                -- 对于橙色以上草，角色幸运值大于20，有一定5%概率消耗1点幸运增加1个掉落物
+                if lucky_level >=2 and picker.components.luck ~= nil and luck > 20 and math.random() > 0.95 then
+                    num_loots = num_loots + 1
+                    picker.components.luck:DoDelta(-1)
+                end
+
                 if TUNING.more_blueprint and lucky_level >=2 then
                     spawnAtGround("blueprint", x, y, z)
                     num_loots = num_loots - 1

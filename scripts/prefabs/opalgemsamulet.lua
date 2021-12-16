@@ -7,6 +7,7 @@ local assets =
     Asset("ATLAS", "images/opalgemsamulet2.xml"), --物品栏
 }
 local function IsLandAtPoint(x,y,z)
+    if x == nil or z == nil then return end
     for k=1,8 do
         local angle = k * 2 * PI / 8
         local x_ = 2*math.cos(angle)+x
@@ -36,6 +37,7 @@ local function delivery(inst,owner)
     local tum = check(inst,owner)
     if tum~=nil then
         local x,y,z = tum.Transform:GetWorldPosition()
+        if x == nil or z == nil then return end
         x,z = IsLandAtPoint(x,y,z)
         owner.Transform:SetPosition(x, 0, z)
         -- inst:RemoveTag("kcs")
@@ -54,6 +56,7 @@ local function delivery2(inst,owner)
     local tum = check(inst,owner)
     if tum~=nil then
         local x,y,z = tum.Transform:GetWorldPosition()
+        if x == nil or z == nil then return end
         x,z = IsLandAtPoint(x,y,z)
         owner.Transform:SetPosition(x, 0, z)
         -- inst:RemoveTag("kcs")

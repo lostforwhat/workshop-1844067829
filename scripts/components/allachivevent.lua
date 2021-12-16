@@ -937,7 +937,7 @@ function allachivevent:tumfn(inst)
             self:addOneJob(inst, "tumout10")
             self:addOneJob(inst, "tumout100")
             if inst.components.luck then
-                inst.components.luck:DoDelta(math.random(0,5)-4)
+                inst.components.luck:DoDelta(math.random(0,5)-4) -- -4~1
             end
         end
     end)

@@ -23,10 +23,10 @@ local assets =
 
 local prefabs =
 {
-    "splash_ocean",
+    "splash_ocean", -- 水花
     "tumbleweedbreakfx",
-    "ash",
-    "cutgrass",
+    "ash", -- 灰烬
+    "cutgrass", -- 草
     "twigs",
     "petals",
     "foliage",
@@ -182,6 +182,18 @@ local function needNotice(goods)
         "catcoonden", --中空树桩
         "ruins_statue_mage",
 		"achiv_clear",
+        "warg",
+        "dragonfly",
+        "moose",
+        "minotaur",
+        "klaus_sack",
+        "eyeofterror",
+        "twinofterror1",
+        "twinofterror2",
+        "crabking",
+        "malbatross",
+        "stealingknife",
+        "opalgemsamulet",
     }
     for i, v in ipairs(notice_goods) do
         if goods == v then 
@@ -218,7 +230,7 @@ local function onpickup(inst, picker)
 	end
 
     TheWorld:PushEvent("tumbleweedpicked", {target=inst, picker=picker})
-    picker:PushEvent("tumbleweedpicked", {target=inst, lucky_level = inst.level or 0})
+    picker:PushEvent("tumbleweedpicked", {target=inst, lucky_level = inst.components.tumlevel.level or 0})
 
     local item = nil
     for i, v in ipairs(inst.loot) do
@@ -250,64 +262,64 @@ end
 local function MakeLoot(inst)
     local possible_loot =
     {
-        {chance = 25,   item = "cutgrass"},
-        {chance = 20,   item = "twigs"},
-        {chance = 1,    item = "petals"},
-        {chance = 1,    item = "foliage"},
-        {chance = 1,    item = "silk"},
-        {chance = 1,    item = "rope"},
-        {chance = 2,    item = "seeds"},
-        {chance = 0.01, item = "purplegem"},
-        {chance = 0.04, item = "bluegem"},
-        {chance = 0.02, item = "redgem"},
-        {chance = 0.02, item = "orangegem"},
-        {chance = 0.01, item = "yellowgem"},
-        {chance = 0.02, item = "greengem"},
-        {chance = 0.5,  item = "trinket_6"},
-        {chance = 0.5,  item = "trinket_4"},
-        {chance = 1,    item = "cutreeds"},
-        {chance = 0.33, item = "feather_crow"},
-        {chance = 0.33, item = "feather_robin"},
-        {chance = 0.33, item = "feather_robin_winter"},
-        {chance = 0.33, item = "feather_canary"},
-        {chance = 1,    item = "trinket_3"},
-        {chance = 1,    item = "beefalowool"},
-        {chance = 0.1,  item = "rabbit"},
-        {chance = 0.1,  item = "mole"},
-        {chance = 0.1,  item = "spider", aggro = true},
-        {chance = 0.1,  item = "frog", aggro = true},
-        {chance = 0.1,  item = "bee", aggro = true},
-        {chance = 0.1,  item = "mosquito", aggro = true},
-        {chance = 1,    item = "butterflywings"},
-        {chance = .02,  item = "beardhair"},
-        {chance = 1,    item = "berries"},
-        {chance = 0.1,    item = "TOOLS_blueprint"},
-        {chance = 0.1,    item = "LIGHT_blueprint"},
-        {chance = 0.1,    item = "SURVIVAL_blueprint"},
-        {chance = 0.1,    item = "FARM_blueprint"},
-        {chance = 0.1,    item = "SCIENCE_blueprint"},
-        {chance = 0.1,    item = "WAR_blueprint"},
-        {chance = 0.1,    item = "TOWN_blueprint"},
-        {chance = 0.1,    item = "REFINE_blueprint"},
-        {chance = 0.1,    item = "MAGIC_blueprint"},
-        {chance = 0.1,    item = "DRESS_blueprint"},
-        {chance = 1,    item = "petals_evil"},
-        {chance = 1,    item = "trinket_8"},
-        {chance = 1,    item = "houndstooth"},
-        {chance = 1,    item = "stinger"},
-        {chance = 1,    item = "gears"},
-        {chance = 0.1,  item = "boneshard"}, 
+        -- {chance = 25,   item = "cutgrass"},
+        -- {chance = 20,   item = "twigs"},
+        -- {chance = 1,    item = "petals"},
+        -- {chance = 1,    item = "foliage"},
+        -- {chance = 1,    item = "silk"},
+        -- {chance = 1,    item = "rope"},
+        -- {chance = 2,    item = "seeds"},
+        -- {chance = 0.01, item = "purplegem"},
+        -- {chance = 0.04, item = "bluegem"},
+        -- {chance = 0.02, item = "redgem"},
+        -- {chance = 0.02, item = "orangegem"},
+        -- {chance = 0.01, item = "yellowgem"},
+        -- {chance = 0.02, item = "greengem"},
+        -- {chance = 0.5,  item = "trinket_6"},
+        -- {chance = 0.5,  item = "trinket_4"},
+        -- {chance = 1,    item = "cutreeds"},
+        -- {chance = 0.33, item = "feather_crow"},
+        -- {chance = 0.33, item = "feather_robin"},
+        -- {chance = 0.33, item = "feather_robin_winter"},
+        -- {chance = 0.33, item = "feather_canary"},
+        -- {chance = 1,    item = "trinket_3"},
+        -- {chance = 1,    item = "beefalowool"},
+        -- {chance = 0.1,  item = "rabbit"},
+        -- {chance = 0.1,  item = "mole"},
+        -- {chance = 0.1,  item = "spider", aggro = true},
+        -- {chance = 0.1,  item = "frog", aggro = true},
+        -- {chance = 0.1,  item = "bee", aggro = true},
+        -- {chance = 0.1,  item = "mosquito", aggro = true},
+        -- {chance = 1,    item = "butterflywings"},
+        -- {chance = .02,  item = "beardhair"},
+        -- {chance = 1,    item = "berries"},
+        -- {chance = 0.1,    item = "TOOLS_blueprint"},
+        -- {chance = 0.1,    item = "LIGHT_blueprint"},
+        -- {chance = 0.1,    item = "SURVIVAL_blueprint"},
+        -- {chance = 0.1,    item = "FARM_blueprint"},
+        -- {chance = 0.1,    item = "SCIENCE_blueprint"},
+        -- {chance = 0.1,    item = "WAR_blueprint"},
+        -- {chance = 0.1,    item = "TOWN_blueprint"},
+        -- {chance = 0.1,    item = "REFINE_blueprint"},
+        -- {chance = 0.1,    item = "MAGIC_blueprint"},
+        -- {chance = 0.1,    item = "DRESS_blueprint"},
+        -- {chance = 1,    item = "petals_evil"},
+        -- {chance = 1,    item = "trinket_8"},
+        -- {chance = 1,    item = "houndstooth"},
+        -- {chance = 1,    item = "stinger"},
+        -- {chance = 1,    item = "gears"},
+        -- {chance = 0.1,  item = "boneshard"}, 
     }
 
 
-    local chessunlocks = TheWorld.components.chessunlocks
-    if chessunlocks ~= nil then
-        for i, v in ipairs(CHESS_LOOT) do
-            if not chessunlocks:IsLocked(v) then
-                table.insert(possible_loot, { chance = .1, item = v })
-            end
-        end
-    end
+    -- local chessunlocks = TheWorld.components.chessunlocks
+    -- if chessunlocks ~= nil then
+    --     for i, v in ipairs(CHESS_LOOT) do
+    --         if not chessunlocks:IsLocked(v) then
+    --             table.insert(possible_loot, { chance = .1, item = v })
+    --         end
+    --     end
+    -- end
 
     local drop_chance = TUNING.drop_chance --物品掉率
     local today = TheWorld.state.cycles  --世界天数
@@ -319,7 +331,7 @@ local function MakeLoot(inst)
     local d_chance = 1
     local dd_chance = 1
 
-    local lucky_level = inst.level or 0
+    local lucky_level = inst.components.tumlevel.level or 0
     if lucky_level == -1 then
         d_chance = 20 + (world_chance * 2)
         dd_chance = 10 + world_chance
@@ -331,10 +343,10 @@ local function MakeLoot(inst)
         s_chance = 200
         ss_chance = 200
     elseif lucky_level == 2 then
-        s_chance = 100
-        ss_chance = 200
+        s_chance = 200
+        ss_chance = 400
     elseif lucky_level ==3 then
-        ss_chance = 1000
+        ss_chance = 1500
     else
         d_chance = 1 + math.min(world_chance, 29)
         dd_chance = 1 + math.min(world_chance, 19)
@@ -500,31 +512,29 @@ end
 
 local function OnSave(inst, data)
     data.burnt = inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") or nil
-    data.level = inst.level or 0
+    -- data.level = inst.level or 0 
 end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.burnt then
         onburnt(inst)
     end
-    if data ~= nil and data.level then
-        local level = data.level
-        if inst.components.colourtweener == nil then
-            inst:AddComponent("colourtweener")
-        end
-        inst.components.colourtweener:StartTween(colors[level], 0)
-        if inst.components.named == nil then
-            inst:AddComponent("named")
-        end
-        print("风滚草",STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
-        inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
-        inst.Light:Enable(level == 3)
-        MakeLoot(inst)
-        if level == 3 then
-            inst:DoTaskInTime(2,function(inst)
-                TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-            end)
-        end
+    local level = inst.components.tumlevel and inst.components.tumlevel.level or 0
+    if level == nil then return end -- 保险措施,不可能为nil,但防止误操作
+    if inst.components.colourtweener == nil then
+        inst:AddComponent("colourtweener")
+    end
+    inst.components.colourtweener:StartTween(colors[level], 0)
+    if inst.components.named == nil then
+        inst:AddComponent("named")
+    end
+    inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
+    inst.Light:Enable(level == 3)
+    MakeLoot(inst)
+    if level == 3 then
+        inst:DoTaskInTime(2,function(inst)
+            TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+        end)
     end
 end
 
@@ -682,6 +692,8 @@ local function fn()
     inst.components.pickable.onpickedfn = onpickup
     inst.components.pickable.canbepicked = true
 
+    inst:AddComponent("tumlevel") -- 风滚草等级
+
     inst:ListenForEvent("startlongaction", OnLongAction)
 
     inst:AddComponent("burnable")
@@ -735,12 +747,11 @@ end
 
 local function MakeAnyTumbleweed()
     local inst = fn()
-    if not TheWorld.ismastersim then --not TheWorld.ismastersim 判断是否是客户端
-        --print("---是这里吗2-----------------")
+    if not TheWorld.ismastersim then 
         return inst
     end
     local level = RandomType()
-    inst.level = level
+    inst.components.tumlevel.level = level
     if inst.components.colourtweener == nil then
         inst:AddComponent("colourtweener")
     end
@@ -758,13 +769,12 @@ local function MakeTumbleweed(level)
     return function()
         local inst = fn()
         if not TheWorld.ismastersim then
-            --print("---是这里吗1-----------------")
             return inst
         end
         if level == nil then
             level = RandomType()
         end
-        inst.level = level
+        inst.components.tumlevel.level = level
         if inst.components.colourtweener == nil then
             inst:AddComponent("colourtweener")
         end
