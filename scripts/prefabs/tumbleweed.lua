@@ -27,9 +27,9 @@ local prefabs =
     "tumbleweedbreakfx",
     "ash", -- 灰烬
     "cutgrass", -- 草
-    "twigs",
-    "petals",
-    "foliage",
+    "twigs", --树枝
+    "petals",--花瓣
+    "foliage",--蕨叶
     "silk",
     "rope",
     "seeds",
@@ -229,7 +229,7 @@ local function onpickup(inst, picker)
 		end
 	end
 
-    TheWorld:PushEvent("tumbleweedpicked", {target=inst, picker=picker})
+    TheWorld:PushEvent("tumbleweedpicked", {target=inst, picker=picker}) -- 采集风滚草
     picker:PushEvent("tumbleweedpicked", {target=inst, lucky_level = inst.components.tumlevel.level or 0})
 
     local item = nil
@@ -262,53 +262,53 @@ end
 local function MakeLoot(inst)
     local possible_loot =
     {
-        -- {chance = 25,   item = "cutgrass"},
-        -- {chance = 20,   item = "twigs"},
-        -- {chance = 1,    item = "petals"},
-        -- {chance = 1,    item = "foliage"},
-        -- {chance = 1,    item = "silk"},
-        -- {chance = 1,    item = "rope"},
-        -- {chance = 2,    item = "seeds"},
-        -- {chance = 0.01, item = "purplegem"},
-        -- {chance = 0.04, item = "bluegem"},
-        -- {chance = 0.02, item = "redgem"},
-        -- {chance = 0.02, item = "orangegem"},
-        -- {chance = 0.01, item = "yellowgem"},
-        -- {chance = 0.02, item = "greengem"},
-        -- {chance = 0.5,  item = "trinket_6"},
-        -- {chance = 0.5,  item = "trinket_4"},
-        -- {chance = 1,    item = "cutreeds"},
-        -- {chance = 0.33, item = "feather_crow"},
-        -- {chance = 0.33, item = "feather_robin"},
-        -- {chance = 0.33, item = "feather_robin_winter"},
-        -- {chance = 0.33, item = "feather_canary"},
-        -- {chance = 1,    item = "trinket_3"},
-        -- {chance = 1,    item = "beefalowool"},
-        -- {chance = 0.1,  item = "rabbit"},
-        -- {chance = 0.1,  item = "mole"},
-        -- {chance = 0.1,  item = "spider", aggro = true},
-        -- {chance = 0.1,  item = "frog", aggro = true},
-        -- {chance = 0.1,  item = "bee", aggro = true},
-        -- {chance = 0.1,  item = "mosquito", aggro = true},
-        -- {chance = 1,    item = "butterflywings"},
-        -- {chance = .02,  item = "beardhair"},
-        -- {chance = 1,    item = "berries"},
-        -- {chance = 0.1,    item = "TOOLS_blueprint"},
-        -- {chance = 0.1,    item = "LIGHT_blueprint"},
-        -- {chance = 0.1,    item = "SURVIVAL_blueprint"},
-        -- {chance = 0.1,    item = "FARM_blueprint"},
-        -- {chance = 0.1,    item = "SCIENCE_blueprint"},
-        -- {chance = 0.1,    item = "WAR_blueprint"},
-        -- {chance = 0.1,    item = "TOWN_blueprint"},
-        -- {chance = 0.1,    item = "REFINE_blueprint"},
-        -- {chance = 0.1,    item = "MAGIC_blueprint"},
-        -- {chance = 0.1,    item = "DRESS_blueprint"},
-        -- {chance = 1,    item = "petals_evil"},
-        -- {chance = 1,    item = "trinket_8"},
-        -- {chance = 1,    item = "houndstooth"},
-        -- {chance = 1,    item = "stinger"},
-        -- {chance = 1,    item = "gears"},
-        -- {chance = 0.1,  item = "boneshard"}, 
+        {chance = 25,   item = "cutgrass"},
+        {chance = 20,   item = "twigs"},
+        {chance = 1,    item = "petals"},
+        {chance = 1,    item = "foliage"},
+        {chance = 1,    item = "silk"},
+        {chance = 1,    item = "rope"},
+        {chance = 2,    item = "seeds"},
+        {chance = 0.01, item = "purplegem"},
+        {chance = 0.04, item = "bluegem"},
+        {chance = 0.02, item = "redgem"},
+        {chance = 0.02, item = "orangegem"},
+        {chance = 0.01, item = "yellowgem"},
+        {chance = 0.02, item = "greengem"},
+        {chance = 0.5,  item = "trinket_6"},
+        {chance = 0.5,  item = "trinket_4"},
+        {chance = 1,    item = "cutreeds"},
+        {chance = 0.33, item = "feather_crow"},
+        {chance = 0.33, item = "feather_robin"},
+        {chance = 0.33, item = "feather_robin_winter"},
+        {chance = 0.33, item = "feather_canary"},
+        {chance = 1,    item = "trinket_3"},
+        {chance = 1,    item = "beefalowool"},
+        {chance = 0.1,  item = "rabbit"},
+        {chance = 0.1,  item = "mole"},
+        {chance = 0.1,  item = "spider", aggro = true},
+        {chance = 0.1,  item = "frog", aggro = true},
+        {chance = 0.1,  item = "bee", aggro = true},
+        {chance = 0.1,  item = "mosquito", aggro = true},
+        {chance = 1,    item = "butterflywings"},
+        {chance = .02,  item = "beardhair"},
+        {chance = 1,    item = "berries"},
+        {chance = 0.1,    item = "TOOLS_blueprint"},
+        {chance = 0.1,    item = "LIGHT_blueprint"},
+        {chance = 0.1,    item = "SURVIVAL_blueprint"},
+        {chance = 0.1,    item = "FARM_blueprint"},
+        {chance = 0.1,    item = "SCIENCE_blueprint"},
+        {chance = 0.1,    item = "WAR_blueprint"},
+        {chance = 0.1,    item = "TOWN_blueprint"},
+        {chance = 0.1,    item = "REFINE_blueprint"},
+        {chance = 0.1,    item = "MAGIC_blueprint"},
+        {chance = 0.1,    item = "DRESS_blueprint"},
+        {chance = 1,    item = "petals_evil"},
+        {chance = 1,    item = "trinket_8"},
+        {chance = 1,    item = "houndstooth"},
+        {chance = 1,    item = "stinger"},
+        {chance = 1,    item = "gears"},
+        {chance = 0.1,  item = "boneshard"}, 
     }
 
 
@@ -347,6 +347,10 @@ local function MakeLoot(inst)
         ss_chance = 400
     elseif lucky_level ==3 then
         ss_chance = 1500
+        dd_chance = 0
+        d_chance = 0  
+        new_chance = 0 
+        possible_loot = {}    
     else
         d_chance = 1 + math.min(world_chance, 29)
         dd_chance = 1 + math.min(world_chance, 19)
@@ -531,6 +535,7 @@ local function OnLoad(inst, data)
     inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
     inst.Light:Enable(level == 3)
     MakeLoot(inst)
+    -- 加载时添加一遍
     if level == 3 then
         inst:DoTaskInTime(2,function(inst)
             TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
@@ -711,6 +716,11 @@ local function fn()
     inst.OnEntitySleep = CancelRunningTasks
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+    local Remove_ = inst.Remove
+    inst.Remove = function(...)
+        TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+        Remove_(...)
+    end
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
@@ -719,6 +729,12 @@ local function fn()
             --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
         end
         return true
+    end)
+
+    -- 初始化生成实体后执行
+    inst:DoTaskInTime(0,function(inst)
+        if inst.components.tumlevel.level ~= 3 then return end
+        TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
     end)
 
     inst.onpickup = onpickup

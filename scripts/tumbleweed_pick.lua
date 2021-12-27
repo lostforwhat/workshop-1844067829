@@ -671,14 +671,16 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
             resetNotice(item:GetDisplayName())
         end
         if name == "bird_gift" then
-            local names = {"crow", "robin", "canary", "puffin","bird_mutant","bird_mutant_spitter"}
+            local names = {"crow", "robin", "canary", "puffin"}
             local item = nil
             if GLOBAL.TheWorld.state.iswinter then
                 item = spawnAtGround("robin_winter", x,y,z)
             else
                 item = spawnAtGround(names[math.random(#names)], x,y,z)
             end
-            if item then item:PushEvent("gotosleep") end
+            if item then 
+                item.sg:GoToState("fall")
+            end
         end
         if name == "resurrect_gift" then
             local item = spawnAtGround("resurrectionstone", x,y,z)
@@ -723,13 +725,8 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
 
         if name == "box_gift" then --箱子彩蛋
             local items={"treasurechest","pandoraschest","dragonflychest","minotaurchest"} --木箱、华丽宝箱、龙鳞宝箱、大号华丽箱子
-            local itemInt=math.random(#items)
-            local item = spawnAtGround(items[itemInt], x,y,z)--随机箱子
-            if item == nil then return end
-            if item.components.workable then item:RemoveComponent("workable") end --不能被敲
-            if item.components.burnable then item:RemoveComponent("burnable") end --移除燃烧属性
-            item.persists=false --退出时不会保存       
-            item:AddTag("box_gift")
+            local itemInt = nil--math.random(#items)
+
             local giveItemList={}
             local giveItemList1={
                 "lightbulb",
@@ -755,20 +752,25 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 "armorruins",
                 "thulecite_pieces",
             }
-            local gl=math.random()
-            print("随机数："..gl)
-            if gl<=0.15+0.05*itemInt then --0.2-0.3
-                merge(giveItemList,giveItemList3)
-            end
-            if gl<=0.25+0.1*itemInt then --0.35-0.55
-                merge(giveItemList,giveItemList2)
-            end
-            if gl<=0.35+0.2*itemInt then --0.55-0.95
-                merge(giveItemList,giveItemList1)
+            local gl=math.random() - picker.components.luck:GetLuck()/1000
+
+            if gl<=0.15 then 
+                merge(giveItemList,giveItemList3) itemInt = 4
+            elseif gl<=0.45 then 
+                merge(giveItemList,giveItemList2) itemInt = 3
+            elseif gl<=0.65 then
+                merge(giveItemList,giveItemList1) itemInt = 2
             end
             if #giveItemList==0 then
-                giveItemList={"log"}
+                giveItemList={"log",} itemInt = 1
             end
+
+            local item = spawnAtGround(items[itemInt], x,y,z)
+            if item == nil then return end
+            if item.components.workable then item:RemoveComponent("workable") end --不能被敲
+            if item.components.burnable then item:RemoveComponent("burnable") end --移除燃烧属性
+            item.persists=false --退出时不会保存       
+            item:AddTag("box_gift")
 
             for i=1,math.random(3,6) do
                 local giveItem=spawnAtGround(giveItemList[math.random(#giveItemList)],x,y,z)
@@ -987,10 +989,10 @@ AddPrefabPostInit(
                     d_chance = 0
                 elseif lucky_level == 3 then -- 发光
                     ss_chance = 1500
-                    s_chance = 0.5
+                    s_chance = 50
                     dd_chance = 0
                     d_chance = 0
-                    new_chance = 0.1
+                    new_chance = 1
                 else -- 普通
                     d_chance = 1 + math.min(world_chance, 29)
                     dd_chance = 1 + math.min(world_chance, 19) 

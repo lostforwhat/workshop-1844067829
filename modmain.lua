@@ -134,38 +134,24 @@ if TUNING.new_items then
             inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
         end)
     end)
-    AddPrefabPostInit("tumbleweed",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        inst:DoTaskInTime(0,function(inst)
-            if inst.components.tumlevel.level ~= 3 then return end
-            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-        end)
-
-        local Remove_ = inst.Remove
-        inst.Remove = function(...)
-            if inst.components.tumlevel.level ~= 3 then Remove_(...) return end
-            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
-            Remove_(...)
-        end
-    end)
-    AddPrefabPostInit("tumbleweed_5",function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
-            return inst
-        end
-        inst:DoTaskInTime(0,function(inst)
-            if inst.components.tumlevel.level ~= 3 then return end
-            GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-        end)
-
-        local Remove_ = inst.Remove
-        inst.Remove = function(...)
-            if inst.components.tumlevel.level then Remove_(...) return end
-            GLOBAL.TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
-            Remove_(...)
-        end
-    end)
+    -- AddPrefabPostInit("tumbleweed",function(inst)
+    --     if not GLOBAL.TheWorld.ismastersim then
+    --         return inst
+    --     end
+    --     inst:DoTaskInTime(0,function(inst)
+    --         if inst.components.tumlevel.level ~= 3 then return end
+    --         GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+    --     end)
+    -- end)
+    -- AddPrefabPostInit("tumbleweed_5",function(inst)
+    --     if not GLOBAL.TheWorld.ismastersim then
+    --         return inst
+    --     end
+    --     inst:DoTaskInTime(0,function(inst)
+    --         if inst.components.tumlevel.level ~= 3 then return end
+    --         GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+    --     end)
+    -- end)
 end
 --控制台指令
 --c_teleport(0,0,0, ThePlayer)
@@ -1129,8 +1115,10 @@ if TUNING.new_items then
 
     --记录动作
     AddAction("RECORD",_G.STRINGS.TUM.RECORD,function(act)
+        print("服务器执行?")
         if act.doer ~= nil and act.invobject ~= nil and act.invobject.components.access ~= nil then
             act.invobject.components.access:Record(act.invobject,act.doer)
+            print("记录了动作") -- 记录
             return true
         end
     end)
@@ -1143,8 +1131,10 @@ if TUNING.new_items then
             return true
         end
     end)
+
     AddComponentAction("INVENTORY", "access", function(inst,doer,actions,right)
-        if doer:HasTag("achivwatchmaker") and _G.TheInput:IsKeyDown(_G.KEY_CTRL) and doer:HasTag("pocketwatchcaster") then
+        -- CONTROL_FORCE_STACK 是与 按ctrl键 堆叠动作 共用的
+        if doer:HasTag("achivwatchmaker") and doer.components.playercontroller:IsControlPressed(_G.CONTROL_FORCE_STACK) and doer:HasTag("pocketwatchcaster") then
             if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) or inst:HasTag("pocketwatch_mountedcast") then -- 乘骑状态不让使用
                 table.insert(actions, ACTIONS.RECORD)
             end

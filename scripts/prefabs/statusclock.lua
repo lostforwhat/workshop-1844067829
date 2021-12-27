@@ -66,7 +66,7 @@ local function fn()
     inst:AddComponent("rechargeable") 
     inst.components.rechargeable:SetOnDischargedFn(unavailable)
     inst.components.rechargeable:SetOnChargedFn(usable)
-    inst.components.rechargeable:SetChargeTime(180) -- 3分钟不过分吧
+    inst.components.rechargeable:SetChargeTime(120) -- 3分钟不过分吧
 
     MakeHauntableLaunch(inst)
     

@@ -1369,10 +1369,12 @@ function uiachievement:build_perkpage(j,i)
 	self.coinlistbutton[i]:SetPosition(x, y, 0)
 	self.coinlistbutton[i]:SetImageNormalColour(1,1,1,0.95)
 	self.coinlistbutton[i]:SetOnClick(function()
-
+		-- 必要时还要拆分出来，暂时没有问题了
 		if pagenum == 4 then
 			SendModRPCToServer(MOD_RPC["DSTAchievement"]["purchase"], self.coinlist[pagenum][i].name)
-		else 
+		elseif pagenum == 3 then 
+			SendModRPCToServer(MOD_RPC["DSTExclusive"][self.coinlist[pagenum][i].name]) --拆分出角色专属的rpc
+		else
 			SendModRPCToServer(MOD_RPC["DSTAchievement"][self.coinlist[pagenum][i].name])
 		end
 		self.owner:DoTaskInTime(.3, function()

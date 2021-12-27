@@ -930,7 +930,7 @@ function allachivevent:addOneJob(inst, achivname)
 end
 
 function allachivevent:tumfn(inst)
-    --风滚草 
+    --风滚草掉落物 
     inst:ListenForEvent("tumbleweeddropped", function(inst, data)
         local item = data.item
         if not item:HasTag("monster") and item.components.combat == nil then

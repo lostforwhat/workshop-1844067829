@@ -730,6 +730,7 @@ function Titlesystem:ApplayTilte(inst)
 			end
         end
     end)
+    -- 采集一个时，判断一下是否激活不离不弃。
     inst:ListenForEvent("tumbleweedpicked", function(inst, data)
     	local x, y, z = inst.Transform:GetWorldPosition()
     	local target = data.target
@@ -747,11 +748,11 @@ function Titlesystem:ApplayTilte(inst)
     		inst:DoTaskInTime(0.3, function() self.pick = false end)
     	end
     	if self.titles[8] == 1 and self.equip == 8 and math.random() < title_data["title8"]["up"] then
-    		local ents = TheSim:FindEntities(x,y,z, 10, nil,nil)
+    		local ents = TheSim:FindEntities(x,y,z, 8, nil,nil)
 		    for k,v in pairs(ents) do
-		        if v.prefab == "tumbleweed" and v ~= target and v.level then
-		        	local lucky_level = v.level or 0
-		        	v.level = math.random(lucky_level, 3)
+		        if v.prefab == "tumbleweed" and v ~= target and v.components.tumlevel then
+		        	local lucky_level = v.components.tumlevel.level or 0
+		        	v.components.tumlevel.level = math.min(lucky_level+1, 3) --提升1级品质
 		        	if v.components.colourtweener == nil then
 				        v:AddComponent("colourtweener")
 				    end
@@ -769,7 +770,7 @@ function Titlesystem:ApplayTilte(inst)
 				    end
 				    v.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(v.level+2)])
 				    v.Light:Enable(v.level == 3)
-				    v:MakeLoot()
+				    v:MakeLoot() -- 更新掉落物
 		        end
 		    end
     	end

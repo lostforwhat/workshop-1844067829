@@ -7,6 +7,10 @@ new_loot = {
         {chance = 0.5, item = "flint"},--燧石
         {chance = 0.4, item = "nitre"},--硝石
         {chance = 1, item = "rocks"},--石头
+        {chance = 2, item = "cutgrass"},--草
+        {chance = 2, item = "twigs"},--树枝
+        {chance = 0.5, item = "petals"},--花瓣
+        {chance = 0.5, item = "foliage"},--蕨叶
         {chance = 0.1, item = "marble"},--大理石
         {chance = 0.2, item = "goldnugget"},--黄金
         {chance = 2, item = "ice"},--冰
@@ -364,8 +368,8 @@ s_loot = {
 
         {chance = 0.004, item = "saltstack"},--盐堆
         {chance = 0.004, item = "seastack"},--浮堆
-        {chance = 0.02, item = "shell_cluster"},--贝壳堆
-        {chance = 0.02, item = "sunkenchest"},--沉底宝箱
+        -- {chance = 0.02, item = "shell_cluster"},--贝壳堆
+        -- {chance = 0.02, item = "sunkenchest"},--沉底宝箱
         {chance = 0.05, item="mandrake_active"},--活曼德拉草
     },
 
@@ -565,7 +569,7 @@ gift_loot = { --彩蛋
         {chance = 0.007, item = "cook_gift", gift = true},--锅冰箱彩蛋
         {chance = 0.03, item = "butterfly_gift", gift = true},--蝴蝶彩蛋
         {chance = 0.01, item = "player_gift", gift = true}, --专属彩蛋     
-        {chance = 0.01, item = "box_gift", gift = true}, --箱子彩蛋    
+        {chance = 0.03, item = "box_gift", gift = true}, --箱子彩蛋    
         {chance = 0.06, item = "packing_gift", gift = true}, --礼物彩蛋       
         {chance = 0.01, item = "luck_gift", gift = true}, --好运来彩蛋       
         {chance = 0.02, item = "kingtreasure", gift = true}, --王的宝库     
