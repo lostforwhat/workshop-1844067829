@@ -235,7 +235,7 @@ local function spawnPlayerGift(picker)
     end
     if picker.prefab == "wolfgang" then
         for k=1,2 do
-            local item = GLOBAL.SpawnPrefab("bonestew")
+            local item = GLOBAL.SpawnPrefab("dumbbell_golden") -- 改为黄金哑铃
             picker.components.inventory:GiveItem(item)
         end
     end
@@ -257,81 +257,6 @@ local function spawnPlayerGift(picker)
             picker.components.inventory:GiveItem(item)
         end
     end
-end
-
-local function needNotice(goods)
-    local notice_goods = {
-        "eyebrellahat",
-        "cane",
-        "hivehat",
-        "armorskeleton",
-        "opalstaff",
-        "krampus_sack",
-        "beequeen",
-        "toadstool",
-        "stalker_atrium",
-        "stalker",
-        "stalker_forest",
-        "spat",
-        "bearger",
-        "alterguardian_phase1",
-        "deerclops",
-        "spiderqueen",
-        "package_staff",
-        "prayer_symbol",
-        "minotaurhorn",
-        "deerclops_eyeball",
-        "yellowstaff",
-        "greenstaff",
-        "greenamulet",
-        "orangestaff",
-        "eyeturret_item",
-        "ruins_bat",
-        "armorruins",
-        "ruinshat",
-        "yellowamulet",
-        "panflute",
-        "shadowheart",
-        "pigtorch",
-        "monkeybarrel", -- 猴子桶
-        "catcoonden", --中空树桩
-        "ruins_statue_mage",
-        "archive_moon_statue",
-        "nightmaregrowth",
-        "atrium_idol",
-        "atrium_overgrowth",
-        "moonbase",
-        "pigking",
-        "achiv_clear",
-        "opalpreciousgem",
-        "houndmound",
-        "spiderhole",
-        "gingerbreadhouse",
-        "beehive",
-        "opalstaff",
-        "book_season",
-        "potion_luck",
-        "potion_achiv",
-
-        "warg",
-        "dragonfly",
-        "moose",
-        "minotaur",
-        "klaus_sack",
-        "eyeofterror",
-        "twinofterror1",
-        "twinofterror2",
-        "crabking",
-        "malbatross",
-        "stealingknife",
-        "opalgemsamulet",
-    }
-    for i, v in ipairs(notice_goods) do
-        if goods == v then 
-            return true
-        end
-    end
-    return false
 end
 
 local function spawnAtGround(name, x,y,z)
@@ -714,6 +639,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
         end
         if name == "player_gift" then   --专属彩蛋    
             spawnPlayerGift(picker)
+            picker.components.talker:Say(GLOBAL.STRINGS.TUM.PLAYER_GIFT)
         end
         local function merge(table1,table2)
             if table1 and type(table1) =="table" and table2 and type(table2) then
@@ -762,7 +688,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 merge(giveItemList,giveItemList1) itemInt = 2
             end
             if #giveItemList==0 then
-                giveItemList={"log",} itemInt = 1
+                giveItemList={"log","cutgrass","twigs"} itemInt = 1
             end
 
             local item = spawnAtGround(items[itemInt], x,y,z)
@@ -901,7 +827,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 local angle = k *2 *PI/num
                 local item = spawnAtGround(names[math.random(#names)], 2*math.cos(angle)+x, y, 2*math.sin(angle)+z)
                 if item and item.components.stackable then
-                    item.components.stackable.stacksize = math.random(5)
+                    item.components.stackable.stacksize = math.random(3)
                 end
                 table.insert(lootlist,item)
             end
@@ -915,7 +841,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
         item.components.combat:SuggestTarget(picker)
     end
     
-    if item ~= nil and needNotice(it.item) then
+    if item ~= nil and loot_table.needNotice(it.item) then
         local item_name = item:GetDisplayName() or "???"
         resetNotice(item_name)
         picker:PushEvent("tumbleweeddropped", {item = item})
@@ -932,10 +858,11 @@ AddPrefabPostInit(
             local drop_chance = TUNING.drop_chance --物品掉率
 
             inst:ListenForEvent("tumbleweedpicked", function(inst, data) --监听事件
-                local possible_loot = {
+                local possible_loot = { --可能掉落物
                     {chance = 20,   item = "cutgrass"},--草
                     {chance = 15,   item = "twigs"},--小树枝
                 }
+                local fixed_loot = {} -- 固定掉落物
                 local function insertLoot(loot, n)
                     for a,b in ipairs(loot) do
                         --print("old:"..b.chance)
@@ -943,6 +870,17 @@ AddPrefabPostInit(
                         --print("new:"..b.chance)
                         if newchance > 0 then
                             table.insert(possible_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
+                        end
+                    end
+                end
+
+                local function insertLoot2(loot, n)
+                    for a,b in ipairs(loot) do
+                        --print("old:"..b.chance)
+                        local newchance = b.chance * n --重置chance
+                        --print("new:"..b.chance)
+                        if newchance > 0 then
+                            table.insert(fixed_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
                         end
                     end
                 end
@@ -971,31 +909,43 @@ AddPrefabPostInit(
                 local d_chance = 1
                 local dd_chance = 1
 
+                local possible_num = 1 --可能掉落物数量
+                local fixed_num = 1 --固定掉落物数量 (对应等级内的物品)
+
                 local lucky_level = target.components.tumlevel.level or 0
                 if lucky_level == -1 then -- 绿色
                     d_chance = 20 + (world_chance * 2)
                     dd_chance = 10 + world_chance
                 elseif lucky_level == -2 then --紫色
-                    d_chance = 40 + world_chance
+                    d_chance = 30 + world_chance
                     dd_chance = 50 + (world_chance * 2)
                 elseif lucky_level == 1 then -- 粉红色
                     new_chance = 40
                     s_chance = 200
                     ss_chance = 200
+                    insertLoot2(loot_table.new_loot, drop_chance*new_chance)
+                    insertLoot2(loot_table.s_loot, drop_chance*s_chance)
+                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)
                 elseif lucky_level == 2 then -- 橙色
                     s_chance = 200--100
                     ss_chance = 400--200
                     dd_chance = 0
                     d_chance = 0
+                    insertLoot2(loot_table.s_loot, drop_chance*s_chance)
+                    insertLoot2(loot_table.ss_loot, drop_chance*ss_chance)
+                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)                    
                 elseif lucky_level == 3 then -- 发光
                     ss_chance = 1500
                     s_chance = 50
                     dd_chance = 0
                     d_chance = 0
-                    new_chance = 1
+                    insertLoot2(loot_table.ss_loot, drop_chance*ss_chance)
+                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)  
                 else -- 普通
                     d_chance = 1 + math.min(world_chance, 29)
-                    dd_chance = 1 + math.min(world_chance, 19) 
+                    dd_chance = 1 + math.min(world_chance, 19)
+                    possible_num = possible_num + 1
+                    fixed_num = 0
                 end
 
                 new_chance = new_chance * (luck*0.05 + 1) * san
@@ -1006,25 +956,39 @@ AddPrefabPostInit(
                 insertLoot(loot_table.s_loot, drop_chance*s_chance)
                 insertLoot(loot_table.ss_loot, drop_chance*ss_chance)
                 insertLoot(loot_table.gift_loot, drop_chance*ss_chance)
-                if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then -- 是否洞穴
-                    insertLoot(loot_table.cave_loot, drop_chance*world_chance)
-                else
-                    insertLoot(loot_table.cave_loot, drop_chance)
-                end
 
-                if (not start_protect or playerage >= 3) and lucky_level < 2 then
+                if (not start_protect or playerage >= 3) and lucky_level < 2 then 
                     insertLoot(loot_table.d_loot, drop_chance*d_chance)
                     insertLoot(loot_table.dd_loot, drop_chance*dd_chance)
                     insertLoot(loot_table.trap_loot, drop_chance*dd_chance)
+                    insertLoot2(loot_table.d_loot, lucky_level < 0 and drop_chance*d_chance or 0)
+                    insertLoot2(loot_table.dd_loot, lucky_level < 0 and drop_chance*dd_chance or 0)
+                    insertLoot2(loot_table.trap_loot, lucky_level < 2 and drop_chance*dd_chance or 0) -- 粉色也有概率开到陷阱
                     if TUNING.boss_chance and dd_chance > 0 then
                         insertLoot(loot_table.big_boss_loot, drop_chance*dd_chance)
+                        insertLoot2(loot_table.big_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
                         if GLOBAL.TheWorld:HasTag("cave") then
                             insertLoot(loot_table.cave_boss_loot, drop_chance*dd_chance)
+                            insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
                         else
                             insertLoot(loot_table.forest_boss_loot, drop_chance*dd_chance) --添加森林世界才出的boss
+                            insertLoot2(loot_table.forest_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
                             insertLoot(loot_table.cave_boss_loot, drop_chance)
+                            insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance or 0)
                         end
                     end
+
+                    if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then -- 是否洞穴
+                        insertLoot(loot_table.cave_loot, drop_chance*world_chance)
+                        insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance*world_chance or 0)
+                    else
+                        insertLoot(loot_table.cave_loot, drop_chance)
+                        insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance or 0)
+                    end
+
+                elseif #fixed_loot == 0 and lucky_level < 0 then -- 这种是开局保护时，绿紫等去掉固定掉落物
+                    possible_num = possible_num + 1
+                    fixed_num = 0                    
                 end
 
                 if TUNING.new_items then
@@ -1037,30 +1001,50 @@ AddPrefabPostInit(
                     --print("name:"..n.item..",chance:"..n.chance)
                 end
 
-                local num_loots = 1
+                --------------
                 local titles = picker.components.titlesystem and picker.components.titlesystem.titles or {}
                 local title4 = titles[4] or 0
                 local rand = title_data and title_data["title4"]["drop"] or 0
                 if title4 == 1 and math.random() < rand then
-                    num_loots = num_loots + 1
+                    possible_num = possible_num + 1
                 end
                 if titles[13] == 1 then
-                    num_loots = num_loots + 1
+                    possible_num = possible_num + 1
                 end
                 -- 对于橙色以上草，角色幸运值大于20，有一定5%概率消耗1点幸运增加1个掉落物
                 if lucky_level >=2 and picker.components.luck ~= nil and luck > 20 and math.random() > 0.95 then
-                    num_loots = num_loots + 1
+                    fixed_num = fixed_num + 1
                     picker.components.luck:DoDelta(-1)
                 end
 
                 if TUNING.more_blueprint and lucky_level >=2 then
                     spawnAtGround("blueprint", x, y, z)
-                    num_loots = num_loots - 1
+                    possible_num = possible_num - 1
                 end
 
                 local res_loot = {}
-                --print("totalchance:"..totalchance)
-                while num_loots > 0 do
+
+                while fixed_num > 0 do
+                    next_chance = math.random()*totalchance
+                    --print("next_chance:"..next_chance)
+                    next_loot = nil
+                    for m, n in ipairs(fixed_loot) do
+                        next_chance = next_chance - n.chance
+                        --print("n_chance:"..n.chance)
+                        if next_chance <= 0 then
+                            --print("n.item:"..n.item)
+                            --print("n.chance:"..n.chance)
+                            next_loot = n
+                            break
+                        end
+                    end
+                    if next_loot ~= nil then
+                        table.insert(res_loot, next_loot)
+                        fixed_num = fixed_num - 1
+                    end
+                end
+
+                while possible_num > 0 do
                     next_chance = math.random()*totalchance
                     --print("next_chance:"..next_chance)
                     next_loot = nil
@@ -1076,14 +1060,15 @@ AddPrefabPostInit(
                     end
                     if next_loot ~= nil then
                         table.insert(res_loot, next_loot)
-                        num_loots = num_loots - 1
+                        possible_num = possible_num - 1
                     end
                 end
                 for k,v in pairs(res_loot) do
                     local item = doSpawnItem(v, target, picker)
-                    if item == nil or item:HasTag("structure") then
-                        break
-                    end
+                    -- 不希望彩蛋影响掉落数量
+                    -- if item == nil or item:HasTag("structure") then
+                    --     break
+                    -- end
                 end
 
             end)

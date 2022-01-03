@@ -32,6 +32,7 @@ strings.UNKNOWN_PACKAGE = "UNKNOWN PACKAGE"
 strings.PRAY = "pray"
 strings.PRAYED = "prayed"
 strings.BOOK_SEAN_READ = "unknown power effect the world"
+strings.PLAYER_GIFT = "something's in my pocket"
 
 GLOBAL.STRINGS.TUM = strings
 

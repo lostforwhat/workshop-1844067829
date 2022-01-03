@@ -143,68 +143,11 @@ local function deepcopy(object)
     return _copy(object)
 end
 
-local function needNotice(goods)
-    local notice_goods = {
-        "eyebrellahat",
-        "cane",
-        "hivehat",
-        "armorskeleton",
-        "opalstaff",
-        "krampus_sack",
-        "beequeen",
-        "toadstool",
-        "stalker_atrium",
-        "stalker",
-        "stalker_forest",
-        "spat",
-        "bearger",
-        "warg",
-        "dragonfly",
-        "moose",
-        "minotaur",
-        "deerclops",
-        "spiderqueen",
-        "package_staff",
-        "prayer_symbol",
-        "minotaurhorn",
-        "yellowstaff",
-        "greenstaff",
-        "orangestaff",
-        "eyeturret_item",
-        "ruins_bat",
-        "armorruins",
-        "ruinshat",
-        "yellowamulet",
-        "panflute",
-        "shadowheart",
-        "pigtorch",
-        "monkeybarrel", -- 猴子桶
-        "catcoonden", --中空树桩
-        "ruins_statue_mage",
-		"achiv_clear",
-        "warg",
-        "dragonfly",
-        "moose",
-        "minotaur",
-        "klaus_sack",
-        "eyeofterror",
-        "twinofterror1",
-        "twinofterror2",
-        "crabking",
-        "malbatross",
-        "stealingknife",
-        "opalgemsamulet",
-    }
-    for i, v in ipairs(notice_goods) do
-        if goods == v then 
-            return true
-        end
-    end
-    return false
-end
-
 local function onpickup(inst, picker)
     --添加多世界宣告支持
+    inst.loot = inst.loot or {}
+    inst.lootaggro = inst.lootaggro or {}
+
     local picker_name = picker and picker:GetDisplayName() or "???"
     local function resetNotice(...)
         local worldShardId = TheShard:GetShardId()
@@ -246,7 +189,7 @@ local function onpickup(inst, picker)
             end
         end
         local item_name = item:GetDisplayName()
-        if needNotice(v) then
+        if loot_tables.needNotice(v) then
             resetNotice(item_name)
             picker:PushEvent("tumbleweeddropped", {item = item})
         end
@@ -258,7 +201,7 @@ local function onpickup(inst, picker)
     return true --This makes the inventoryitem component not actually give the tumbleweed to the player
 end
 
-
+-- 生成时，预制好掉落物部分的方法，现已经被移除
 local function MakeLoot(inst)
     local possible_loot =
     {
@@ -534,10 +477,10 @@ local function OnLoad(inst, data)
     end
     inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
     inst.Light:Enable(level == 3)
-    MakeLoot(inst)
+    -- MakeLoot(inst)
     -- 加载时添加一遍
     if level == 3 then
-        inst:DoTaskInTime(2,function(inst)
+        inst:DoTaskInTime(0,function(inst)
             TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
         end)
     end
@@ -718,7 +661,9 @@ local function fn()
     inst.OnLoad = OnLoad
     local Remove_ = inst.Remove
     inst.Remove = function(...)
-        TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+        if inst.components.tumlevel.level == 3 then
+            TheWorld:PushEvent("Rtumbleweed_5",{tumbleweed=inst})
+        end
         Remove_(...)
     end
 
@@ -731,14 +676,8 @@ local function fn()
         return true
     end)
 
-    -- 初始化生成实体后执行
-    inst:DoTaskInTime(0,function(inst)
-        if inst.components.tumlevel.level ~= 3 then return end
-        TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-    end)
-
     inst.onpickup = onpickup
-    inst.MakeLoot = MakeLoot
+    -- inst.MakeLoot = MakeLoot
 
     return inst
 end
@@ -761,32 +700,41 @@ local function RandomType()
     end
 end
 
-local function MakeAnyTumbleweed()
-    local inst = fn()
-    if not TheWorld.ismastersim then 
-        return inst
-    end
-    local level = RandomType()
-    inst.components.tumlevel.level = level
-    if inst.components.colourtweener == nil then
-        inst:AddComponent("colourtweener")
-    end
-    inst.components.colourtweener:StartTween(colors[level], 0)
-    if inst.components.named == nil then
-        inst:AddComponent("named")
-    end
-    inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
-    inst.Light:Enable(level == 3)
-    MakeLoot(inst)
-    return inst
-end
+-- 这个完全没有必要
+-- local function MakeAnyTumbleweed()
+--     local inst = fn()
+--     if not TheWorld.ismastersim then 
+--         return inst
+--     end
+--     local level = RandomType()
+--     inst.components.tumlevel.level = level
+--     if inst.components.colourtweener == nil then
+--         inst:AddComponent("colourtweener")
+--     end
+--     inst.components.colourtweener:StartTween(colors[level], 0)
+--     if inst.components.named == nil then
+--         inst:AddComponent("named")
+--     end
+--     inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
+--     inst.Light:Enable(level == 3)
+--     if level == 3 then
+--         -- 初始化生成实体后执行
+--         inst:DoTaskInTime(0,function(inst)
+--             if inst.components.tumlevel.level ~= 3 then return end
+--             TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+--         end)
+--     end
+--     -- MakeLoot(inst)
+--     return inst
+-- end
 
-local function MakeTumbleweed(level)
+local function MakeTumbleweed(level_)
     return function()
         local inst = fn()
         if not TheWorld.ismastersim then
             return inst
         end
+        local level = level_
         if level == nil then
             level = RandomType()
         end
@@ -800,12 +748,20 @@ local function MakeTumbleweed(level)
         end
         inst.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(level+2)])
         inst.Light:Enable(level == 3)
-        MakeLoot(inst)
+        if level == 3 then
+            -- 初始化生成实体后执行
+            inst:DoTaskInTime(0,function(inst)
+                -- if inst.components.tumlevel.level ~= 3 then return end
+                TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
+            end)
+        end
+        
+        -- MakeLoot(inst)
         return inst
     end
 end
 
-return Prefab("tumbleweed", MakeAnyTumbleweed, assets, prefabs),
+return Prefab("tumbleweed", MakeTumbleweed(), assets, prefabs),
     Prefab("tumbleweed_2", MakeTumbleweed(0), assets, prefabs),
     Prefab("tumbleweed_3", MakeTumbleweed(1), assets, prefabs),
     Prefab("tumbleweed_4", MakeTumbleweed(2), assets, prefabs),

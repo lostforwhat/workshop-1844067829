@@ -58,6 +58,7 @@ end
 
 _G.TUMBLEWEED_5_NUM=nil
 
+
 _G.GetTableLength = function(tab)
     local count = 0
     if type( tab ) ~= "table" then
@@ -111,6 +112,15 @@ _G.ToStringEx = function(value)
     end
 end
 
+function needNotice(goods)
+    for i, v in ipairs(notice_goods) do
+        if goods == v then 
+            return true
+        end
+    end
+    return false
+end
+
 -- 开启新物品后，彩色护符存在
 if TUNING.new_items then
     AddPrefabPostInit("world",function(inst)
@@ -134,24 +144,6 @@ if TUNING.new_items then
             inst:ListenForEvent("Rtumbleweed_5",RemoveTumbleweed_5)
         end)
     end)
-    -- AddPrefabPostInit("tumbleweed",function(inst)
-    --     if not GLOBAL.TheWorld.ismastersim then
-    --         return inst
-    --     end
-    --     inst:DoTaskInTime(0,function(inst)
-    --         if inst.components.tumlevel.level ~= 3 then return end
-    --         GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-    --     end)
-    -- end)
-    -- AddPrefabPostInit("tumbleweed_5",function(inst)
-    --     if not GLOBAL.TheWorld.ismastersim then
-    --         return inst
-    --     end
-    --     inst:DoTaskInTime(0,function(inst)
-    --         if inst.components.tumlevel.level ~= 3 then return end
-    --         GLOBAL.TheWorld:PushEvent("Atumbleweed_5",{tumbleweed=inst})
-    --     end)
-    -- end)
 end
 --控制台指令
 --c_teleport(0,0,0, ThePlayer)

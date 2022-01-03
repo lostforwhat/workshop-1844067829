@@ -36,66 +36,6 @@ local function addnextdamage(self, inst)
 end
 
 
-local function needNotice(goods)
-    local notice_goods = {
-        "eyebrellahat",
-        "cane",
-        "hivehat",
-        "armorskeleton",
-        "opalstaff",
-        "krampus_sack",
-        "beequeen",
-        "toadstool",
-        "stalker_atrium",
-        "stalker",
-        "stalker_forest",
-        "spat",
-        "bearger",
-        "warg",
-        "dragonfly",
-        "moose",
-        "minotaur",
-        "deerclops",
-        "spiderqueen",
-        "package_staff",
-        "prayer_symbol",
-        "minotaurhorn",
-        "yellowstaff",
-        "greenstaff",
-        "orangestaff",
-        "eyeturret_item",
-        "ruins_bat",
-        "armorruins",
-        "ruinshat",
-        "yellowamulet",
-        "panflute",
-        "shadowheart",
-        "pigtorch",
-        "monkeybarrel", -- 猴子桶
-        "catcoonden", --中空树桩
-        "ruins_statue_mage",
-        "archive_moon_statue",
-        "nightmaregrowth",
-        "atrium_idol",
-        "atrium_overgrowth",
-        "moonbase",
-        "pigking",
-        "achiv_clear",
-        "blueprint",
-        "little_walrus",
-        "book_gardening",
-        "book_sleep",
-        "book_brimstone",
-        "book_birds",
-    }
-    for i, v in ipairs(notice_goods) do
-        if goods == v then 
-            return true
-        end
-    end
-    return false
-end
-
 local function randomItem(value,luck)--传入vip等级
 	--[[
 	local num = GetTableLength(recycle_table)
@@ -485,7 +425,7 @@ function Titlesystem:ApplayTilte(inst)
         		inst.components.inventory:GiveItem(item)
         	end
 			--宣告贵重物品
-    		if item ~= nil and needNotice(item.prefab) then
+    		if item ~= nil and loot_table.needNotice(item) then
         		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..item:GetDisplayName().."】")
     		elseif item ~= nil and inst.components.talker then 
     			inst.components.talker:Say("【每日物资】 "..item:GetDisplayName(),2,true,true,false) 
@@ -577,7 +517,8 @@ function Titlesystem:ApplayTilte(inst)
 			end
 		end
 		if self.equip == 4 or toqie then
-			if target.components.lootdropper ~= nil and math.random() < title_data["title4"]["steal"] or (toqie and math.random() < 0.1) then  --随机0-1的数，小于0.01
+			-- 佩戴巧手称号和手拿偷刀，优先偷刀
+			if target.components.lootdropper ~= nil and (toqie and math.random() < 0.1 or math.random() < title_data["title4"]["steal"]) then  --随机0-1的数，小于0.01
 				local item = nil
 
 				local gl = math.random()
@@ -616,7 +557,7 @@ function Titlesystem:ApplayTilte(inst)
 				end
 				]]    
 				--宣告贵重物品
-    			if item ~= nil and needNotice(item.prefab) then
+    			if item ~= nil and loot_table.needNotice(item) then
     				if not toqie then
         				TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
         			else
@@ -770,7 +711,7 @@ function Titlesystem:ApplayTilte(inst)
 				    end
 				    v.components.named:SetName(STRINGS.NAMES["TUMBLEWEED_"..(v.level+2)])
 				    v.Light:Enable(v.level == 3)
-				    v:MakeLoot() -- 更新掉落物
+				    -- v:MakeLoot() -- 更新掉落物
 		        end
 		    end
     	end

@@ -1,3 +1,9 @@
+bosslist = {"moose", "dragonfly", "beager", "deerclops", "stalker_atrium", "klaus", "crabking",
+                            "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross","alterguardian_phase1",
+                        	"alterguardian_phase2","alterguardian_phase3","eyeofterror","twinofterror1","twinofterror2",
+                        	"blackbear","rhino3_red","rhino3_blue","rhino3_yellow","myth_goldfrog",--神话boss
+                            } -- "medal_rage_krampus" 暗夜坎普斯
+
 local function StrToTable(str)
     if str == nil or type(str) ~= "string" then
         return
@@ -1499,11 +1505,6 @@ function allachivevent:onkilledother(inst)
             if (not inst:HasTag("playerghost")) and math.ceil(inst.components.health.currenthealth) == 1 then
                 self:addOneJob(inst, "health1kill")
             end
-            local bosslist = {"moose", "dragonfly", "beager", "deerclops", "stalker_atrium", "klaus", "crabking",
-                            "antlion", "minotaur", "beequeen", "toadstool", "toadstool_dark", "malbatross","alterguardian_phase1",
-                        	"alterguardian_phase2","alterguardian_phase3","eyeofterror","twinofterror1","twinofterror2",
-                        	"blackbear","rhino3_red","rhino3_blue","rhino3_yellow","myth_goldfrog",--神话boss
-                            } -- "medal_rage_krampus" 暗夜坎普斯
             if findprefab(bosslist, victim.prefab) then
                 self.killboss = self.killboss + 1
                 TheNet:Announce(inst:GetDisplayName().." 击杀了【"..victim:GetDisplayName().."】")
@@ -1546,6 +1547,14 @@ function allachivevent:wakeupListener(inst)
                 self.sleepsiesta = allachiv_eventdata["sleepsiesta"]
                 --self:seffc(inst, "sleepsiesta")
             end
+        end
+        if inst.prefab == "wanda" then
+            if self.deathblack < allachiv_eventdata["deathblack"] then
+                self.deathblack = allachiv_eventdata["deathblack"]
+            end
+            if self.tooyoung < allachiv_eventdata["tooyoung"] then
+                self.tooyoung = allachiv_eventdata["tooyoung"]
+            end         	
         end
     end)
 end
@@ -1849,8 +1858,9 @@ function allachivevent:hitother(inst)
                 self:addOneJob(inst, "demage66")
             end
             
-            if target.components.health and target.components.health.maxhealth >= 4000
-                and math.ceil(damage) >= target.components.health.maxhealth then
+            -- if target.components.health and target.components.health.maxhealth >= 4000
+            --     and math.ceil(damage) >= target.components.health.maxhealth then
+            if findprefab(bosslist, target.prefab) and math.ceil(damage) >= target.components.health.maxhealth then -- 致死boss 
                 self:addOneJob(inst, "demagekill")
             end
 

@@ -33,6 +33,8 @@ strings.CKK = "查看"
 strings.PRAYED = "祈祷获得了"
 strings.BOOK_SEAN_READ = "神秘力量影响了这个世界"
 
+strings.PLAYER_GIFT = "有什么东西到口袋里了"
+
 
 
 GLOBAL.STRINGS.TUM = strings

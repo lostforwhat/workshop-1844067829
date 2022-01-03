@@ -655,7 +655,7 @@ function allachivcoin:sanityupcoin(inst)
 end
 
 function allachivcoin:healthupcoin(inst)
-    if self.coinamount >= allachiv_coinuse["healthup"] and inst.prefab ~= "wolfgang"
+    if self.coinamount >= allachiv_coinuse["healthup"] --[[and inst.prefab ~= "wolfgang"--]]
         and self.healthupamount < allachiv_coindata_max["healthup"]  then
         self.healthupamount = self.healthupamount + 1
 		self:coinDoDelta(-allachiv_coinuse["healthup"])

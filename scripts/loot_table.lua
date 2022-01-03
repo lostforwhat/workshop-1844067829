@@ -1,4 +1,4 @@
-return { -- NAMES.trinket_3
+local loot = { -- NAMES.trinket_3
 new_loot = {
         {chance = 5, item = "log"},--木头
         {chance = 1, item = "charcoal"},--木炭
@@ -182,7 +182,6 @@ new_loot = {
         {chance = 0.1, item = "waterballoon"},--水球
         {chance = 0.1, item = "heatrock"},--热能石
         {chance = 0.08, item = "piggyback"},--猪皮背包
-        {chance = 0.08, item = "sketch"},--草图
         {chance = 0.1, item = "bedroll_furry"},--毛皮铺盖
         {chance = 0.1, item = "fertilizer"},--堆肥桶
         {chance = 0.1, item = "sewing_kit"},--针线包
@@ -197,7 +196,7 @@ new_loot = {
         {chance = 0.1, item = "beefalo", aggro = true},--牛
         {chance = 0.1, item = "lightninggoat", aggro = true},--闪电羊
         {chance = 0.1, item = "pigman", aggro = true},--猪人
-        {chance = 0.08, item = "little_walrus", aggro = true},--小海象
+        {chance = 0.02, item = "little_walrus", aggro = true},--小海象
         {chance = 0.2, item = "koalefant_summer", aggro = true},--夏象
         {chance = 0.2, item = "koalefant_winter", aggro = true},--冬象
         {chance = 0.05, item = "rocky", aggro = true},--石虾
@@ -217,7 +216,7 @@ new_loot = {
         {chance = 0.1, item = "spore_tall"},--蓝色孢子
         {chance = 0.1, item = "lightflier"},--球状光虫
         {chance = 0.04, item = "livingtree"},--完全正常的树
-        {chance = 0.01, item = "phlegm"},--脓鼻涕
+        {chance = 0.02, item = "phlegm"},--脓鼻涕
         {chance = 0.1, item = "eel"},--鳗鱼
     },
 
@@ -585,5 +584,88 @@ new_items_loot = { --新物品
         {chance = 0.004, item="potion_achiv"}, --神秘药水
         {chance = 0.009, item="stealingknife"}, --偷窃刀
 	    {chance = 0.001, item="opalgemsamulet"}, --彩色护符 
-    }
+    },
 }
+-- 视为宝物的列表
+loot.notice_goods = {
+    "eyebrellahat",
+    "little_walrus", -- 小海象
+    "cane",
+    "hivehat",
+    "armorskeleton",
+    "opalstaff",
+    "krampus_sack",
+    "beequeen",
+    "toadstool",
+    "stalker_atrium",
+    "stalker",
+    "stalker_forest",
+    "spat",
+    "bearger",
+    "alterguardian_phase1",
+    "deerclops",
+    "spiderqueen",
+    "package_staff",
+    "prayer_symbol",
+    "minotaurhorn",
+    "deerclops_eyeball",
+    "yellowstaff",
+    "greenstaff",
+    "greenamulet",
+    "orangestaff",
+    "eyeturret_item",
+    "ruins_bat",
+    "armorruins",
+    "ruinshat",
+    "yellowamulet",
+    "panflute",
+    "shadowheart",
+    "pigtorch",
+    "monkeybarrel", -- 猴子桶
+    "catcoonden", --中空树桩
+    "ruins_statue_mage",
+    "archive_moon_statue",
+    "nightmaregrowth",
+    "atrium_idol",
+    "atrium_overgrowth",
+    "moonbase",
+    "pigking",
+    "achiv_clear",
+    "opalpreciousgem",
+    "houndmound",
+    "spiderhole",
+    "gingerbreadhouse",
+    "beehive",
+    "opalstaff",
+    "book_season",
+    "potion_luck",
+    "potion_achiv",
+
+    "warg",
+    "dragonfly",
+    "moose",
+    "minotaur",
+    "klaus_sack",
+    "eyeofterror",
+    "twinofterror1",
+    "twinofterror2",
+    "crabking",
+    "malbatross",
+    "stealingknife",
+    "opalgemsamulet",
+}
+-- 传入 实体或者其预制体名称 都可
+loot.needNotice = function(goods)
+    local item = goods.prefab or goods
+    if goods.prefab ~= nil and item == "package_ball" and goods.components.packer.package then --包裹里的也要判断
+        return loot.needNotice(goods.components.packer.package.prefab)
+    end
+    for i, v in ipairs(loot.notice_goods) do
+        if item == v then 
+            return true
+        end
+    end
+    return false
+end
+
+return loot

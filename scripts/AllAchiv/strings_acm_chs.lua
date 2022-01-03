@@ -949,7 +949,7 @@ STRINGS.ALLACHIVINFO={
 ["usecoin300"] = "消耗成就点"..allachiv_eventdata["usecoin300"].."点",
 ["killmoonpig10"] = "满月时击杀疯猪"..allachiv_eventdata["killmoonpig10"].."次",
 ["demage1000"] = "单次攻击造成至少伤害1000 "..allachiv_eventdata["demage1000"].."次",
-["demagekill"] = "致死击杀boss"..allachiv_eventdata["demage300"].."次",
+["demagekill"] = "致死击杀boss"..allachiv_eventdata["demagekill"].."次",
 
 ["picktum10"] = "开启风滚草"..allachiv_eventdata["picktum10"].."次",
 ["refish10"] = "钓鱼"..allachiv_eventdata["refish10"].."次",

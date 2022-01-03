@@ -236,12 +236,13 @@ function levelsystem:resetability(inst)
 	self.hungerupamount = level
 	self.sanityupamount = level
 
-	if inst.prefab ~= "wolfgang" then
-		self.healthupamount = level
-	else
-		self.healthupamount = 0
-	end
-
+	-- if inst.prefab ~= "wolfgang" then
+	-- 	self.healthupamount = level
+	-- else
+	-- 	self.healthupamount = 0
+	-- end
+	self.healthupamount = level
+	
 	if inst.prefab == "wx78" then
 		self.damageupamount = math.floor(level*0.3)
 		local currentDamageMult = 1 + 0.01 * self.damageupamount
@@ -410,39 +411,39 @@ function levelsystem:onupdate(inst)
 	end
 	
 	--health
-	if inst.prefab ~= "wolfgang" then
-		local achievementhealthup = allachiv_coindata["healthup"]*inst.currenthealthup:value() + titlehealthup
-		local titles = titlesystem.titles or {}
-		if titles[9] == 1 then
-			achievementhealthup = achievementhealthup + title_data["title9"]["health"]
-		end
-		if inst.prefab == "webber" then
-			achievementhealthup = achievementhealthup + inst.components.allachivcoin.temphealthup
-		end
-		if achievementhealthup ~= self.achievementhealthup then
-			local health_percent = inst.components.health:GetPercent()
-			local addhealth = achievementhealthup - self.achievementhealthup
-			inst.components.health.maxhealth = inst.components.health.maxhealth + addhealth
-			inst.components.health:SetPercent(health_percent)
-			self.achievementhealthup = achievementhealthup
-			self.healthmax = inst.components.health.maxhealth
-		end
-		if self.healthupamount ~= self.levelhealthup then
-	        local health_percent = inst.components.health:GetPercent()
-			local addhealth = self.healthupamount - self.levelhealthup
-			inst.components.health.maxhealth = inst.components.health.maxhealth + addhealth
-			inst.components.health:SetPercent(health_percent)
-			self.levelhealthup = self.healthupamount
-			self.healthmax = inst.components.health.maxhealth
-	    end
-		--in case health changes due to other events like when WX eats gears. Upgrades have to be applied again
-		if self.healthmax ~= inst.components.health.maxhealth then
-			local health_percent = inst.components.health:GetPercent()
-	        inst.components.health.maxhealth = inst.components.health.maxhealth + self.healthupamount + achievementhealthup
-	        inst.components.health:SetPercent(health_percent)
-			self.healthmax = inst.components.health.maxhealth
-		end
+	-- if inst.prefab ~= "wolfgang" then
+	local achievementhealthup = allachiv_coindata["healthup"]*inst.currenthealthup:value() + titlehealthup
+	local titles = titlesystem.titles or {}
+	if titles[9] == 1 then
+		achievementhealthup = achievementhealthup + title_data["title9"]["health"]
 	end
+	if inst.prefab == "webber" then
+		achievementhealthup = achievementhealthup + inst.components.allachivcoin.temphealthup
+	end
+	if achievementhealthup ~= self.achievementhealthup then
+		local health_percent = inst.components.health:GetPercent()
+		local addhealth = achievementhealthup - self.achievementhealthup
+		inst.components.health.maxhealth = inst.components.health.maxhealth + addhealth
+		inst.components.health:SetPercent(health_percent)
+		self.achievementhealthup = achievementhealthup
+		self.healthmax = inst.components.health.maxhealth
+	end
+	if self.healthupamount ~= self.levelhealthup then
+        local health_percent = inst.components.health:GetPercent()
+		local addhealth = self.healthupamount - self.levelhealthup
+		inst.components.health.maxhealth = inst.components.health.maxhealth + addhealth
+		inst.components.health:SetPercent(health_percent)
+		self.levelhealthup = self.healthupamount
+		self.healthmax = inst.components.health.maxhealth
+    end
+	--in case health changes due to other events like when WX eats gears. Upgrades have to be applied again
+	if self.healthmax ~= inst.components.health.maxhealth then
+		local health_percent = inst.components.health:GetPercent()
+        inst.components.health.maxhealth = inst.components.health.maxhealth + self.healthupamount + achievementhealthup
+        inst.components.health:SetPercent(health_percent)
+		self.healthmax = inst.components.health.maxhealth
+	end
+	-- end
 	--Speed
 	if self.speedmax == -1 then
 		
