@@ -2,6 +2,7 @@
 local PI = GLOBAL.PI
 local loot_table = require("loot_table")
 require("simutil")
+local RandomWeight = require("random").RandomWeight
 
 local function removetools(picker)
     for k,v in pairs(picker.components.inventory.itemslots) do
@@ -139,6 +140,12 @@ local function onkingtreasure(lootlist) --王的宝库 一定范围内只能选�
             end)
         end
     end
+end
+
+local function opengiftend(inst)
+    inst.open_gift = nil 
+    inst.POSSIBLE_NUM = 1
+    GLOBAL.TheNet:Announce(GLOBAL.STRINGS.TUM.OPEN_END)
 end
 
 local function keepPickerStop(picker)
@@ -768,7 +775,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 }
             end
 
-            for i=1,math.random(1,4) do
+            for i=1,math.random(2,4) do
                 local item=spawnAtGround(giftloot[math.random(#giftloot)],x,y,z)
                 if item then
                     if item.components.stackable then
@@ -834,6 +841,15 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
             onkingtreasure(lootlist)
             resetNotice(GLOBAL.STRINGS.TUM.KINGTREASURE)
         end
+        if name == "open_gift" then
+            if GLOBAL.TheWorld.open_gift ~= nil then
+                GLOBAL.TheWorld.pendingtasks[GLOBAL.TheWorld.open_gift] = nil
+                GLOBAL.TheWorld.open_gift:Cancel() -- 取消执行任务
+            end
+            GLOBAL.TheWorld.open_gift = GLOBAL.TheWorld:DoTaskInTime(120,opengiftend)
+            GLOBAL.TheWorld.POSSIBLE_NUM = 2
+            resetNotice(GLOBAL.STRINGS.TUM.OPEN_START)
+        end
         return 
     end
     local item = spawnAtGround(it.item, x,y,z)
@@ -857,12 +873,20 @@ AddPrefabPostInit(
             local start_protect = TUNING.start_protect --开局保护
             local drop_chance = TUNING.drop_chance --物品掉率
 
+            inst.POSSIBLE_NUM = 1 -- 参照值，通过修改它，可以改变这个世界上玩家开草时
+            inst.FIXED_NUM = 1
+
             inst:ListenForEvent("tumbleweedpicked", function(inst, data) --监听事件
                 local possible_loot = { --可能掉落物
                     {chance = 20,   item = "cutgrass"},--草
                     {chance = 15,   item = "twigs"},--小树枝
                 }
                 local fixed_loot = {} -- 固定掉落物
+                local possible_num = inst.POSSIBLE_NUM or 1 --可能掉落物数量
+                local fixed_num = inst.FIXED_NUM or 1 --固定掉落物数量 (对应等级内的物品)
+                local isskip = false -- 是否已经开到了彩蛋或陷阱
+
+                -- 分别重置权重
                 local function insertLoot(loot, n)
                     for a,b in ipairs(loot) do
                         --print("old:"..b.chance)
@@ -884,7 +908,6 @@ AddPrefabPostInit(
                         end
                     end
                 end
-
                 local today = GLOBAL.TheWorld.state.cycles  --世界天数
                 local target = data.target --目标（风滚草）
                 local picker = data.picker --采集者（玩家）
@@ -908,9 +931,6 @@ AddPrefabPostInit(
                 local ss_chance = 1
                 local d_chance = 1
                 local dd_chance = 1
-
-                local possible_num = 1 --可能掉落物数量
-                local fixed_num = 1 --固定掉落物数量 (对应等级内的物品)
 
                 local lucky_level = target.components.tumlevel.level or 0
                 if lucky_level == -1 then -- 绿色
@@ -995,13 +1015,7 @@ AddPrefabPostInit(
                     insertLoot(loot_table.new_items_loot, drop_chance*ss_chance)
                 end
 
-                local totalchance = 0
-                for m, n in ipairs(possible_loot) do
-                    totalchance = totalchance + n.chance
-                    --print("name:"..n.item..",chance:"..n.chance)
-                end
-
-                --------------
+                -- 调整掉落数量
                 local titles = picker.components.titlesystem and picker.components.titlesystem.titles or {}
                 local title4 = titles[4] or 0
                 local rand = title_data and title_data["title4"]["drop"] or 0
@@ -1011,6 +1025,7 @@ AddPrefabPostInit(
                 if titles[13] == 1 then
                     possible_num = possible_num + 1
                 end
+
                 -- 对于橙色以上草，角色幸运值大于20，有一定5%概率消耗1点幸运增加1个掉落物
                 if lucky_level >=2 and picker.components.luck ~= nil and luck > 20 and math.random() > 0.95 then
                     fixed_num = fixed_num + 1
@@ -1022,55 +1037,32 @@ AddPrefabPostInit(
                     possible_num = possible_num - 1
                 end
 
-                local res_loot = {}
+                -- 得到最终结果项集
+                local possible_res = RandomWeight(possible_loot,possible_num)
+                local fixed_res = RandomWeight(fixed_loot,fixed_num)
 
-                while fixed_num > 0 do
-                    next_chance = math.random()*totalchance
-                    --print("next_chance:"..next_chance)
-                    next_loot = nil
-                    for m, n in ipairs(fixed_loot) do
-                        next_chance = next_chance - n.chance
-                        --print("n_chance:"..n.chance)
-                        if next_chance <= 0 then
-                            --print("n.item:"..n.item)
-                            --print("n.chance:"..n.chance)
-                            next_loot = n
-                            break
-                        end
-                    end
-                    if next_loot ~= nil then
-                        table.insert(res_loot, next_loot)
-                        fixed_num = fixed_num - 1
+                for k,v in pairs(possible_res) do
+                    if (v.gift or v.trap or v.building) and isskip then -- 再次是彩蛋或陷阱时执行
+                        local x, y, z = target.Transform:GetWorldPosition()
+                        spawnAtGround("cutgrass", x,y,z) -- 变成草
+                    else
+                        local item = doSpawnItem(v, target, picker)
+                        if item == nil or item:HasTag("structure") or v.building then
+                            isskip = true
+                        end                        
                     end
                 end
-
-                while possible_num > 0 do
-                    next_chance = math.random()*totalchance
-                    --print("next_chance:"..next_chance)
-                    next_loot = nil
-                    for m, n in ipairs(possible_loot) do
-                        next_chance = next_chance - n.chance
-                        --print("n_chance:"..n.chance)
-                        if next_chance <= 0 then
-                            --print("n.item:"..n.item)
-                            --print("n.chance:"..n.chance)
-                            next_loot = n
-                            break
-                        end
-                    end
-                    if next_loot ~= nil then
-                        table.insert(res_loot, next_loot)
-                        possible_num = possible_num - 1
+                for k,v in pairs(fixed_res) do
+                    if (v.gift or v.trap or v.building) and isskip then
+                        local x, y, z = target.Transform:GetWorldPosition()
+                        spawnAtGround("cutgrass", x,y,z) -- 变成草                        
+                    else
+                        local item = doSpawnItem(v, target, picker)
+                        if item == nil or item:HasTag("structure") or v.building then
+                            isskip = true
+                        end                     
                     end
                 end
-                for k,v in pairs(res_loot) do
-                    local item = doSpawnItem(v, target, picker)
-                    -- 不希望彩蛋影响掉落数量
-                    -- if item == nil or item:HasTag("structure") then
-                    --     break
-                    -- end
-                end
-
             end)
         end
     end

@@ -23,6 +23,8 @@ strings.WEATHERCHANGED="变天"
 strings.KINGTREASURE="王的宝库"
 strings.PRANK="恶作剧"
 strings.CELESTIALFURY="天体震怒"
+strings.OPEN_START="开草福利"
+strings.OPEN_END="开草福利持续时间到了"
 
 strings.UNKNOWN_PACKAGE = "未知"
 strings.PRAY = "祈祷"

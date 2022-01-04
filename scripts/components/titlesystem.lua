@@ -67,7 +67,7 @@ local function randomItem(value,luck)--传入vip等级
     local luck = luck or 1
 
     local excess = 0.05*(value/(value+1)) + 0.05*(luck/100)
-    --根据算法，选择物品表
+    --选择物品表
     local  gl = math.random()
 
     if  gl<= 0.05+excess and TUNING.new_items then  --是否开启新物品啊
@@ -522,7 +522,7 @@ function Titlesystem:ApplayTilte(inst)
 				local item = nil
 
 				local gl = math.random()
-				local threshold = toqie and 0.1 or 0.4 -- 偷窃刀更难获取到随机物品
+				local threshold = toqie and 0.1 or 0.6 -- 偷窃刀更难获取到随机物品
 				if gl > threshold then 
 					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
 					if lootdropper and #lootdropper > 0 then

@@ -27,6 +27,8 @@ strings.PRANK="prank"
 strings.SEE = "delivery"
 strings.CKK = "see"
 strings.CELESTIALFURY="Celestial Fury"
+strings.OPEN_START="tumbleweed gift"
+strings.OPEN_END="tumbleweed gift time out"
 
 strings.UNKNOWN_PACKAGE = "UNKNOWN PACKAGE"
 strings.PRAY = "pray"

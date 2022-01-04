@@ -210,12 +210,12 @@ new_loot = {
         {chance = 0.05, item = "dug_trap_starfish"},--海星陷阱
         {chance = 0.2, item = "bullkelp_beachedroot"},--海带
         {chance = 0.6, item = "driftwood_log"},--浮木
-        {chance = 0.1, item = "rock_avocado_bush"},--石果灌木
+        {chance = 0.1, item = "rock_avocado_bush", building = true},--石果灌木
         {chance = 0.1, item = "spore_medium"},--红色孢子
         {chance = 0.1, item = "spore_small"},--绿色孢子
         {chance = 0.1, item = "spore_tall"},--蓝色孢子
         {chance = 0.1, item = "lightflier"},--球状光虫
-        {chance = 0.04, item = "livingtree"},--完全正常的树
+        {chance = 0.04, item = "livingtree", building = true},--完全正常的树
         {chance = 0.02, item = "phlegm"},--脓鼻涕
         {chance = 0.1, item = "eel"},--鳗鱼
     },
@@ -337,18 +337,18 @@ s_loot = {
         {chance = 0.01, item="book_brimstone"}, --末日书
         {chance = 0.01, item="book_sleep"}, --催眠书
 
-        {chance = 0.02, item = "chessjunk"},--损坏的发条装置
-        {chance = 0.02, item = "chessjunk1"},--损坏的发条装置1
-        {chance = 0.02, item = "chessjunk2"},--损坏的发条装置2
-        {chance = 0.02, item = "chessjunk3"},--损坏的发条装置3
+        {chance = 0.02, item = "chessjunk", building = true},--损坏的发条装置
+        {chance = 0.02, item = "chessjunk1", building = true},--损坏的发条装置1
+        {chance = 0.02, item = "chessjunk2", building = true},--损坏的发条装置2
+        {chance = 0.02, item = "chessjunk3", building = true},--损坏的发条装置3
 
-        {chance = 0.01, item = "statuemaxwell"},--麦斯威尔雕像
-        {chance = 0.03, item = "marblepillar"},--大理石柱
-        {chance = 0.03, item = "statueharp"},--竖琴雕像
-        {chance = 0.04, item = "statue_marble_pawn"},--大理石雕像
-        {chance = 0.04, item = "statue_marble"},--大理石雕像
-        {chance = 0.04, item = "statue_marble_muse"},--大理石雕像
-        {chance = 0.04, item = "marbletree"},--大理石树
+        {chance = 0.01, item = "statuemaxwell", building = true},--麦斯威尔雕像
+        {chance = 0.03, item = "marblepillar", building = true},--大理石柱
+        {chance = 0.03, item = "statueharp", building = true},--竖琴雕像
+        {chance = 0.04, item = "statue_marble_pawn", building = true},--大理石雕像
+        {chance = 0.04, item = "statue_marble", building = true},--大理石雕像
+        {chance = 0.04, item = "statue_marble_muse", building = true},--大理石雕像
+        {chance = 0.04, item = "marbletree", building = true},--大理石树
 
         -- {chance = 0.04, item = "asparagus_oversized"},--巨型芦笋
         -- {chance = 0.04, item = "carrot_oversized"},--巨型胡萝卜
@@ -365,15 +365,15 @@ s_loot = {
         -- {chance = 0.04, item = "tomato_oversized"},--巨型西红柿
         -- {chance = 0.04, item = "watermelon_oversized"},--巨型西瓜
 
-        {chance = 0.004, item = "saltstack"},--盐堆
-        {chance = 0.004, item = "seastack"},--浮堆
+        {chance = 0.004, item = "saltstack", building = true},--盐堆
+        {chance = 0.004, item = "seastack", building = true},--浮堆
         -- {chance = 0.02, item = "shell_cluster"},--贝壳堆
         -- {chance = 0.02, item = "sunkenchest"},--沉底宝箱
         {chance = 0.05, item="mandrake_active"},--活曼德拉草
     },
 
 ss_loot = {
-        {chance = 0.006, item = "klaus_sack"},--克劳斯袋
+        {chance = 0.006, item = "klaus_sack", building = true},--克劳斯袋
         {chance = 0.001, item = "krampus_sack"},--坎普斯背包
         {chance = 0.002, item = "minotaurhorn"},--远古守护者角
         {chance = 0.003, item = "deerclops_eyeball"},--巨鹿眼球
@@ -404,13 +404,13 @@ ss_loot = {
         {chance = 0.01, item = "hivehat"},--蜂后头冠
         {chance = 0.002, item = "opalstaff"},--唤月法杖
         {chance = 0.005, item = "armorskeleton"},--远古骨甲
-        {chance = 0.001, item = "ruins_statue_mage"}, --远古雕像
-        {chance = 0.001, item = "archive_moon_statue"}, --远古月亮雕像
-        {chance = 0.0003, item = "moonbase"}, --月亮石
-        {chance = 0.0005, item = "pigking"}, --猪王
-        {chance = 0.001, item = "nightmaregrowth"}, --梦魇城墙
-        {chance = 0.001, item = "atrium_idol"}, --远古方尖碑1
-        {chance = 0.001, item = "atrium_overgrowth"}, --远古方尖碑2
+        {chance = 0.001, item = "ruins_statue_mage", building = true}, --远古雕像
+        {chance = 0.001, item = "archive_moon_statue", building = true}, --远古月亮雕像
+        {chance = 0.0003, item = "moonbase", building = true}, --月亮石
+        {chance = 0.0005, item = "pigking", building = true}, --猪王
+        {chance = 0.001, item = "nightmaregrowth", building = true}, --梦魇城墙
+        {chance = 0.001, item = "atrium_idol", building = true}, --远古方尖碑1
+        {chance = 0.001, item = "atrium_overgrowth", building = true}, --远古方尖碑2
     },
 
 d_loot = {
@@ -450,18 +450,18 @@ d_loot = {
         {chance = 0.1, item = "penguin", aggro = true},--企鹅
         --{chance = 0.05, item = "birchnutdrake", aggro = true},--坚果树精
         --{chance = 0.05, item = "deciduoustree", aggro = true},--桦木树精
-        {chance = 0.002, item = "monkeybarrel"}, -- 猴子桶
-        {chance = 0.002, item = "catcoonden"}, --中空树桩
-        {chance = 0.002, item = "pigtorch"}, -- 猪人火炬
-        {chance = 0.002, item = "houndmound"}, -- 猎犬丘
-        {chance = 0.002, item = "wasphive"}, -- 杀人蜂巢
-        {chance = 0.004, item = "beehive"}, -- 蜂窝
-        {chance = 0.004, item = "wobster_den"}, -- 龙虾窝
-        {chance = 0.004, item = "moonglass_wobster_den"}, -- 月光玻璃窝
-        {chance = 0.002, item = "gingerbreadhouse"}, -- 姜饼猪屋
+        {chance = 0.002, item = "monkeybarrel", building = true}, -- 猴子桶
+        {chance = 0.002, item = "catcoonden", building = true}, --中空树桩
+        {chance = 0.002, item = "pigtorch", building = true}, -- 猪人火炬
+        {chance = 0.002, item = "houndmound", building = true}, -- 猎犬丘
+        {chance = 0.002, item = "wasphive", building = true}, -- 杀人蜂巢
+        {chance = 0.004, item = "beehive", building = true}, -- 蜂窝
+        {chance = 0.004, item = "wobster_den", building = true}, -- 龙虾窝
+        {chance = 0.004, item = "moonglass_wobster_den", building = true}, -- 月光玻璃窝
+        {chance = 0.002, item = "gingerbreadhouse", building = true}, -- 姜饼猪屋
         {chance = 0.01, item = "moonspider_spike"},--月亮蜘蛛钉
-        {chance = 0.01, item = "trap_teeth_maxwell"},--麦斯威尔的犬牙陷阱
-        {chance = 0.02, item = "beemine_maxwell"},--麦斯威尔的蚊子陷阱
+        {chance = 0.01, item = "trap_teeth_maxwell", building = true},--麦斯威尔的犬牙陷阱
+        {chance = 0.02, item = "beemine_maxwell", building = true},--麦斯威尔的蚊子陷阱
     },
 
 dd_loot = {
@@ -514,13 +514,13 @@ big_boss_loot = {
 cave_loot = {
         {chance = 0.09, item = "mushroombomb"},--炸弹蘑菇
         {chance = 0.09, item = "mushroombomb_dark"},--悲惨的炸弹蘑菇 
-        {chance = 0.01, item = "spiderhole"}, -- 蜘蛛岩
+        {chance = 0.01, item = "spiderhole", building = true}, -- 蜘蛛岩
         {chance = 0.1, item = "molebat", aggro = true},--裸鼹鼠蝙蝠
         {chance = 0.1, item = "bat", aggro = true},--蝙蝠
         {chance = 0.14, item = "monkey", aggro = true},--猴子
         {chance = 0.08, item = "slurtle", aggro = true},--蜗牛1
         {chance = 0.08, item = "snurtle", aggro = true},--蜗牛2
-        {chance = 0.01, item = "slurtlehole", aggro = true},--蜗牛巢穴
+        {chance = 0.01, item = "slurtlehole", building = true},--蜗牛巢穴
         {chance = 0.1, item = "slurper", aggro = true},--缀食者
     },
 
@@ -532,7 +532,7 @@ cave_boss_loot = {
     },
 forest_boss_loot = {
         {chance = 0.01, item = "malbatross", aggro = true},--邪天翁
-        {chance = 0.01, item = "crabking", aggro = true},--帝王蟹
+        {chance = 0.01, item = "crabking", aggro = true, building = true},--帝王蟹
     },
 
 trap_loot = { --陷阱
@@ -572,6 +572,7 @@ gift_loot = { --彩蛋
         {chance = 0.06, item = "packing_gift", gift = true}, --礼物彩蛋       
         {chance = 0.01, item = "luck_gift", gift = true}, --好运来彩蛋       
         {chance = 0.02, item = "kingtreasure", gift = true}, --王的宝库     
+        {chance = 0.02, item = "open_gift", gift = true}, --开草福利  
     },
 
 new_items_loot = { --新物品

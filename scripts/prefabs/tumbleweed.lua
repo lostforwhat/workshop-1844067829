@@ -145,56 +145,56 @@ end
 
 local function onpickup(inst, picker)
     --添加多世界宣告支持
-    inst.loot = inst.loot or {}
-    inst.lootaggro = inst.lootaggro or {}
+    -- inst.loot = inst.loot or {}
+    -- inst.lootaggro = inst.lootaggro or {}
 
-    local picker_name = picker and picker:GetDisplayName() or "???"
-    local function resetNotice(...)
-        local worldShardId = TheShard:GetShardId()
-        local serverName = ""
-        if worldShardId ~= nil and worldShardId ~= "0" then
-            serverName = "[" .. STRINGS.TUM.WORLD .. worldShardId .. "] "
-        end
-        local msg = picker_name .. STRINGS.TUM.PICKTUMBLEWEED
-        for k ,v in pairs({...}) do
-            msg = msg .. " " .. v
-        end
-        TheNet:Announce(serverName .. msg)
-    end
+    -- local picker_name = picker and picker:GetDisplayName() or "???"
+    -- local function resetNotice(...)
+    --     local worldShardId = TheShard:GetShardId()
+    --     local serverName = ""
+    --     if worldShardId ~= nil and worldShardId ~= "0" then
+    --         serverName = "[" .. STRINGS.TUM.WORLD .. worldShardId .. "] "
+    --     end
+    --     local msg = picker_name .. STRINGS.TUM.PICKTUMBLEWEED
+    --     for k ,v in pairs({...}) do
+    --         msg = msg .. " " .. v
+    --     end
+    --     TheNet:Announce(serverName .. msg)
+    -- end
     local x, y, z = inst.Transform:GetWorldPosition()
 
     inst:PushEvent("detachchild")
 
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		if math.random() < TUNING.HALLOWEEN_ORNAMENT_TUMBLEWEED_CHANCE then
-            table.insert(inst.loot, "halloween_ornament_" ..tostring(math.random(NUM_HALLOWEEN_ORNAMENTS)))
-            table.insert(inst.lootaggro, false)
-		end
-	end
+	-- if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+	-- 	if math.random() < TUNING.HALLOWEEN_ORNAMENT_TUMBLEWEED_CHANCE then
+ --            table.insert(inst.loot, "halloween_ornament_" ..tostring(math.random(NUM_HALLOWEEN_ORNAMENTS)))
+ --            table.insert(inst.lootaggro, false)
+	-- 	end
+	-- end
 
     TheWorld:PushEvent("tumbleweedpicked", {target=inst, picker=picker}) -- 采集风滚草
     picker:PushEvent("tumbleweedpicked", {target=inst, lucky_level = inst.components.tumlevel.level or 0})
 
-    local item = nil
-    for i, v in ipairs(inst.loot) do
-        item = SpawnPrefab(v)
-        if item==nil then print("彩色风滚草 这个物品找不到对应的预制体：",v) return false end
-        item.Transform:SetPosition(x, y, z)
-        if item.components.inventoryitem ~= nil and item.components.inventoryitem.ondropfn ~= nil then
-            item.components.inventoryitem.ondropfn(item)
-        end
-        if inst.lootaggro[i] and item.components.combat ~= nil and picker ~= nil then
-            if not (item:HasTag("spider") and (picker:HasTag("spiderwhisperer") or picker:HasTag("spiderdisguise") or (picker:HasTag("monster") and not picker:HasTag("player")))) then
-                item.components.combat:SuggestTarget(picker)
-            end
-        end
-        local item_name = item:GetDisplayName()
-        if loot_tables.needNotice(v) then
-            resetNotice(item_name)
-            picker:PushEvent("tumbleweeddropped", {item = item})
-        end
-        item:AddTag("tumbleweeddropped")
-    end
+    -- local item = nil
+    -- for i, v in ipairs(inst.loot) do
+    --     item = SpawnPrefab(v)
+    --     if item==nil then print("彩色风滚草 这个物品找不到对应的预制体：",v) return false end
+    --     item.Transform:SetPosition(x, y, z)
+    --     if item.components.inventoryitem ~= nil and item.components.inventoryitem.ondropfn ~= nil then
+    --         item.components.inventoryitem.ondropfn(item)
+    --     end
+    --     if inst.lootaggro[i] and item.components.combat ~= nil and picker ~= nil then
+    --         if not (item:HasTag("spider") and (picker:HasTag("spiderwhisperer") or picker:HasTag("spiderdisguise") or (picker:HasTag("monster") and not picker:HasTag("player")))) then
+    --             item.components.combat:SuggestTarget(picker)
+    --         end
+    --     end
+    --     local item_name = item:GetDisplayName()
+    --     if loot_tables.needNotice(v) then
+    --         -- resetNotice(item_name)
+    --         picker:PushEvent("tumbleweeddropped", {item = item})
+    --     end
+    --     item:AddTag("tumbleweeddropped")
+    -- end
 
     SpawnPrefab("tumbleweedbreakfx").Transform:SetPosition(x, y, z)
     inst:Remove()
@@ -202,184 +202,184 @@ local function onpickup(inst, picker)
 end
 
 -- 生成时，预制好掉落物部分的方法，现已经被移除
-local function MakeLoot(inst)
-    local possible_loot =
-    {
-        {chance = 25,   item = "cutgrass"},
-        {chance = 20,   item = "twigs"},
-        {chance = 1,    item = "petals"},
-        {chance = 1,    item = "foliage"},
-        {chance = 1,    item = "silk"},
-        {chance = 1,    item = "rope"},
-        {chance = 2,    item = "seeds"},
-        {chance = 0.01, item = "purplegem"},
-        {chance = 0.04, item = "bluegem"},
-        {chance = 0.02, item = "redgem"},
-        {chance = 0.02, item = "orangegem"},
-        {chance = 0.01, item = "yellowgem"},
-        {chance = 0.02, item = "greengem"},
-        {chance = 0.5,  item = "trinket_6"},
-        {chance = 0.5,  item = "trinket_4"},
-        {chance = 1,    item = "cutreeds"},
-        {chance = 0.33, item = "feather_crow"},
-        {chance = 0.33, item = "feather_robin"},
-        {chance = 0.33, item = "feather_robin_winter"},
-        {chance = 0.33, item = "feather_canary"},
-        {chance = 1,    item = "trinket_3"},
-        {chance = 1,    item = "beefalowool"},
-        {chance = 0.1,  item = "rabbit"},
-        {chance = 0.1,  item = "mole"},
-        {chance = 0.1,  item = "spider", aggro = true},
-        {chance = 0.1,  item = "frog", aggro = true},
-        {chance = 0.1,  item = "bee", aggro = true},
-        {chance = 0.1,  item = "mosquito", aggro = true},
-        {chance = 1,    item = "butterflywings"},
-        {chance = .02,  item = "beardhair"},
-        {chance = 1,    item = "berries"},
-        {chance = 0.1,    item = "TOOLS_blueprint"},
-        {chance = 0.1,    item = "LIGHT_blueprint"},
-        {chance = 0.1,    item = "SURVIVAL_blueprint"},
-        {chance = 0.1,    item = "FARM_blueprint"},
-        {chance = 0.1,    item = "SCIENCE_blueprint"},
-        {chance = 0.1,    item = "WAR_blueprint"},
-        {chance = 0.1,    item = "TOWN_blueprint"},
-        {chance = 0.1,    item = "REFINE_blueprint"},
-        {chance = 0.1,    item = "MAGIC_blueprint"},
-        {chance = 0.1,    item = "DRESS_blueprint"},
-        {chance = 1,    item = "petals_evil"},
-        {chance = 1,    item = "trinket_8"},
-        {chance = 1,    item = "houndstooth"},
-        {chance = 1,    item = "stinger"},
-        {chance = 1,    item = "gears"},
-        {chance = 0.1,  item = "boneshard"}, 
-    }
+-- local function MakeLoot(inst)
+--     local possible_loot =
+--     {
+--         {chance = 25,   item = "cutgrass"},
+--         {chance = 20,   item = "twigs"},
+--         {chance = 1,    item = "petals"},
+--         {chance = 1,    item = "foliage"},
+--         {chance = 1,    item = "silk"},
+--         {chance = 1,    item = "rope"},
+--         {chance = 2,    item = "seeds"},
+--         {chance = 0.01, item = "purplegem"},
+--         {chance = 0.04, item = "bluegem"},
+--         {chance = 0.02, item = "redgem"},
+--         {chance = 0.02, item = "orangegem"},
+--         {chance = 0.01, item = "yellowgem"},
+--         {chance = 0.02, item = "greengem"},
+--         {chance = 0.5,  item = "trinket_6"},
+--         {chance = 0.5,  item = "trinket_4"},
+--         {chance = 1,    item = "cutreeds"},
+--         {chance = 0.33, item = "feather_crow"},
+--         {chance = 0.33, item = "feather_robin"},
+--         {chance = 0.33, item = "feather_robin_winter"},
+--         {chance = 0.33, item = "feather_canary"},
+--         {chance = 1,    item = "trinket_3"},
+--         {chance = 1,    item = "beefalowool"},
+--         {chance = 0.1,  item = "rabbit"},
+--         {chance = 0.1,  item = "mole"},
+--         {chance = 0.1,  item = "spider", aggro = true},
+--         {chance = 0.1,  item = "frog", aggro = true},
+--         {chance = 0.1,  item = "bee", aggro = true},
+--         {chance = 0.1,  item = "mosquito", aggro = true},
+--         {chance = 1,    item = "butterflywings"},
+--         {chance = .02,  item = "beardhair"},
+--         {chance = 1,    item = "berries"},
+--         {chance = 0.1,    item = "TOOLS_blueprint"},
+--         {chance = 0.1,    item = "LIGHT_blueprint"},
+--         {chance = 0.1,    item = "SURVIVAL_blueprint"},
+--         {chance = 0.1,    item = "FARM_blueprint"},
+--         {chance = 0.1,    item = "SCIENCE_blueprint"},
+--         {chance = 0.1,    item = "WAR_blueprint"},
+--         {chance = 0.1,    item = "TOWN_blueprint"},
+--         {chance = 0.1,    item = "REFINE_blueprint"},
+--         {chance = 0.1,    item = "MAGIC_blueprint"},
+--         {chance = 0.1,    item = "DRESS_blueprint"},
+--         {chance = 1,    item = "petals_evil"},
+--         {chance = 1,    item = "trinket_8"},
+--         {chance = 1,    item = "houndstooth"},
+--         {chance = 1,    item = "stinger"},
+--         {chance = 1,    item = "gears"},
+--         {chance = 0.1,  item = "boneshard"}, 
+--     }
 
 
-    -- local chessunlocks = TheWorld.components.chessunlocks
-    -- if chessunlocks ~= nil then
-    --     for i, v in ipairs(CHESS_LOOT) do
-    --         if not chessunlocks:IsLocked(v) then
-    --             table.insert(possible_loot, { chance = .1, item = v })
-    --         end
-    --     end
-    -- end
+--     -- local chessunlocks = TheWorld.components.chessunlocks
+--     -- if chessunlocks ~= nil then
+--     --     for i, v in ipairs(CHESS_LOOT) do
+--     --         if not chessunlocks:IsLocked(v) then
+--     --             table.insert(possible_loot, { chance = .1, item = v })
+--     --         end
+--     --     end
+--     -- end
 
-    local drop_chance = TUNING.drop_chance --物品掉率
-    local today = TheWorld.state.cycles  --世界天数
-    local world_chance = math.floor(today*0.01)
+--     local drop_chance = TUNING.drop_chance --物品掉率
+--     local today = TheWorld.state.cycles  --世界天数
+--     local world_chance = math.floor(today*0.01)
 
-    local new_chance = 1
-    local s_chance = 1
-    local ss_chance = 1
-    local d_chance = 1
-    local dd_chance = 1
+--     local new_chance = 1
+--     local s_chance = 1
+--     local ss_chance = 1
+--     local d_chance = 1
+--     local dd_chance = 1
 
-    local lucky_level = inst.components.tumlevel.level or 0
-    if lucky_level == -1 then
-        d_chance = 20 + (world_chance * 2)
-        dd_chance = 10 + world_chance
-    elseif lucky_level == -2 then
-        d_chance = 40 + world_chance
-        dd_chance = 50 + (world_chance * 2)
-    elseif lucky_level == 1 then
-        new_chance = 40
-        s_chance = 200
-        ss_chance = 200
-    elseif lucky_level == 2 then
-        s_chance = 200
-        ss_chance = 400
-    elseif lucky_level ==3 then
-        ss_chance = 1500
-        dd_chance = 0
-        d_chance = 0  
-        new_chance = 0 
-        possible_loot = {}    
-    else
-        d_chance = 1 + math.min(world_chance, 29)
-        dd_chance = 1 + math.min(world_chance, 19)
-    end
+--     local lucky_level = inst.components.tumlevel.level or 0
+--     if lucky_level == -1 then
+--         d_chance = 20 + (world_chance * 2)
+--         dd_chance = 10 + world_chance
+--     elseif lucky_level == -2 then
+--         d_chance = 40 + world_chance
+--         dd_chance = 50 + (world_chance * 2)
+--     elseif lucky_level == 1 then
+--         new_chance = 40
+--         s_chance = 200
+--         ss_chance = 200
+--     elseif lucky_level == 2 then
+--         s_chance = 200
+--         ss_chance = 400
+--     elseif lucky_level ==3 then
+--         ss_chance = 1500
+--         dd_chance = 0
+--         d_chance = 0  
+--         new_chance = 0 
+--         possible_loot = {}    
+--     else
+--         d_chance = 1 + math.min(world_chance, 29)
+--         dd_chance = 1 + math.min(world_chance, 19)
+--     end
 
-    local loot_table = deepcopy(loot_tables)
+--     local loot_table = deepcopy(loot_tables)
 
-    for a,b in ipairs(loot_table.new_loot) do
-        b.chance = b.chance * new_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    for a,b in ipairs(loot_table.s_loot) do
-        b.chance = b.chance * s_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    for a,b in ipairs(loot_table.ss_loot) do
-        b.chance = b.chance * ss_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    for a,b in ipairs(loot_table.d_loot) do
-        b.chance = b.chance * d_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    for a,b in ipairs(loot_table.dd_loot) do
-        b.chance = b.chance * dd_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    for a,b in ipairs(loot_table.cave_loot) do
-        b.chance = b.chance * world_chance *drop_chance --重置chance
-        if b.chance > 0 then
-            table.insert(possible_loot, b)
-        end
-    end
-    if TUNING.new_items then
-        for a,b in ipairs(loot_table.new_items_loot) do
-            b.chance = b.chance * ss_chance *drop_chance --重置chance
-            if b.chance > 0 then
-                table.insert(possible_loot, b)
-            end
-        end
-    end
+--     for a,b in ipairs(loot_table.new_loot) do
+--         b.chance = b.chance * new_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     for a,b in ipairs(loot_table.s_loot) do
+--         b.chance = b.chance * s_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     for a,b in ipairs(loot_table.ss_loot) do
+--         b.chance = b.chance * ss_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     for a,b in ipairs(loot_table.d_loot) do
+--         b.chance = b.chance * d_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     for a,b in ipairs(loot_table.dd_loot) do
+--         b.chance = b.chance * dd_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     for a,b in ipairs(loot_table.cave_loot) do
+--         b.chance = b.chance * world_chance *drop_chance --重置chance
+--         if b.chance > 0 then
+--             table.insert(possible_loot, b)
+--         end
+--     end
+--     if TUNING.new_items then
+--         for a,b in ipairs(loot_table.new_items_loot) do
+--             b.chance = b.chance * ss_chance *drop_chance --重置chance
+--             if b.chance > 0 then
+--                 table.insert(possible_loot, b)
+--             end
+--         end
+--     end
 
-    local totalchance = 0
-    for m, n in ipairs(possible_loot) do
-        totalchance = totalchance + n.chance
-    end
+--     local totalchance = 0
+--     for m, n in ipairs(possible_loot) do
+--         totalchance = totalchance + n.chance
+--     end
 
-    inst.loot = {}
-    inst.lootaggro = {}
-    local next_loot = nil
-    local next_aggro = nil
-    local next_chance = nil
-    local num_loots = 1 --根据风滚草颜色固定对应等级1种物品
-    while num_loots > 0 do
-        next_chance = math.random()*totalchance
-        next_loot = nil
-        next_aggro = nil
-        for m, n in ipairs(possible_loot) do
-            next_chance = next_chance - n.chance
-            if next_chance <= 0 then
-                next_loot = n.item
-                if n.aggro then next_aggro = true end
-                break
-            end
-        end
-        if next_loot ~= nil then
-            table.insert(inst.loot, next_loot)
-            if next_aggro then 
-                table.insert(inst.lootaggro, true)
-            else
-                table.insert(inst.lootaggro, false)
-            end
-            num_loots = num_loots - 1
-        end
-    end
-end
+--     inst.loot = {}
+--     inst.lootaggro = {}
+--     local next_loot = nil
+--     local next_aggro = nil
+--     local next_chance = nil
+--     local num_loots = 1 --根据风滚草颜色固定对应等级1种物品
+--     while num_loots > 0 do
+--         next_chance = math.random()*totalchance
+--         next_loot = nil
+--         next_aggro = nil
+--         for m, n in ipairs(possible_loot) do
+--             next_chance = next_chance - n.chance
+--             if next_chance <= 0 then
+--                 next_loot = n.item
+--                 if n.aggro then next_aggro = true end
+--                 break
+--             end
+--         end
+--         if next_loot ~= nil then
+--             table.insert(inst.loot, next_loot)
+--             if next_aggro then 
+--                 table.insert(inst.lootaggro, true)
+--             else
+--                 table.insert(inst.lootaggro, false)
+--             end
+--             num_loots = num_loots - 1
+--         end
+--     end
+-- end
 
 local function DoDirectionChange(inst, data)
 
