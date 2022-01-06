@@ -32,7 +32,7 @@ local uiachievement = Class(Widget, function(self, owner)
 	self.mainui.achievement_bg.title:SetPosition(-50, 415, 0)
 	self.mainui.achievement_bg.title:SetString(STRINGS.GUI["achievementTitle"])
 
-	self.mainui.achievement_bg.help = self.mainui.achievement_bg:AddChild(ImageButton("images/hud/star.xml", "star.tex"))
+	self.mainui.achievement_bg.help = self.mainui.achievement_bg:AddChild(ImageButton("images/button/help.xml", "help.tex"))
 	self.mainui.achievement_bg.help:SetPosition(420, 415, 0)
 	self.mainui.achievement_bg.help:SetScale(.65,.65,1)
 	self.mainui.achievement_bg.help:SetTooltip(STRINGS.GUI["help"])
@@ -1370,7 +1370,7 @@ function uiachievement:build_perkpage(j,i)
 	self.coinlistbutton[i]:SetImageNormalColour(1,1,1,0.95)
 	self.coinlistbutton[i]:SetOnClick(function()
 		-- 必要时还要拆分出来，暂时没有问题了
-		if pagenum == 4 then
+		if pagenum == 4 then -- 商店的
 			SendModRPCToServer(MOD_RPC["DSTAchievement"]["purchase"], self.coinlist[pagenum][i].name)
 		elseif pagenum == 3 then 
 			SendModRPCToServer(MOD_RPC["DSTExclusive"][self.coinlist[pagenum][i].name]) --拆分出角色专属的rpc
@@ -1793,8 +1793,11 @@ function uiachievement:loadcoinlist()
 			{
 				name = "waterwalk",
 				current = self.owner.currentwaterwalk:value(),
-			},
-			
+			},		
+			{
+				name = "nonequivalence",
+				current = self.owner.currentnonequivalence:value(),
+			},	
 		},
 		[3] = { --角色专有
 

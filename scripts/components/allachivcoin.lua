@@ -73,6 +73,7 @@ local function currentbuildmaster(self,buildmaster) self.inst.currentbuildmaster
 local function currenticebody(self,icebody) self.inst.currenticebody:set(icebody) end
 local function currentfirebody(self,firebody) self.inst.currentfirebody:set(firebody) end
 local function currentreader(self,reader) self.inst.currentreader:set(reader) end
+local function currentnonequivalence(self,nonequivalence) self.inst.currentnonequivalence:set(nonequivalence) end
 local function currentmasterchef(self,masterchef) self.inst.currentmasterchef:set(masterchef) end
 local function currentattackback(self,attackback) self.inst.currentattackback:set(attackback) end
 local function currentminemaster(self,minemaster) self.inst.currentminemaster:set(minemaster) end
@@ -214,6 +215,7 @@ local allachivcoin = Class(function(self, inst)
     self.icebody = 0
     self.firebody = 0
     self.reader = 0
+    self.nonequivalence = 0
     self.masterchef = 0
 	self.minemaster = 0
 	self.anicentstation = 0
@@ -329,6 +331,7 @@ nil,
     icebody = currenticebody,
     firebody = currentfirebody,
     reader = currentreader,
+    nonequivalence = currentnonequivalence,
     masterchef = currentmasterchef,
     attackback = currentattackback,
     stopregen = currentstopregen,
@@ -431,6 +434,7 @@ function allachivcoin:OnSave()
         icebody = self.icebody,
         firebody = self.firebody,
         reader = self.reader,
+        nonequivalence = self.nonequivalence,
         masterchef = self.masterchef,
 		minemaster = self.minemaster,
 		fastworker = self.fastworker,
@@ -540,6 +544,7 @@ function allachivcoin:OnLoad(data)
     self.icebody = data.icebody==true and 1 or (data.icebody or 0)
     self.firebody = data.firebody==true and 1 or (data.firebody or 0)
     self.reader = data.reader==true and 1 or (data.reader or 0)
+    self.nonequivalence = data.nonequivalence==true and 1 or (data.nonequivalence or 0)
     self.masterchef = data.masterchef==true and 1 or (data.masterchef or 0)
 	self.minemaster = data.minemaster==true and 1 or (data.minemaster or 0)
 	self.fastworker = data.fastworker==true and 1 or (data.fastworker or 0)
@@ -3020,9 +3025,26 @@ function allachivcoin:wandaupcoin(inst) -- 点击专属技能
     end
 end
 
+
 function allachivcoin:wandaupfn(inst) -- 进入游戏执行
     if self.wandaup > 0 and not inst:HasTag("achivwatchmaker") then
         inst:AddTag("achivwatchmaker")
+    end
+end
+
+function allachivcoin:nonequivalencecoin(inst)
+    if self.nonequivalence < 1 and self.coinamount >= allachiv_coinuse["nonequivalence"] then
+        self.nonequivalence = 1
+        self.starsspent = self.starsspent + allachiv_coinuse["nonequivalence"]
+        self:coinDoDelta(-allachiv_coinuse["nonequivalence"])
+        self:ongetcoin(inst)
+        inst:AddTag("nonequivalence") -- 角色添加对应标签
+    end
+end
+
+function allachivcoin:nonequivalencefn(inst) -- 进入游戏执行
+    if self.nonequivalence > 0 and not inst:HasTag("nonequivalence") then
+        inst:AddTag("nonequivalence")
     end
 end
 
@@ -3382,6 +3404,7 @@ function allachivcoin:removecoin(inst)
     self.icebody = 0
     self.firebody = 0
     self.reader = 0
+    self.nonequivalence = 0
     self.masterchef = 0
 	self.minemaster = 0
 	self.fastworker = 0
@@ -3457,6 +3480,7 @@ function allachivcoin:resetbuff(inst)
     inst:RemoveComponent("clone")
     inst:RemoveTag("throwrock")
     inst:RemoveTag("quickshot")
+    inst:RemoveTag("nonequivalence")
 
     if inst.prefab ~= "wickerbottom" then
         inst:RemoveComponent("reader")
@@ -3589,6 +3613,7 @@ function allachivcoin:Init(inst)
         self:quickshotfn(inst)
         --self:killedfn(inst)
         self:onhitfn(inst)
+        self:nonequivalencefn(inst)
 	end)
 
 	inst:DoTaskInTime(1.5, function()

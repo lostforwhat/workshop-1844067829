@@ -89,55 +89,57 @@ end
 --借鉴能力勋章的帽子戏法
 local function onkingtreasure(lootlist) --王的宝库 一定范围内只能选择一项物品
     for k,item in pairs(lootlist) do --实体列表，有宝石有武器和护甲
-        item.persists=false --游戏退出时，不会保存
-        item:AddTag("kingtreasure")
-        if item.components.equippable then
-            local x,y,z=item.Transform:GetWorldPosition()
-            local onequip=item.components.equippable.onequipfn
-            item.components.equippable:SetOnEquip(function(inst, owner, from_ground) --设置装备组件的装备方法               
-                if not inst.persists then
-                    inst.persists=true
-                    inst:RemoveTag("kingtreasure") --再找之前先删掉，不然会被找到的
-                    local ents = TheSim:FindEntities(x, y, z, 6,{"kingtreasure"})--查找给定坐标单位6范围物品
-                    if #ents>0 then
-                        for i,v in ipairs(ents) do
-                            print(v.prefab,v.name)
-                            if v and v:HasTag("kingtreasure") then --存在就销毁,
-                                v:Remove()
+        if item ~= nil then
+            item.persists=false --游戏退出时，不会保存
+            item:AddTag("kingtreasure")
+            if item.components.equippable then
+                local x,y,z=item.Transform:GetWorldPosition()
+                local onequip=item.components.equippable.onequipfn
+                item.components.equippable:SetOnEquip(function(inst, owner, from_ground) --设置装备组件的装备方法               
+                    if not inst.persists then
+                        inst.persists=true
+                        inst:RemoveTag("kingtreasure") --再找之前先删掉，不然会被找到的
+                        local ents = TheSim:FindEntities(x, y, z, 6,{"kingtreasure"})--查找给定坐标单位6范围物品
+                        if #ents>0 then
+                            for i,v in ipairs(ents) do
+                                print(v.prefab,v.name)
+                                if v and v:HasTag("kingtreasure") then --存在就销毁,
+                                    v:Remove()
+                                end
+                            end
+                        end
+                    end  
+                    if onequip then                   
+                        onequip(inst, owner, from_ground)--贴图和声音
+                    end              
+                end)
+            end
+            if item.components.inventoryitem then
+                local x,y,z=item.Transform:GetWorldPosition()
+                local onpickup=item.components.inventoryitem.onpickupfn
+                item.components.inventoryitem:SetOnPickupFn(function(inst, pickupguy, src_pos)--物品的库存组件的设置拾取方法 物品对象，玩家，坐标
+                    local onpickup_=nil
+                    if onpickup then
+                        onpickup_=onpickup(inst, pickupguy, src_pos)
+                    end
+                    if not inst.persists then --防止下次拾取时发生其他事情
+                        inst.persists=true
+                        inst:RemoveTag("kingtreasure")  --再找之前先删掉，不然会被找到的
+                        if src_pos then 
+                            x,y,z=src_pos:Get()
+                        end
+                        local ents = TheSim:FindEntities(x, y, z, 6,{"kingtreasure"})--查找给定坐标单位6范围物品 克劳斯也用到了判断周围是否有玩家               
+                        if #ents>0 then
+                            for i,v in ipairs(ents) do
+                                if v then --存在就销毁
+                                    v:Remove()
+                                end
                             end
                         end
                     end
-                end  
-                if onequip then                   
-                    onequip(inst, owner, from_ground)--贴图和声音
-                end              
-            end)
-        end
-        if item.components.inventoryitem then
-            local x,y,z=item.Transform:GetWorldPosition()
-            local onpickup=item.components.inventoryitem.onpickupfn
-            item.components.inventoryitem:SetOnPickupFn(function(inst, pickupguy, src_pos)--物品的库存组件的设置拾取方法 物品对象，玩家，坐标
-                local onpickup_=nil
-                if onpickup then
-                    onpickup_=onpickup(inst, pickupguy, src_pos)
-                end
-                if not inst.persists then --防止下次拾取时发生其他事情
-                    inst.persists=true
-                    inst:RemoveTag("kingtreasure")  --再找之前先删掉，不然会被找到的
-                    if src_pos then 
-                        x,y,z=src_pos:Get()
-                    end
-                    local ents = TheSim:FindEntities(x, y, z, 6,{"kingtreasure"})--查找给定坐标单位6范围物品 克劳斯也用到了判断周围是否有玩家               
-                    if #ents>0 then
-                        for i,v in ipairs(ents) do
-                            if v then --存在就销毁
-                                v:Remove()
-                            end
-                        end
-                    end
-                end
-                return onpickup_ and onpickup_ or false--返回值true，表示销毁它,false能够加入到玩家库存里
-            end)
+                    return onpickup_ and onpickup_ or false--返回值true，表示销毁它,false能够加入到玩家库存里
+                end)
+            end
         end
     end
 end
@@ -846,7 +848,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 GLOBAL.TheWorld.pendingtasks[GLOBAL.TheWorld.open_gift] = nil
                 GLOBAL.TheWorld.open_gift:Cancel() -- 取消执行任务
             end
-            GLOBAL.TheWorld.open_gift = GLOBAL.TheWorld:DoTaskInTime(120,opengiftend)
+            GLOBAL.TheWorld.open_gift = GLOBAL.TheWorld:DoTaskInTime(60*8,opengiftend)
             GLOBAL.TheWorld.POSSIBLE_NUM = 2
             resetNotice(GLOBAL.STRINGS.TUM.OPEN_START)
         end
@@ -869,7 +871,7 @@ end
 AddPrefabPostInit(
     "world",
     function(inst)
-        if GLOBAL.TheWorld.ismastersim then --判断是不是主机
+        if GLOBAL.TheWorld.ismastersim then --判断是不是服务器
             local start_protect = TUNING.start_protect --开局保护
             local drop_chance = TUNING.drop_chance --物品掉率
 

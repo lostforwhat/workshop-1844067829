@@ -592,6 +592,7 @@ allachiv_coinuse={
 ["icebody"] = 50,
 ["firebody"] = 50,
 ["reader"] = 50,
+["nonequivalence"] = 30,
 ["masterchef"] = 40,
 ["minemaster"] = 40,
 ["fastworker"] = 40,

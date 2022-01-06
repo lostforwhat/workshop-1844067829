@@ -1,3 +1,4 @@
+-- 按权重随机
 local function RandomWeight(weight_table, expect_val, fn, ...)
 	local totalchance = 0
 	local number = expect_val
@@ -29,7 +30,6 @@ local function RandomWeight(weight_table, expect_val, fn, ...)
 
 	return result
 end
-
 
 return {
 	RandomWeight = RandomWeight,

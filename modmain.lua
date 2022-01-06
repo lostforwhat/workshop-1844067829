@@ -1,4 +1,4 @@
-env._G = GLOBAL
+env._G = GLOBAL --设置全局表
 env.RECIPETABS = GLOBAL.RECIPETABS 
 env.AllRecipes = GLOBAL.AllRecipes
 env.CUSTOM_RECIPETABS = GLOBAL.CUSTOM_RECIPETABS
@@ -22,7 +22,7 @@ local achievement_system = GetModConfigData("achievement_system")--成就系统
 TUNING.vips = GetModConfigData("vip")--vip列表
 TUNING.vipurl = GetModConfigData("vipurl")
 
-
+modimport("scripts/asyncworld.lua") -- 执行世界季节不同步
 require 'AllAchiv/allachivbalance'
 require 'AllAchiv/titlebalance'
 require "loot_table"
@@ -43,6 +43,7 @@ if TUNING.new_items then
         "opalgemsamulet",
         "stealingknife",
         "statusclock",
+        "fatemod",
     }
 else
     PrefabFiles = {}
@@ -1213,6 +1214,8 @@ Assets = {
 
     Asset("ATLAS", "images/button/perk.xml"),
     Asset("IMAGE", "images/button/perk.tex"),
+    Asset("ATLAS", "images/button/help.xml"),
+    Asset("IMAGE", "images/button/help.tex"),
     Asset("ATLAS", "images/button/perk_active.xml"),
     Asset("IMAGE", "images/button/perk_active.tex"),
     Asset("ATLAS", "images/button/perk_shop.xml"),
@@ -1262,6 +1265,9 @@ Assets = {
     Asset("IMAGE", "images/opalgemsamulet.tex"), --物品栏
     Asset("ATLAS", "images/opalgemsamulet2.xml"),
     Asset("IMAGE", "images/opalgemsamulet2.tex"), --物品栏
+    
+    Asset("ATLAS", "images/fatemod.xml"),
+    Asset("IMAGE", "images/fatemod.tex"),
 }
 --给玩家添加任务等级成就等组件
 AddPlayerPostInit(function(inst)
@@ -1995,6 +2001,16 @@ nil, -- numtogive
 "achivwatchmaker", --"旺达专属标签",
 "images/statusclock.xml"
 )
+
+AddRecipe("fatemod",{Ingredient(GLOBAL.CHARACTER_INGREDIENT.SANITY, 5),Ingredient("goldnugget",2)},
+RECIPETABS.MAGIC, --魔法
+TECH.NONE, 
+nil,
+nil, 
+nil,
+nil, 
+"nonequivalence",
+"images/fatemod.xml","fatemod.tex")
 
 end
 
