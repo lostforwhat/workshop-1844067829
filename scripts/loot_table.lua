@@ -1,4 +1,4 @@
-local loot = { -- NAMES.trinket_3
+local loot = { -- oceanfish_shoalspawner 鱼场
 new_loot = {
         {chance = 5, item = "log"},--木头
         {chance = 1, item = "charcoal"},--木炭
@@ -58,21 +58,8 @@ new_loot = {
         {chance = 0.5, item = "guano"},--鸟粪
         {chance = 0.05, item = "fossil_piece"},--化石碎片
         {chance = 5, item = "berries"},--浆果
-        {chance = 1, item = "seeds"},--种子
-        {chance = 0.14, item = "asparagus_seeds"},--种子是芦笋
-        {chance = 0.14, item = "carrot_seeds"},--种子是胡萝卜
-        {chance = 0.14, item = "corn_seeds"},--种子是玉米
-        {chance = 0.14, item = "dragonfruit_seeds"},--种子是火龙果
-        {chance = 0.14, item = "durian_seeds"},--种子是榴莲
-        {chance = 0.14, item = "eggplant_seeds"},--种子是茄子
-        {chance = 0.14, item = "garlic_seeds"},--种子是大蒜
-        {chance = 0.14, item = "onion_seeds"},--种子是洋葱
-        {chance = 0.14, item = "pepper_seeds"},--种子是辣椒
-        {chance = 0.14, item = "pomegranate_seeds"},--种子是石榴
-        {chance = 0.14, item = "potato_seeds"},--种子是土豆
-        {chance = 0.14, item = "pumpkin_seeds"},--种子是南瓜
-        {chance = 0.14, item = "tomato_seeds"},--种子是西红柿
-        {chance = 0.14, item = "watermelon_seeds"},--种子是西瓜
+        {chance = 0.34, items = {"seeds","asparagus_seeds","carrot_seeds","corn_seeds","dragonfruit_seeds","durian_seeds","eggplant_seeds",
+            "garlic_seeds","onion_seeds","pepper_seeds","pomegranate_seeds","potato_seeds","pumpkin_seeds","tomato_seeds","watermelon_seeds"}},--种子
         {chance = 1, item = "red_cap"},--红蘑菇
         {chance = 0.5, item = "green_cap"},--绿蘑菇
         {chance = 2, item = "blue_cap"},--蓝蘑菇
@@ -104,16 +91,6 @@ new_loot = {
         {chance = 0.15, item = "milkywhites"},--乳白物
         {chance = 0.1, item = "goatmilk"},--羊奶
         {chance = 0.1, item = "fig"},--无花果
-        {chance = 0.5, item = "oceanfish_small_1_inv"},--海鱼
-        {chance = 0.5, item = "oceanfish_small_2_inv"},--海鱼
-        {chance = 0.5, item = "oceanfish_small_3_inv"},--海鱼
-        {chance = 0.5, item = "oceanfish_small_4_inv"},--海鱼
-        {chance = 0.5, item = "oceanfish_small_5_inv"},--海鱼
-        {chance = 0.4, item = "oceanfish_medium_1_inv"},--海鱼
-        {chance = 0.4, item = "oceanfish_medium_2_inv"},--海鱼
-        {chance = 0.4, item = "oceanfish_medium_3_inv"},--海鱼
-        {chance = 0.4, item = "oceanfish_medium_4_inv"},--海鱼
-        {chance = 0.4, item = "oceanfish_medium_5_inv"},--海鱼
         {chance = 0.05, item = "brush"},--洗刷
         {chance = 0.05, item = "farm_plow_item"},--耕地机
         {chance = 0.05, item = "wateringcan"},--空浇水壶
@@ -143,14 +120,8 @@ new_loot = {
         {chance = 0.2, item = "saltrock"},--盐晶
         {chance = 0.1, item = "featherpencil"},--羽毛笔
         {chance = 0.1, item = "pitchfork"},--草叉
-        {chance = 0.03, item = "skeleton"},--骷髅
-        {chance = 0.05, item = "pighead"},--猪头
-        {chance = 0.05, item = "mermhead"},--鱼人头
-        {chance = 0.05, item = "houndbone"},--犬骨
-        {chance = 0.05, item = "dead_sea_bones"},--海骨
-        {chance = 0.01, item = "driftwood_tall"},--浮木桩
-        {chance = 0.01, item = "driftwood_tall1"},--浮木桩1
-        {chance = 0.01, item = "driftwood_tall2"},--浮木桩2
+        {chance = 0.05, items = {"houndbone","skeleton","dead_sea_bones","pighead","mermhead"}, building = true},--骨\头柱
+        {chance = 0.01, items = {"driftwood_tall","driftwood_tall1","driftwood_tall2"}, building = true},--浮木桩
         {chance = 0.1, item = "trap"},--陷阱
         {chance = 0.1, item = "grass_umbrella"},--普通花伞
         {chance = 0.4, item = "bedroll_straw"},--凉席
@@ -197,8 +168,7 @@ new_loot = {
         {chance = 0.1, item = "lightninggoat", aggro = true},--闪电羊
         {chance = 0.1, item = "pigman", aggro = true},--猪人
         {chance = 0.02, item = "little_walrus", aggro = true},--小海象
-        {chance = 0.2, item = "koalefant_summer", aggro = true},--夏象
-        {chance = 0.2, item = "koalefant_winter", aggro = true},--冬象
+        {chance = 0.2, items = {"koalefant_summer","koalefant_winter"}, aggro = true},--大象
         {chance = 0.05, item = "rocky", aggro = true},--石虾
         {chance = 0.12, item = "catcoon", aggro = true},--猫
         {chance = 0.1, item = "carrat_planted"},--胡萝卜鼠
@@ -210,65 +180,67 @@ new_loot = {
         {chance = 0.05, item = "dug_trap_starfish"},--海星陷阱
         {chance = 0.2, item = "bullkelp_beachedroot"},--海带
         {chance = 0.6, item = "driftwood_log"},--浮木
-        {chance = 0.1, item = "rock_avocado_bush", building = true},--石果灌木
-        {chance = 0.1, item = "spore_medium"},--红色孢子
-        {chance = 0.1, item = "spore_small"},--绿色孢子
-        {chance = 0.1, item = "spore_tall"},--蓝色孢子
-        {chance = 0.1, item = "lightflier"},--球状光虫
+        {chance = 0.15, item = "dug_marsh_bush"},--荆棘丛
+        {chance = 0.01, item = "rock_avocado_bush", building = true},--石果灌木种下
+        {chance = 0.1, item = "dug_rock_avocado_bush"},--石果灌木
+        {chance = 0.1, items = {"spore_medium","spore_small","spore_tall","lightflier"}},--孢子
         {chance = 0.04, item = "livingtree", building = true},--完全正常的树
+        {chance = 0.08, item = "dug_berrybush_juicy"},--多汁浆果丛
         {chance = 0.02, item = "phlegm"},--脓鼻涕
         {chance = 0.1, item = "eel"},--鳗鱼
+        {chance = 0.1, item = "bullkelp_root",},--海带茎
+        {chance = 0.01, item = "waterplant_planter",},--海芽插穗
     },
 
 s_loot = {
-        {chance = 0.1, item = "butterflymuffin"},--蝴蝶松饼
-        {chance = 0.2, item = "frogglebunwich"},--蛙腿三明治 
-        {chance = 0.09, item = "honeyham"},--蜜汁火腿
-        {chance = 0.09, item = "figatoni"},--无花果意面 
-        {chance = 0.09, item = "frognewton"},--无花果蛙腿三明治 变暖
-        {chance = 0.09, item = "figkabab"},--无花果烤串 变暖
-        {chance = 0.09, item = "ceviche"},--酸橘汁腌鱼 降温
-        {chance = 0.04, item = "dragonpie"},--火龙果馅饼
-        {chance = 0.05, item = "taffy"},--太妃糖
-        {chance = 0.05, item = "pumpkincookie"},--南瓜饼
-        {chance = 0.15, item = "kabobs"},--肉串 变暖
-        {chance = 0.05, item = "powcake"},--芝士蛋糕
-        {chance = 0.02, item = "mandrakesoup"},--曼德拉草汤
-        {chance = 0.04, item = "baconeggs"},--培根煎蛋
-        {chance = 0.06, item = "bonestew"},--肉汤
-        {chance = 0.25, item = "ratatouille"},--蔬菜什锦
-        {chance = 0.15, item = "fruitmedley"},--水果圣代
-        {chance = 0.18, item = "fishtacos"},--玉米鱼卷
-        {chance = 0.05, item = "waffles"},--华夫饼
-        {chance = 0.05, item = "turkeydinner"},--火鸡正餐
-        {chance = 0.04, item = "fishsticks"},--鱼排
-        {chance = 0.15, item = "stuffedeggplant"},--香酥茄盒
-        {chance = 0.4, item = "honeynuggets"},--甜蜜金砖
-        {chance = 0.5, item = "meatballs"},--肉丸
-        {chance = 0.25, item = "jammypreserves"},--果酱
-        {chance = 0.15, item = "flowersalad"},--仙人掌沙拉
-        {chance = 0.05, item = "icecream"},--冰淇淋
-        {chance = 0.15, item = "watermelonicle"},--西瓜冰
-        {chance = 0.45, item = "trailmix"},--坚果
-        {chance = 0.05, item = "guacamole"},--鳄梨沙拉
-        {chance = 0.15, item = "glowberrymousse"},--发光浆果慕斯
-        {chance = 0.03, item = "barnaclesushi"},--藤壶握寿司
-        {chance = 0.03, item = "barnaclinguine"},--藤壶中细面
-        {chance = 0.03, item = "barnaclepita"},--藤壶皮塔饼
-        {chance = 0.03, item = "shroomcake"},--蘑菇蛋糕
-        {chance = 0.03, item = "californiaroll"},--加州卷
-        {chance = 0.03, item = "sweettea"},--舒缓茶 变暖
-        {chance = 0.04, item = "leafymeatsouffle"},--果冻沙拉
-        {chance = 0.06, item = "leafymeatburger"},--素食堡
-        {chance = 0.09, item = "leafloaf"},--叶肉糕
-        {chance = 0.05, item = "surfnturf"},--海鲜牛排
-        {chance = 0.09, item = "seafoodgumbo"},--海鲜浓汤
-        {chance = 0.05, item = "lobsterbisque"},--龙虾汤
-        {chance = 0.09, item = "lobsterdinner"},--龙虾正餐
-        {chance = 0.3, item = "tillweedsalve"},--犁地草膏
-        {chance = 0.03, item = "unagi"},--鳗鱼料理
-        {chance = 0.07, item = "vegstinger"},--蔬菜鸡尾酒
-        {chance = 0.13, item = "voltgoatjelly"},--伏特羊肉冻
+        -- {chance = 0.1, item = "butterflymuffin"},--蝴蝶松饼
+        -- {chance = 0.2, item = "frogglebunwich"},--蛙腿三明治 
+        -- {chance = 0.09, item = "honeyham"},--蜜汁火腿
+        -- {chance = 0.09, item = "figatoni"},--无花果意面 
+        -- {chance = 0.09, item = "frognewton"},--无花果蛙腿三明治 变暖
+        -- {chance = 0.09, item = "figkabab"},--无花果烤串 变暖
+        -- {chance = 0.09, item = "ceviche"},--酸橘汁腌鱼 降温
+        -- {chance = 0.04, item = "dragonpie"},--火龙果馅饼
+        -- {chance = 0.05, item = "taffy"},--太妃糖
+        -- {chance = 0.05, item = "pumpkincookie"},--南瓜饼
+        -- {chance = 0.15, item = "kabobs"},--肉串 变暖
+        -- {chance = 0.05, item = "powcake"},--芝士蛋糕
+        -- {chance = 0.02, item = "mandrakesoup"},--曼德拉草汤
+        -- {chance = 0.04, item = "baconeggs"},--培根煎蛋
+        -- {chance = 0.06, item = "bonestew"},--肉汤
+        -- {chance = 0.25, item = "ratatouille"},--蔬菜什锦
+        -- {chance = 0.15, item = "fruitmedley"},--水果圣代
+        -- {chance = 0.18, item = "fishtacos"},--玉米鱼卷
+        -- {chance = 0.05, item = "waffles"},--华夫饼
+        -- {chance = 0.05, item = "turkeydinner"},--火鸡正餐
+        -- {chance = 0.04, item = "fishsticks"},--鱼排
+        -- {chance = 0.15, item = "stuffedeggplant"},--香酥茄盒
+        -- {chance = 0.4, item = "honeynuggets"},--甜蜜金砖
+        -- {chance = 0.5, item = "meatballs"},--肉丸
+        -- {chance = 0.25, item = "jammypreserves"},--果酱
+        -- {chance = 0.15, item = "flowersalad"},--仙人掌沙拉
+        -- {chance = 0.05, item = "icecream"},--冰淇淋
+        -- {chance = 0.15, item = "watermelonicle"},--西瓜冰
+        -- {chance = 0.45, item = "trailmix"},--坚果
+        -- {chance = 0.05, item = "guacamole"},--鳄梨沙拉
+        -- {chance = 0.15, item = "glowberrymousse"},--发光浆果慕斯
+        -- {chance = 0.03, item = "barnaclesushi"},--藤壶握寿司
+        -- {chance = 0.03, item = "barnaclinguine"},--藤壶中细面
+        -- {chance = 0.03, item = "barnaclepita"},--藤壶皮塔饼
+        -- {chance = 0.03, item = "shroomcake"},--蘑菇蛋糕
+        -- {chance = 0.03, item = "californiaroll"},--加州卷
+        -- {chance = 0.03, item = "sweettea"},--舒缓茶 变暖
+        -- {chance = 0.04, item = "leafymeatsouffle"},--果冻沙拉
+        -- {chance = 0.06, item = "leafymeatburger"},--素食堡
+        -- {chance = 0.09, item = "leafloaf"},--叶肉糕
+        -- {chance = 0.05, item = "surfnturf"},--海鲜牛排
+        -- {chance = 0.09, item = "seafoodgumbo"},--海鲜浓汤
+        -- {chance = 0.05, item = "lobsterbisque"},--龙虾汤
+        -- {chance = 0.09, item = "lobsterdinner"},--龙虾正餐
+        -- {chance = 0.3, item = "tillweedsalve"},--犁地草膏
+        -- {chance = 0.03, item = "unagi"},--鳗鱼料理
+        -- {chance = 0.07, item = "vegstinger"},--蔬菜鸡尾酒
+        -- {chance = 0.13, item = "voltgoatjelly"},--伏特羊肉冻
 
         {chance = 0.3, item = "healingsalve"},--治疗药膏
         {chance = 0.2, item = "bandage"},--蜂蜜药膏
@@ -328,29 +300,21 @@ s_loot = {
         {chance = 0.05, item = "red_mushroomhat"},--红蘑菇帽
         {chance = 0.05, item = "green_mushroomhat"},--绿蘑菇帽
         {chance = 0.05, item = "blue_mushroomhat"},--蓝蘑菇帽
-        {chance = 0.1, item="armor_bramble"},--荆棘甲
+        {chance = 0.1, item = "armor_bramble"},--荆棘甲
         {chance = 0.5, item = "blueprint"},--蓝图
         {chance = 0.02, item = "trident"},--三叉戟
 
-        {chance = 0.01, item="book_tentacles"}, --触手书
-        {chance = 0.01, item="book_birds"}, --鸟书
-        {chance = 0.01, item="book_brimstone"}, --末日书
-        {chance = 0.01, item="book_sleep"}, --催眠书
+        {chance = 0.01, item = "book_tentacles"}, --触手书
+        {chance = 0.01, item = "book_birds"}, --鸟书
+        {chance = 0.01, item = "book_brimstone"}, --末日书
+        {chance = 0.01, item = "book_sleep"}, --催眠书
 
-        {chance = 0.02, item = "chessjunk", building = true},--损坏的发条装置
-        {chance = 0.02, item = "chessjunk1", building = true},--损坏的发条装置1
-        {chance = 0.02, item = "chessjunk2", building = true},--损坏的发条装置2
-        {chance = 0.02, item = "chessjunk3", building = true},--损坏的发条装置3
+        {chance = 0.02, items = {"chessjunk","chessjunk1","chessjunk2","chessjunk3"}, building = true},--损坏的发条装置
 
-        {chance = 0.01, item = "statuemaxwell", building = true},--麦斯威尔雕像
-        {chance = 0.03, item = "marblepillar", building = true},--大理石柱
-        {chance = 0.03, item = "statueharp", building = true},--竖琴雕像
-        {chance = 0.04, item = "statue_marble_pawn", building = true},--大理石雕像
-        {chance = 0.04, item = "statue_marble", building = true},--大理石雕像
-        {chance = 0.04, item = "statue_marble_muse", building = true},--大理石雕像
-        {chance = 0.04, item = "marbletree", building = true},--大理石树
+        {chance = 0.01, items = {"statuemaxwell","marblepillar","statueharp","statue_marble_pawn","statue_marble","statue_marble_muse","marbletree"}, building = true},--大理石建筑
 
-        -- {chance = 0.04, item = "asparagus_oversized"},--巨型芦笋
+        {chance = 0.04, items = {"asparagus_oversized","carrot_oversized","corn_oversized","dragonfruit_oversized","durian_oversized","eggplant_oversized","garlic_oversized","onion_oversized",
+        "pepper_oversized","pomegranate_oversized","potato_oversized","pumpkin_oversized","tomato_oversized","watermelon_oversized"}, building = true},--巨型蔬菜
         -- {chance = 0.04, item = "carrot_oversized"},--巨型胡萝卜
         -- {chance = 0.04, item = "corn_oversized"},--巨型玉米
         -- {chance = 0.04, item = "dragonfruit_oversized"},--巨型火龙果
@@ -365,11 +329,9 @@ s_loot = {
         -- {chance = 0.04, item = "tomato_oversized"},--巨型西红柿
         -- {chance = 0.04, item = "watermelon_oversized"},--巨型西瓜
 
-        {chance = 0.004, item = "saltstack", building = true},--盐堆
-        {chance = 0.004, item = "seastack", building = true},--浮堆
-        -- {chance = 0.02, item = "shell_cluster"},--贝壳堆
-        -- {chance = 0.02, item = "sunkenchest"},--沉底宝箱
-        {chance = 0.05, item="mandrake_active"},--活曼德拉草
+        {chance = 0.004, items = {"saltstack","seastack"}, building = true},--盐堆
+        {chance = 0.02, items = {"shell_cluster","sunkenchest"}, building = true},--贝壳堆沉底宝箱
+        {chance = 0.05, item = "mandrake_active"},--活曼德拉草
     },
 
 ss_loot = {
@@ -377,19 +339,19 @@ ss_loot = {
         {chance = 0.001, item = "krampus_sack"},--坎普斯背包
         {chance = 0.002, item = "minotaurhorn"},--远古守护者角
         {chance = 0.003, item = "deerclops_eyeball"},--巨鹿眼球
-        {chance = 0.08, item = "livinglog"},--活木
-        {chance = 0.005, item = "dragon_scales"},--蜻蜓鳞片
-        {chance = 0.003, item = "shroom_skin"},--蛤蟆皮
+        {chance = 0.08, item = "livinglog", announce = false},--活木
+        {chance = 0.005, item = "dragon_scales", announce = false},--蜻蜓鳞片
+        {chance = 0.003, item = "shroom_skin", announce = false},--蛤蟆皮
         {chance = 0.002, item = "shadowheart"},--暗影之心
-        {chance = 0.02, item = "orangegem"},--橙宝石
-        {chance = 0.01, item = "yellowgem"},--黄宝石
-        {chance = 0.01, item = "greengem"},--绿宝石
+        {chance = 0.02, item = "orangegem", announce = false},--橙宝石
+        {chance = 0.01, item = "yellowgem", announce = false},--黄宝石
+        {chance = 0.01, item = "greengem"}, announce = false,--绿宝石
         {chance = 0.01, item = "opalpreciousgem"},--彩虹宝石
-        {chance = 0.08, item = "thulecite"},--铥矿
+        {chance = 0.08, item = "thulecite", announce = false},--铥矿
         {chance = 0.005, item = "cane"},--步行手杖
         {chance = 0.01, item = "eyebrellahat"},--眼球伞
         {chance = 0.01, item = "panflute"},--排箫
-        {chance = 0.02, item = "orangeamulet"},--懒人强盗
+        {chance = 0.02, item = "orangeamulet", announce = false},--懒人强盗
         {chance = 0.01, item = "yellowamulet"},--魔光护符
         {chance = 0.01, item = "greenamulet"},--建造护符
         {chance = 0.006, item = "orangestaff"},--瞬移魔杖
@@ -399,8 +361,8 @@ ss_loot = {
         {chance = 0.05, item = "armorruins"},--远古护甲
         {chance = 0.05, item = "ruins_bat"},--远古棒
         {chance = 0.002, item = "eyeturret_item"},--眼球塔
-        {chance = 0.03, item = "slurtlehat"},--蜗牛帽
-        {chance = 0.03, item = "armorsnurtleshell"},--蜗牛盔甲
+        {chance = 0.03, item = "slurtlehat", announce = false},--蜗牛帽
+        {chance = 0.03, item = "armorsnurtleshell", announce = false},--蜗牛盔甲
         {chance = 0.01, item = "hivehat"},--蜂后头冠
         {chance = 0.002, item = "opalstaff"},--唤月法杖
         {chance = 0.005, item = "armorskeleton"},--远古骨甲
@@ -418,7 +380,8 @@ d_loot = {
         {chance = 0.05, item = "wetgoop"},--湿腻焦糊
         {chance = 0.05, item = "mushroombomb"},--炸弹蘑菇
         {chance = 0.05, item = "mushroombomb_dark"},--悲惨的炸弹蘑菇 
-
+        {chance = 0.01, item = "shark", aggro = true},--岩石大白鲨 
+        {chance = 0.01, item = "gnarwail", aggro = true},--一角鲸 
         {chance = 0.1, item = "spider_healer", aggro = true},--护士蜘蛛 
         {chance = 0.1, item = "spider_water", aggro = true},--海黾 
         {chance = 0.1, item = "grassgator", aggro = true},--草鳄鱼 
@@ -450,12 +413,12 @@ d_loot = {
         {chance = 0.1, item = "penguin", aggro = true},--企鹅
         --{chance = 0.05, item = "birchnutdrake", aggro = true},--坚果树精
         --{chance = 0.05, item = "deciduoustree", aggro = true},--桦木树精
-        {chance = 0.002, item = "monkeybarrel", building = true}, -- 猴子桶
-        {chance = 0.002, item = "catcoonden", building = true}, --中空树桩
-        {chance = 0.002, item = "pigtorch", building = true}, -- 猪人火炬
-        {chance = 0.002, item = "houndmound", building = true}, -- 猎犬丘
-        {chance = 0.002, item = "wasphive", building = true}, -- 杀人蜂巢
-        {chance = 0.004, item = "beehive", building = true}, -- 蜂窝
+        {chance = 0.002, item = "monkeybarrel", building = true, announce = true}, -- 猴子桶
+        {chance = 0.002, item = "catcoonden", building = true, announce = true}, --中空树桩
+        {chance = 0.002, item = "pigtorch", building = true, announce = true}, -- 猪人火炬
+        {chance = 0.002, item = "houndmound", building = true, announce = true}, -- 猎犬丘
+        {chance = 0.002, item = "wasphive", building = true, announce = true}, -- 杀人蜂巢
+        {chance = 0.004, item = "beehive", building = true, announce = true}, -- 蜂窝
         {chance = 0.004, item = "wobster_den", building = true}, -- 龙虾窝
         {chance = 0.004, item = "moonglass_wobster_den", building = true}, -- 月光玻璃窝
         {chance = 0.002, item = "gingerbreadhouse", building = true}, -- 姜饼猪屋
@@ -465,24 +428,24 @@ d_loot = {
     },
 
 dd_loot = {
-        {chance = 0.1, item = "knight", aggro = true},--发条骑士
-        {chance = 0.1, item = "knight_nightmare", aggro = true},--损坏的发条骑士
-        {chance = 0.1, item = "bishop", aggro = true},--发条主教
-        {chance = 0.1, item = "bishop_nightmare", aggro = true},--损坏的发条主教
-        {chance = 0.1, item = "rook", aggro = true},--发条战车
-        {chance = 0.1, item = "rook_nightmare", aggro = true},--损坏的发条战车
+        {chance = 0.1, items = {"knight","knight_nightmare"}, aggro = true},--发条骑士
+        -- {chance = 0.1, item = "knight_nightmare", aggro = true},--损坏的发条骑士
+        {chance = 0.1, items = {"bishop","bishop_nightmare"}, aggro = true},--发条主教
+        -- {chance = 0.1, item = "bishop_nightmare", aggro = true},--损坏的发条主教
+        {chance = 0.1, items = {"rook","rook_nightmare"}, aggro = true},--发条战车
+        -- {chance = 0.1, item = "rook_nightmare", aggro = true},--损坏的发条战车
         {chance = 0.1, item = "worm", aggro = true},--洞穴蠕虫
         {chance = 0.1, item = "krampus", aggro = true},--小偷
         {chance = 0.1, item = "mossling", aggro = true},--小鸭
         {chance = 0.2, item = "tentacle", aggro = true},--触手
-        {chance = 0.05, item = "spiderqueen", aggro = true},--蜘蛛女王
-        {chance = 0.05, item = "leif", aggro = true},--树精
-        {chance = 0.05, item = "leif_sparse", aggro = true},--稀有树精
+        {chance = 0.05, item = "spiderqueen", aggro = true, announce = true},--蜘蛛女王
+        {chance = 0.05, item = "leif", aggro = true, announce = true},--树精
+        {chance = 0.05, item = "leif_sparse", aggro = true, announce = true},--稀有树精
         --{chance = 0.01, item = "deerclops", aggro = true},--巨鹿
         --{chance = 0.02, item = "moose", aggro = true},--鹿鸭
-        {chance = 0.02, item = "warg", aggro = true},--座狼
+        {chance = 0.02, item = "warg", aggro = true, announce = true},--座狼
         --{chance = 0.01, item = "bearger", aggro = true},--熊大
-        {chance = 0.03, item = "spat", aggro = true},--钢羊
+        {chance = 0.03, item = "spat", aggro = true, announce = true},--钢羊
         --{chance = 0.02, item = "shadow_rook", aggro = true},--暗影战车
         --{chance = 0.02, item = "shadow_knight", aggro = true},--暗影骑士
         --{chance = 0.02, item = "shadow_bishop", aggro = true},--暗影主教 
@@ -495,20 +458,22 @@ big_boss_loot = {
         --{chance = 0.01, item = "toadstool", aggro = true},--蘑菇蛤
         {chance = 0.03, item = "deerclops", aggro = true},--巨鹿
         {chance = 0.05, item = "moose", aggro = true},--鹿鸭\麋鹿鹅
-        {chance = 0.02, item = "warg", aggro = true},--座狼
+        -- {chance = 0.02, item = "warg", aggro = true},--座狼
         {chance = 0.03, item = "bearger", aggro = true},--熊大
         --{chance = 0.01, item = "stalker_atrium", aggro = true},--远古影织者
         --{chance = 0.01, item = "stalker", aggro = true},--复活的骨架
         --{chance = 0.03, item = "stalker_forest", aggro = true},--森林守护者
         --{chance = 0.005, item = "alterguardian_phase1", aggro = true},--天体英雄
-
+        {chance = 0.02, items = {"shadow_rook","shadow_knight","shadow_bishop"}, aggro = true},--暗影战车
+        -- {chance = 0.02, item = "shadow_knight", aggro = true},--暗影骑士
+        -- {chance = 0.02, item = "shadow_bishop", aggro = true},--暗影主教 
         -- {chance = 0.03, item = "malbatross", aggro = true},--邪天翁
         -- {chance = 0.01, item = "crabking", aggro = true},--帝王蟹
 
         {chance = 0.03, item = "eyeofterror", aggro = true},--恐怖之眼
 
-        {chance = 0.03, item = "twinofterror1", aggro = true},--机械之眼1 激光眼
-        {chance = 0.03, item = "twinofterror2", aggro = true},--机械之眼2 魔焰眼
+        {chance = 0.03, items = {"twinofterror1","twinofterror2"}, aggro = true},--机械之眼1 激光眼
+        -- {chance = 0.03, item = "twinofterror2", aggro = true},--机械之眼2 魔焰眼
     },
 
 cave_loot = {
@@ -587,86 +552,199 @@ new_items_loot = { --新物品
 	    {chance = 0.001, item="opalgemsamulet"}, --彩色护符 
     },
 }
--- 视为宝物的列表
-loot.notice_goods = {
-    "eyebrellahat",
-    "little_walrus", -- 小海象
-    "cane",
-    "hivehat",
-    "armorskeleton",
-    "opalstaff",
-    "krampus_sack",
-    "beequeen",
-    "toadstool",
-    "stalker_atrium",
-    "stalker",
-    "stalker_forest",
-    "spat",
-    "bearger",
-    "alterguardian_phase1",
-    "deerclops",
-    "spiderqueen",
-    "package_staff",
-    "prayer_symbol",
-    "minotaurhorn",
-    "deerclops_eyeball",
-    "yellowstaff",
-    "greenstaff",
-    "greenamulet",
-    "orangestaff",
-    "eyeturret_item",
-    "ruins_bat",
-    "armorruins",
-    "ruinshat",
-    "yellowamulet",
-    "panflute",
-    "shadowheart",
-    "pigtorch",
-    "monkeybarrel", -- 猴子桶
-    "catcoonden", --中空树桩
-    "ruins_statue_mage",
-    "archive_moon_statue",
-    "nightmaregrowth",
-    "atrium_idol",
-    "atrium_overgrowth",
-    "moonbase",
-    "pigking",
-    "achiv_clear",
-    "opalpreciousgem",
-    "houndmound",
-    "spiderhole",
-    "gingerbreadhouse",
-    "beehive",
-    "opalstaff",
-    "book_season",
-    "potion_luck",
-    "potion_achiv",
+-- 添加海鱼
+local fishs = {}
+for i = 1, 9 do
+    table.insert(fishs, "oceanfish_small_"..i.."_inv")
+end
+for i = 1, 8 do
+    table.insert(fishs, "oceanfish_medium_"..i.."_inv")
+end
+table.insert(loot.new_loot,{chance = 0.5, items = fishs})
 
-    "warg",
-    "dragonfly",
-    "moose",
-    "minotaur",
-    "klaus_sack",
-    "eyeofterror",
-    "twinofterror1",
-    "twinofterror2",
-    "crabking",
-    "malbatross",
-    "stealingknife",
-    "opalgemsamulet",
-}
--- 传入 实体或者其预制体名称 都可
-loot.needNotice = function(goods)
-    local item = goods.prefab or goods
-    if goods.prefab ~= nil and item == "package_ball" and goods.components.packer.package then --包裹里的也要判断
-        return loot.needNotice(goods.components.packer.package.prefab)
-    end
-    for i, v in ipairs(loot.notice_goods) do
-        if item == v then 
-            return true
-        end
-    end
-    return false
+-- 添加食物
+local preparedfoods = {}
+local preparedfoods_spice1 = {}
+local preparedfoods_spice2 = {}
+local preparedfoods_spice3 = {}
+local preparedfoods_spice4 = {}
+local preparedfoods_warly = {}
+local preparedfoods_warly_spice1 = {}
+local preparedfoods_warly_spice2 = {}
+local preparedfoods_warly_spice3 = {}
+local preparedfoods_warly_spice4 = {}
+-- 添加普通料理
+for k, v in pairs(require("preparedfoods")) do
+    -- table.insert(loots.foods,{chance = 0.04, item = v.name})
+    table.insert(preparedfoods, v.name)
+    -- -- 添加调料
+    table.insert(preparedfoods_spice1, v.name.."_spice_garlic") --蒜
+    table.insert(preparedfoods_spice2, v.name.."_spice_sugar") --糖
+    table.insert(preparedfoods_spice3, v.name.."_spice_chili") --辣椒
+    table.insert(preparedfoods_spice4, v.name.."_spice_salt") --盐
+end
+-- 添加大厨料理
+for k, v in pairs(require("preparedfoods_warly")) do
+    -- table.insert(loots.foods,{chance = 0.01, item = v.name})
+    table.insert(preparedfoods_warly, v.name)
+    -- -- 添加调料
+    table.insert(preparedfoods_warly_spice1, v.name.."_spice_garlic") --蒜
+    table.insert(preparedfoods_warly_spice2, v.name.."_spice_sugar") --糖
+    table.insert(preparedfoods_warly_spice3, v.name.."_spice_chili") --辣椒
+    table.insert(preparedfoods_warly_spice4, v.name.."_spice_salt") --盐
 end
 
+table.insert(loot.s_loot,{chance = 0.09, items = preparedfoods})
+table.insert(loot.s_loot,{chance = 0.05, items = preparedfoods_spice1})
+table.insert(loot.s_loot,{chance = 0.05, items = preparedfoods_spice2})
+table.insert(loot.s_loot,{chance = 0.05, items = preparedfoods_spice3})
+table.insert(loot.s_loot,{chance = 0.05, items = preparedfoods_spice4})
+table.insert(loot.s_loot,{chance = 0.01, items = preparedfoods_warly})
+table.insert(loot.s_loot,{chance = 0.01, items = preparedfoods_warly_spice1})
+table.insert(loot.s_loot,{chance = 0.01, items = preparedfoods_warly_spice2})
+table.insert(loot.s_loot,{chance = 0.01, items = preparedfoods_warly_spice3})
+table.insert(loot.s_loot,{chance = 0.01, items = preparedfoods_warly_spice4})
+
+loot.new_loot.parameter = {
+    chancetype = "new_chance",-- 受影响权重的类型
+    -- fixed = 63,-- 固定归属类型
+    possible = 63,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    -- isprotect = false,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.s_loot.parameter = {
+    chancetype = "s_chance",-- 受影响权重的类型
+    fixed = 60,-- 固定归属类型
+    possible = 60,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    -- isprotect = false,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.ss_loot.parameter = {
+    chancetype = "ss_chance",-- 受影响权重的类型
+    fixed = 56,-- 固定归属类型 
+    possible = 63,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    -- isprotect = false,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.d_loot.parameter = {
+    chancetype = "d_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    isprotect = true,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.dd_loot.parameter = {
+    chancetype = "dd_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    isprotect = true,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.big_boss_loot.parameter = {
+    chancetype = "dd_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    -- iscave = false,-- 是否洞穴独有
+    isprotect = true,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.cave_loot.parameter = {
+    chancetype = "d_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    iscave = true,-- 是否洞穴独有
+    isprotect = true,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.cave_boss_loot.parameter = {
+    chancetype = "dd_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    iscave = true,-- 是否洞穴独有
+    isprotect = true,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.forest_boss_loot.parameter = {
+    chancetype = "dd_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    isforest = true,-- 是否森林独有
+    isprotect = true,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.trap_loot.parameter = {
+    chancetype = "dd_chance",-- 受影响权重的类型
+    fixed = 7,-- 固定归属类型 
+    possible = 7,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    isprotect = true,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.gift_loot.parameter = {
+    chancetype = "ss_chance",-- 受影响权重的类型
+    fixed = 56,-- 固定归属类型 
+    possible = 60,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    isprotect = true,-- 是否受开局保护影响
+    -- isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+loot.new_items_loot.parameter = {
+    chancetype = "ss_chance",-- 受影响权重的类型
+    fixed = 56,-- 固定归属类型 
+    possible = 60,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    isprotect = true,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告    
+}
+
+-- loot.cs = {
+--     {chance = 0.2, item = "gears"},--齿轮
+--     {chance = 0.2, item = "rocks"},--齿轮
+-- }
+-- table.insert(loot.cs,{chance = 0.5, items = fishs})
+-- loot.cs.parameter = {
+--     chancetype = "ss_chance",-- 受影响权重的类型
+--     fixed = 63,-- 固定归属类型 
+--     possible = 63,-- 可能归属类型
+--     isrevise = true,-- 是否修正权重
+--     -- isprotect = true,-- 是否受开局保护影响
+--     -- isannounce = true,-- 是否其内全部选项默认会宣告    
+-- }
+
 return loot
+
+--[[ 
+
+parameter = {
+    chancetype = "new_chance",\"s_chance",\"ss_chance",\"d_chance",\"dd_chance",-- 受影响权重的类型
+    fixed = 1~63,-- 固定归属类型
+    possible = 1~63,-- 可能归属类型
+    isrevise = true,-- 是否修正权重
+    iscave = false,-- 是否洞穴独有
+    isforest = false,-- 是否森林独有
+    isprotect = true,-- 是否受开局保护影响
+    isannounce = true,-- 是否其内全部选项默认会宣告
+}
+
+1 -- 紫色
+2 -- 绿色
+4 -- 普通
+8 -- 粉色
+16 -- 橙色
+32 -- 发光
+
+]]

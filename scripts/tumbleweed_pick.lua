@@ -4,6 +4,16 @@ local loot_table = require("loot_table")
 require("simutil")
 local RandomWeight = require("random").RandomWeight
 
+-- AddPrefabPostInit("world",function(inst)
+--     if TheWorld.ismastersim and TheWorld:HasTag("cave") then --判断是不是服务器
+--         --晚上时进行，将黑夜转为月圆
+--         TheWorld:WatchWorldState("isnight", function(inst,data)
+--             inst:PushEvent("moonphasechanged2", { moonphase = "full", waxing = true})
+--         end)
+--     end
+-- end)
+
+
 local function removetools(picker)
     for k,v in pairs(picker.components.inventory.itemslots) do
         if v and (v.prefab=="multitool_axe_pickaxe"
@@ -270,7 +280,7 @@ end
 
 local function spawnAtGround(name, x,y,z)
     if GLOBAL.TheWorld.Map:IsPassableAtPoint(x, y, z) then
-        local item = GLOBAL.SpawnPrefab(name)
+        local item = type(name) == "table" and GLOBAL.SpawnPrefab(name[math.random(#name)]) or GLOBAL.SpawnPrefab(name)
         if item then
             item.Transform:SetPosition(x, y, z)
             item:AddTag("tumbleweeddropped")
@@ -854,18 +864,237 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
         end
         return 
     end
-    local item = spawnAtGround(it.item, x,y,z)
-    if it.aggro and item ~= nil and item.components.combat ~= nil and picker ~= nil then
+
+    -- 兼容自定义的事件, 默认参数，原选项，风滚草，开启者
+    if it.event ~= nil and type(it.event) == "function" then 
+        it.event(it, target, picker)
+        if it.name then
+            resetNotice(it.name) -- 进行宣告
+        end
+        return
+    end
+    
+    -- 目标是物品才能执行到这里啊
+    local item = spawnAtGround(it.item or it.items, x,y,z)
+    if item == nil then return end
+    SetSpellCB(item, picker)
+    if it.aggro and item.components.combat ~= nil and picker ~= nil then
         item.components.combat:SuggestTarget(picker)
     end
     
-    if item ~= nil and loot_table.needNotice(it.item) then
-        local item_name = item:GetDisplayName() or "???"
+    if it.announce or it.name then
+        local item_name = it.name or item:GetDisplayName() or "???"
         resetNotice(item_name)
         picker:PushEvent("tumbleweeddropped", {item = item})
     end
     return item
 end
+
+-- --初始化
+-- AddPrefabPostInit(
+--     "world",
+--     function(inst)
+--         if GLOBAL.TheWorld.ismastersim then --判断是不是服务器
+--             local start_protect = TUNING.start_protect --开局保护
+--             local drop_chance = TUNING.drop_chance --物品掉率
+
+--             inst.POSSIBLE_NUM = 1 -- 参照值，通过修改它，可以改变这个世界上玩家开草时
+--             inst.FIXED_NUM = 1 -- 默认，固定掉落物为1
+
+--             inst:ListenForEvent("tumbleweedpicked", function(inst, data) --监听事件
+--                 local possible_loot = { --可能掉落物
+--                     {chance = 20,   item = "cutgrass"},--草
+--                     {chance = 15,   item = "twigs"},--小树枝
+--                 }
+--                 local fixed_loot = {} -- 固定掉落物
+--                 local possible_num = inst.POSSIBLE_NUM or 1 --可能掉落物数量
+--                 local fixed_num = inst.FIXED_NUM or 1 --固定掉落物数量 (对应等级内的物品)
+--                 local isskip = false -- 是否已经开到了彩蛋或陷阱
+
+--                 -- 分别重置权重
+--                 local function insertLoot(loot, n)
+--                     for a,b in ipairs(loot) do
+--                         --print("old:"..b.chance)
+--                         local newchance = b.chance * n --重置chance
+--                         --print("new:"..b.chance)
+--                         if newchance > 0 then
+--                             table.insert(possible_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
+--                         end
+--                     end
+--                 end
+
+--                 local function insertLoot2(loot, n)
+--                     for a,b in ipairs(loot) do
+--                         --print("old:"..b.chance)
+--                         local newchance = b.chance * n --重置chance
+--                         --print("new:"..b.chance)
+--                         if newchance > 0 then
+--                             table.insert(fixed_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
+--                         end
+--                     end
+--                 end
+--                 local today = GLOBAL.TheWorld.state.cycles  --世界天数
+--                 local target = data.target --目标（风滚草）
+--                 local picker = data.picker --采集者（玩家）
+--                 if picker == nil or not picker:HasTag("player") then
+--                     return
+--                 end
+--                 local x, y, z = target.Transform:GetWorldPosition()
+
+--                 local playerage = picker.components.age:GetAgeInDays() or 0 --玩家天数
+--                 local san = picker.components and picker.components.sanity and picker.components.sanity:GetPercent() or 0 --san值百分比
+--                 local luck = picker.components and picker.components.luck and picker.components.luck:GetLuck() or 1
+--                 san = math.min(san+0.5, 1) --维持在 0.5~1之间
+
+--                 local world_chance = math.floor(today*0.01 + playerage*0.04)
+--                 if picker.components.titlesystem and picker.components.titlesystem.equip == 1 then
+--                     world_chance = math.floor(playerage*0.04)
+--                 end
+
+--                 local new_chance = 1
+--                 local s_chance = 1
+--                 local ss_chance = 1
+--                 local d_chance = 1
+--                 local dd_chance = 1
+
+--                 local lucky_level = target.components.tumlevel.level or 0
+
+--                 if lucky_level == -1 then -- 绿色
+--                     d_chance = 20 + (world_chance * 2)
+--                     dd_chance = 10 + world_chance
+--                 elseif lucky_level == -2 then --紫色
+--                     d_chance = 30 + world_chance
+--                     dd_chance = 50 + (world_chance * 2)
+--                 elseif lucky_level == 1 then -- 粉红色
+--                     new_chance = 40
+--                     s_chance = 200
+--                     ss_chance = 200
+--                     insertLoot2(fixed_loot, loot_table.new_loot, drop_chance*new_chance)
+--                     insertLoot2(fixed_loot, loot_table.s_loot, drop_chance*s_chance)
+--                     insertLoot2(fixed_loot, loot_table.gift_loot, drop_chance*ss_chance)
+--                 elseif lucky_level == 2 then -- 橙色
+--                     s_chance = 200--100
+--                     ss_chance = 400--200
+--                     dd_chance = 0
+--                     d_chance = 0
+--                     insertLoot2(fixed_loot, loot_table.s_loot, drop_chance*s_chance)
+--                     insertLoot2(fixed_loot, loot_table.ss_loot, drop_chance*ss_chance)
+--                     insertLoot2(fixed_loot, loot_table.gift_loot, drop_chance*ss_chance)                    
+--                 elseif lucky_level == 3 then -- 发光
+--                     ss_chance = 1500
+--                     s_chance = 50
+--                     dd_chance = 0
+--                     d_chance = 0
+--                     insertLoot2(loot_table.ss_loot, drop_chance*ss_chance)
+--                     insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)  
+--                 else -- 普通
+--                     d_chance = 1 + math.min(world_chance, 29)
+--                     dd_chance = 1 + math.min(world_chance, 19)
+--                     possible_num = possible_num + 1
+--                     fixed_num = 0
+--                 end
+
+--                 new_chance = new_chance * (luck*0.05 + 1) * san
+--                 s_chance = s_chance * (luck*0.1 + 1) * san
+--                 ss_chance = ss_chance * (luck*0.15 + 1) * san
+
+--                 insertLoot(loot_table.new_loot, drop_chance*new_chance)
+--                 insertLoot(loot_table.s_loot, drop_chance*s_chance)
+--                 insertLoot(loot_table.ss_loot, drop_chance*ss_chance)
+--                 insertLoot(loot_table.gift_loot, drop_chance*ss_chance)
+
+--                 if (not start_protect or playerage >= 3) and lucky_level < 2 then 
+--                     insertLoot(loot_table.d_loot, drop_chance*d_chance)
+--                     insertLoot(loot_table.dd_loot, drop_chance*dd_chance)
+--                     insertLoot(loot_table.trap_loot, drop_chance*dd_chance)
+--                     insertLoot2(loot_table.d_loot, lucky_level < 0 and drop_chance*d_chance or 0)
+--                     insertLoot2(loot_table.dd_loot, lucky_level < 0 and drop_chance*dd_chance or 0)
+--                     insertLoot2(loot_table.trap_loot, lucky_level < 2 and drop_chance*dd_chance or 0) -- 粉色也有概率开到陷阱
+--                     if TUNING.boss_chance and dd_chance > 0 then
+--                         insertLoot(loot_table.big_boss_loot, drop_chance*dd_chance)
+--                         insertLoot2(loot_table.big_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
+--                         if GLOBAL.TheWorld:HasTag("cave") then
+--                             insertLoot(loot_table.cave_boss_loot, drop_chance*dd_chance)
+--                             insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
+--                         else
+--                             insertLoot(loot_table.forest_boss_loot, drop_chance*dd_chance) --添加森林世界才出的boss
+--                             insertLoot2(loot_table.forest_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
+--                             insertLoot(loot_table.cave_boss_loot, drop_chance)
+--                             insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance or 0)
+--                         end
+--                     end
+
+--                     if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then -- 是否洞穴
+--                         insertLoot(loot_table.cave_loot, drop_chance*world_chance)
+--                         insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance*world_chance or 0)
+--                     else
+--                         insertLoot(loot_table.cave_loot, drop_chance)
+--                         insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance or 0)
+--                     end
+
+--                 elseif #fixed_loot == 0 and lucky_level < 0 then -- 这种是开局保护时，绿紫等去掉固定掉落物
+--                     possible_num = possible_num + 1
+--                     fixed_num = 0                    
+--                 end
+
+--                 if TUNING.new_items then
+--                     insertLoot(loot_table.new_items_loot, drop_chance*ss_chance)
+--                 end
+
+--                 -- 调整掉落数量
+--                 local titles = picker.components.titlesystem and picker.components.titlesystem.titles or {}
+--                 local title4 = titles[4] or 0
+--                 local rand = title_data and title_data["title4"]["drop"] or 0
+--                 if title4 == 1 and math.random() < rand then
+--                     possible_num = possible_num + 1
+--                 end
+--                 if titles[13] == 1 then
+--                     possible_num = possible_num + 1
+--                 end
+
+--                 -- 对于橙色以上草，角色幸运值大于20，有一定5%概率消耗1点幸运增加1个掉落物
+--                 if lucky_level >=2 and picker.components.luck ~= nil and luck > 20 and math.random() > 0.95 then
+--                     fixed_num = fixed_num + 1
+--                     picker.components.luck:DoDelta(-1)
+--                 end
+
+--                 if TUNING.more_blueprint and lucky_level >=2 then
+--                     spawnAtGround("blueprint", x, y, z)
+--                     possible_num = possible_num - 1
+--                 end
+
+--                 -- 得到最终结果项集
+--                 local possible_res = RandomWeight(possible_loot,possible_num)
+--                 local fixed_res = RandomWeight(fixed_loot,fixed_num)
+
+--                 for k,v in pairs(possible_res) do
+--                     if (v.gift or v.trap or v.building) and isskip then -- 再次是彩蛋或陷阱时执行
+--                         local x, y, z = target.Transform:GetWorldPosition()
+--                         spawnAtGround("cutgrass", x,y,z) -- 变成草
+--                     else
+--                         local item = doSpawnItem(v, target, picker)
+--                         if item == nil or item:HasTag("structure") or v.building then
+--                             isskip = true
+--                         end                        
+--                     end
+--                 end
+--                 for k,v in pairs(fixed_res) do
+--                     if (v.gift or v.trap or v.building) and isskip then
+--                         local x, y, z = target.Transform:GetWorldPosition()
+--                         spawnAtGround("cutgrass", x,y,z) -- 变成草                        
+--                     else
+--                         local item = doSpawnItem(v, target, picker)
+--                         if item == nil or item:HasTag("structure") or v.building then
+--                             isskip = true
+--                         end                     
+--                     end
+--                 end
+--             end)
+--         end
+--     end
+-- )
+
+
 
 --初始化
 AddPrefabPostInit(
@@ -876,48 +1105,30 @@ AddPrefabPostInit(
             local drop_chance = TUNING.drop_chance --物品掉率
 
             inst.POSSIBLE_NUM = 1 -- 参照值，通过修改它，可以改变这个世界上玩家开草时
-            inst.FIXED_NUM = 1
+            inst.FIXED_NUM = 1 -- 默认，固定掉落物为1
 
             inst:ListenForEvent("tumbleweedpicked", function(inst, data) --监听事件
-                local possible_loot = { --可能掉落物
+                local possible_loot = { --可能掉落物列表
                     {chance = 20,   item = "cutgrass"},--草
                     {chance = 15,   item = "twigs"},--小树枝
                 }
-                local fixed_loot = {} -- 固定掉落物
+                local fixed_loot = {} -- 固定掉落物列表
+
                 local possible_num = inst.POSSIBLE_NUM or 1 --可能掉落物数量
                 local fixed_num = inst.FIXED_NUM or 1 --固定掉落物数量 (对应等级内的物品)
-                local isskip = false -- 是否已经开到了彩蛋或陷阱
+                local isskip = false -- 是否已经开到了彩蛋或陷阱或建筑
 
-                -- 分别重置权重
-                local function insertLoot(loot, n)
-                    for a,b in ipairs(loot) do
-                        --print("old:"..b.chance)
-                        local newchance = b.chance * n --重置chance
-                        --print("new:"..b.chance)
-                        if newchance > 0 then
-                            table.insert(possible_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
-                        end
-                    end
-                end
-
-                local function insertLoot2(loot, n)
-                    for a,b in ipairs(loot) do
-                        --print("old:"..b.chance)
-                        local newchance = b.chance * n --重置chance
-                        --print("new:"..b.chance)
-                        if newchance > 0 then
-                            table.insert(fixed_loot, {chance=newchance, item=b.item, aggro=b.aggro, trap=b.trap, gift=b.gift})
-                        end
-                    end
-                end
                 local today = GLOBAL.TheWorld.state.cycles  --世界天数
                 local target = data.target --目标（风滚草）
                 local picker = data.picker --采集者（玩家）
                 if picker == nil or not picker:HasTag("player") then
                     return
                 end
-                local x, y, z = target.Transform:GetWorldPosition()
 
+                local x, y, z = target.Transform:GetWorldPosition() -- 风滚草位置
+                local lucky_level = target.components.tumlevel.level or 0 -- 风滚草类型
+
+                -- 修正权重的参数
                 local playerage = picker.components.age:GetAgeInDays() or 0 --玩家天数
                 local san = picker.components and picker.components.sanity and picker.components.sanity:GetPercent() or 0 --san值百分比
                 local luck = picker.components and picker.components.luck and picker.components.luck:GetLuck() or 1
@@ -928,93 +1139,118 @@ AddPrefabPostInit(
                     world_chance = math.floor(playerage*0.04)
                 end
 
-                local new_chance = 1
-                local s_chance = 1
-                local ss_chance = 1
-                local d_chance = 1
-                local dd_chance = 1
+                -- 是否开局保护
+                local protect = start_protect and playerage <= 3
 
-                local lucky_level = target.components.tumlevel.level or 0
+                -- 修正权重参数值
+                local chance_table = {
+                    new_chance = 1,
+                    s_chance = 1,
+                    ss_chance = 1,
+                    d_chance = 1,
+                    dd_chance = 1,
+                }
+                
+                -- 根据类型修正基础参数
                 if lucky_level == -1 then -- 绿色
-                    d_chance = 20 + (world_chance * 2)
-                    dd_chance = 10 + world_chance
+                    chance_table.d_chance = 20 + (world_chance * 2)
+                    chance_table.dd_chance = 10 + world_chance
                 elseif lucky_level == -2 then --紫色
-                    d_chance = 30 + world_chance
-                    dd_chance = 50 + (world_chance * 2)
+                    chance_table.d_chance = 30 + world_chance
+                    chance_table.dd_chance = 50 + (world_chance * 2)
                 elseif lucky_level == 1 then -- 粉红色
-                    new_chance = 40
-                    s_chance = 200
-                    ss_chance = 200
-                    insertLoot2(loot_table.new_loot, drop_chance*new_chance)
-                    insertLoot2(loot_table.s_loot, drop_chance*s_chance)
-                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)
+                    chance_table.new_chance = 40
+                    chance_table.s_chance = 200
+                    chance_table.ss_chance = 200
                 elseif lucky_level == 2 then -- 橙色
-                    s_chance = 200--100
-                    ss_chance = 400--200
-                    dd_chance = 0
-                    d_chance = 0
-                    insertLoot2(loot_table.s_loot, drop_chance*s_chance)
-                    insertLoot2(loot_table.ss_loot, drop_chance*ss_chance)
-                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)                    
+                    chance_table.s_chance = 200--100
+                    chance_table.ss_chance = 400--200
+                    chance_table.dd_chance = 0
+                    chance_table.d_chance = 0               
                 elseif lucky_level == 3 then -- 发光
-                    ss_chance = 1500
-                    s_chance = 50
-                    dd_chance = 0
-                    d_chance = 0
-                    insertLoot2(loot_table.ss_loot, drop_chance*ss_chance)
-                    insertLoot2(loot_table.gift_loot, drop_chance*ss_chance)  
+                    chance_table.ss_chance = 1500
+                    chance_table.s_chance = 50
+                    chance_table.dd_chance = 0
+                    chance_table.d_chance = 0  
                 else -- 普通
-                    d_chance = 1 + math.min(world_chance, 29)
-                    dd_chance = 1 + math.min(world_chance, 19)
+                    chance_table.d_chance = 1 + math.min(world_chance, 29)
+                    chance_table.dd_chance = 1 + math.min(world_chance, 19)
+
                     possible_num = possible_num + 1
                     fixed_num = 0
                 end
+                -- print("风滚草等级",lucky_level)
 
-                new_chance = new_chance * (luck*0.05 + 1) * san
-                s_chance = s_chance * (luck*0.1 + 1) * san
-                ss_chance = ss_chance * (luck*0.15 + 1) * san
+                -- 根据幸运及理智修正基础参数
+                chance_table.new_chance = chance_table.new_chance * (luck*0.05 + 1) * san
+                chance_table.s_chance = chance_table.s_chance * (luck*0.1 + 1) * san
+                chance_table.ss_chance = chance_table.ss_chance * (luck*0.15 + 1) * san
 
-                insertLoot(loot_table.new_loot, drop_chance*new_chance)
-                insertLoot(loot_table.s_loot, drop_chance*s_chance)
-                insertLoot(loot_table.ss_loot, drop_chance*ss_chance)
-                insertLoot(loot_table.gift_loot, drop_chance*ss_chance)
-
-                if (not start_protect or playerage >= 3) and lucky_level < 2 then 
-                    insertLoot(loot_table.d_loot, drop_chance*d_chance)
-                    insertLoot(loot_table.dd_loot, drop_chance*dd_chance)
-                    insertLoot(loot_table.trap_loot, drop_chance*dd_chance)
-                    insertLoot2(loot_table.d_loot, lucky_level < 0 and drop_chance*d_chance or 0)
-                    insertLoot2(loot_table.dd_loot, lucky_level < 0 and drop_chance*dd_chance or 0)
-                    insertLoot2(loot_table.trap_loot, lucky_level < 2 and drop_chance*dd_chance or 0) -- 粉色也有概率开到陷阱
-                    if TUNING.boss_chance and dd_chance > 0 then
-                        insertLoot(loot_table.big_boss_loot, drop_chance*dd_chance)
-                        insertLoot2(loot_table.big_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
-                        if GLOBAL.TheWorld:HasTag("cave") then
-                            insertLoot(loot_table.cave_boss_loot, drop_chance*dd_chance)
-                            insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
-                        else
-                            insertLoot(loot_table.forest_boss_loot, drop_chance*dd_chance) --添加森林世界才出的boss
-                            insertLoot2(loot_table.forest_boss_loot, lucky_level == -2 and drop_chance*dd_chance or 0)
-                            insertLoot(loot_table.cave_boss_loot, drop_chance)
-                            insertLoot2(loot_table.cave_boss_loot, lucky_level == -2 and drop_chance or 0)
+                -- 重置权重并添加到 掉落物列表中
+                local function insertLoot(final, loot)
+                    local n = chance_table[loot.parameter.chancetype] or 0
+                    if n <= 0 then return end 
+                    local loot_ = GLOBAL.deepcopy(loot)
+                    -- loot_.parameter = nil
+                    for a,b in ipairs(loot_ or {}) do
+                        -- 是否默认宣告
+                        b.announce = b.announce == nil and loot.parameter.isannounce or b.announce
+                        -- 是否要修正权重
+                        b.chance = loot.parameter.isrevise and b.chance * n or b.chance --重置chance
+                        -- print("权重",b.chance)
+                        if b.chance > 0 then
+                            table.insert(final, b)
                         end
                     end
-
-                    if GLOBAL.TheWorld:HasTag("cave") and world_chance > 0 then -- 是否洞穴
-                        insertLoot(loot_table.cave_loot, drop_chance*world_chance)
-                        insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance*world_chance or 0)
-                    else
-                        insertLoot(loot_table.cave_loot, drop_chance)
-                        insertLoot2(loot_table.cave_loot, lucky_level < 1 and drop_chance or 0)
-                    end
-
-                elseif #fixed_loot == 0 and lucky_level < 0 then -- 这种是开局保护时，绿紫等去掉固定掉落物
-                    possible_num = possible_num + 1
-                    fixed_num = 0                    
                 end
 
-                if TUNING.new_items then
-                    insertLoot(loot_table.new_items_loot, drop_chance*ss_chance)
+                -- 是否归属于对应类型
+                local function feasible(p)
+                    local n = p or 0
+                    if n > 63 then n = 63 end
+                    for i=5,0,-1 do
+                        if math.floor(n/2^i) > 0 then
+                            if i+1 == lucky_level + 3 then -- 存在归属于对应类型
+                                return true
+                            end
+                            n=n%2^i
+                        end
+                    end                    
+                end
+
+                -- 进行操作
+                local function operateLoot(loot)
+                    if loot == nil -- 不存在
+                    or type(loot) ~= "table" -- 不是表
+                    or loot.parameter == nil -- 参数表不存在
+                    or (loot.parameter.iscave and not GLOBAL.TheWorld:HasTag("cave")) -- 是洞穴独有且不是洞穴时
+                    or (loot.parameter.isforest and not GLOBAL.TheWorld:HasTag("forest")) -- 是森林独有且不是森林时
+                    or (protect and loot.parameter.isprotect) then -- 是受开局保护影响且是保护状态
+                        return false
+                    end
+                    -- 固定归属类型
+                    if feasible(loot.parameter.fixed) then
+                        insertLoot(fixed_loot, loot)
+                    end
+                    -- 可能归属类型
+                    if feasible(loot.parameter.possible) then
+                        insertLoot(possible_loot, loot)
+                    end
+                end
+                -- 根据各类参数，确定最终掉落物列表
+                -- 本mod的掉落物表
+                for k,v in pairs(loot_table) do 
+                    -- 是否开启新物品
+                    -- print("表---",k)
+                    operateLoot(v)
+                end
+
+                -- 对扩展mod的掉落物表
+                for name,loottables in pairs(GLOBAL.TUNING.TUMBLEWEED_ALL or {}) do 
+                    for key,loot in pairs(loottables) do
+                        print("表---",key)
+                        operateLoot(loot)
+                    end
                 end
 
                 -- 调整掉落数量
@@ -1039,12 +1275,25 @@ AddPrefabPostInit(
                     possible_num = possible_num - 1
                 end
 
-                -- 得到最终结果项集
-                local possible_res = RandomWeight(possible_loot,possible_num)
-                local fixed_res = RandomWeight(fixed_loot,fixed_num)
+                -- 固定战利品
+                local fixed_res = RandomWeight(fixed_loot,fixed_num) or {}
+                for k,v in pairs(fixed_res) do
+                    if (v.gift or v.trap or v.building or v.event) and isskip then
+                        local x, y, z = target.Transform:GetWorldPosition()
+                        spawnAtGround("cutgrass", x,y,z) -- 变成草                      
+                    else
+                        local item = doSpawnItem(v, target, picker)
+                        if item == nil or item:HasTag("structure") or v.building then
+                            isskip = true
+                        end                     
+                    end
+                    fixed_num = fixed_num - 1
+                end
 
+                -- 可能战利品
+                local possible_res = RandomWeight(possible_loot, fixed_num > 0 and possible_num + fixed_num or possible_num) or {}
                 for k,v in pairs(possible_res) do
-                    if (v.gift or v.trap or v.building) and isskip then -- 再次是彩蛋或陷阱时执行
+                    if (v.gift or v.trap or v.building or v.event) and isskip then -- 再次是彩蛋或陷阱时执行
                         local x, y, z = target.Transform:GetWorldPosition()
                         spawnAtGround("cutgrass", x,y,z) -- 变成草
                     else
@@ -1054,17 +1303,7 @@ AddPrefabPostInit(
                         end                        
                     end
                 end
-                for k,v in pairs(fixed_res) do
-                    if (v.gift or v.trap or v.building) and isskip then
-                        local x, y, z = target.Transform:GetWorldPosition()
-                        spawnAtGround("cutgrass", x,y,z) -- 变成草                        
-                    else
-                        local item = doSpawnItem(v, target, picker)
-                        if item == nil or item:HasTag("structure") or v.building then
-                            isskip = true
-                        end                     
-                    end
-                end
+
             end)
         end
     end

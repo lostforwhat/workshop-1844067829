@@ -1,5 +1,88 @@
 local loot_table = require("loot_table")
 
+-- 视为宝物的列表
+local notice_goods = {
+    "eyebrellahat",
+    "little_walrus", -- 小海象
+    "cane",
+    "hivehat",
+    "armorskeleton",
+    "opalstaff",
+    "krampus_sack",
+    "beequeen",
+    "toadstool",
+    "stalker_atrium",
+    "stalker",
+    "stalker_forest",
+    "spat",
+    "bearger",
+    "alterguardian_phase1",
+    "deerclops",
+    "spiderqueen",
+    "package_staff",
+    "prayer_symbol",
+    "minotaurhorn",
+    "deerclops_eyeball",
+    "yellowstaff",
+    "greenstaff",
+    "greenamulet",
+    "orangestaff",
+    "eyeturret_item",
+    "ruins_bat",
+    "armorruins",
+    "ruinshat",
+    "yellowamulet",
+    "panflute",
+    "shadowheart",
+    "pigtorch",
+    "monkeybarrel", -- 猴子桶
+    "catcoonden", --中空树桩
+    "ruins_statue_mage",
+    "archive_moon_statue",
+    "nightmaregrowth",
+    "atrium_idol",
+    "atrium_overgrowth",
+    "moonbase",
+    "pigking",
+    "achiv_clear",
+    "opalpreciousgem",
+    "houndmound",
+    "spiderhole",
+    "gingerbreadhouse",
+    "beehive",
+    "opalstaff",
+    "book_season",
+    "potion_luck",
+    "potion_achiv",
+    "book_gardening",
+
+    "warg",
+    "dragonfly",
+    "moose",
+    "minotaur",
+    "klaus_sack",
+    "eyeofterror",
+    "twinofterror1",
+    "twinofterror2",
+    "crabking",
+    "malbatross",
+    "stealingknife",
+    "opalgemsamulet",
+}
+-- 传入 实体或者其预制体名称 都可
+local function needNotice(goods)
+    local item = goods.prefab or goods
+    if goods.prefab ~= nil and item == "package_ball" and goods.components.packer.package then --包裹里的也要判断
+        return needNotice(goods.components.packer.package.prefab)
+    end
+    for i, v in ipairs(notice_goods) do
+        if item == v then 
+            return true
+        end
+    end
+    return false
+end
+
 local function deepcopy(object)
     local lookup_table = {}
     local function _copy(object)
@@ -77,11 +160,12 @@ local function randomItem(value,luck)--传入vip等级
     else
     	types=types1
     end
+    -- types = {"xxx"} -- 测试用的
 
 	local items = deepcopy(loot_table[types[math.random(#types)]])
     local loot = items[math.random(#items)]--随机表中的项
 
-	local prefab = loot.item  --项的名称
+	local prefab = loot.item or loot.items[math.random(#loot.items)]  --项的名称
 	if prefab=="bullkelp_beachedroot" then return SpawnPrefab("ash") end
 	if prefab ~= nil and PrefabExists(prefab) then   --判断预制体是否存在
 		local item = SpawnPrefab(prefab)
@@ -424,8 +508,10 @@ function Titlesystem:ApplayTilte(inst)
         		item = randomItem(500+self.vip_level*20,luck) or SpawnPrefab("ash")
         		inst.components.inventory:GiveItem(item)
         	end
+        	-- 换肤
+        	SetSpellCB(item, self.inst)
 			--宣告贵重物品
-    		if item ~= nil and loot_table.needNotice(item) then
+    		if item ~= nil and needNotice(item) then
         		TheNet:Announce("【王者之巅】 "..self.inst:GetDisplayName().." 从每日物资里得到了珍贵的【"..item:GetDisplayName().."】")
     		elseif item ~= nil and inst.components.talker then 
     			inst.components.talker:Say("【每日物资】 "..item:GetDisplayName(),2,true,true,false) 
@@ -556,8 +642,10 @@ function Titlesystem:ApplayTilte(inst)
 					print(item)
 				end
 				]]    
+				-- 换肤
+				SetSpellCB(item, self.inst)
 				--宣告贵重物品
-    			if item ~= nil and loot_table.needNotice(item) then
+    			if item ~= nil and needNotice(item) then
     				if not toqie then
         				TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
         			else

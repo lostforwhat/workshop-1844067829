@@ -113,13 +113,22 @@ _G.ToStringEx = function(value)
     end
 end
 
-function needNotice(goods)
-    for i, v in ipairs(notice_goods) do
-        if goods == v then 
-            return true
+-- 自动换皮服
+function SetSpellCB(target,player)
+    if target == nil or not target:IsValid() then return false end
+    -- player = player or target.components.inventorytarget.owner --没有就在看是否存在持有者,要加变胡子彩蛋？
+    local target_types = {}
+    if GLOBAL.PREFAB_SKINS[target.prefab] ~= nil then
+        for _,target_type in pairs(GLOBAL.PREFAB_SKINS[target.prefab]) do
+            if GLOBAL.TheInventory:CheckClientOwnership(player.userid, target_type) then
+                table.insert(target_types,target_type)
+            end
         end
     end
-    return false
+    if #target_types<=0 then
+        return false
+    end
+    GLOBAL.TheSim:ReskinEntity( target.GUID, target.skinname, target_types[math.random(#target_types)], nil, player.userid ) --玩家有的随机物品皮肤
 end
 
 -- 开启新物品后，彩色护符存在

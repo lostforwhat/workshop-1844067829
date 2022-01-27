@@ -4,6 +4,12 @@ local function RandomWeight(weight_table, expect_val, fn, ...)
 	local number = expect_val
 	local result = {}
 
+	-- 表没有值时
+	if #weight_table <= 0 then
+		print("表没有值")
+		return
+	end
+
     for m, n in ipairs(weight_table) do
         totalchance = totalchance + n.chance
     end
