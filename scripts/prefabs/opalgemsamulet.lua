@@ -50,6 +50,8 @@ local function delivery(inst,owner)
         opal2.components.opal.state = true
         owner.components.inventory:Equip(opal2)
         inst:Remove()
+    else
+        -- print("光草不存在了，但占一个位置")
     end
 end
 local function delivery2(inst,owner)

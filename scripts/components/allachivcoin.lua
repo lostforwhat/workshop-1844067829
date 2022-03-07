@@ -1370,6 +1370,7 @@ end
 function allachivcoin:attackbackfn(inst)
     inst:ListenForEvent("attacked", function(inst, data)
         if self.attackback > 0 and inst.attackbackcd == nil and data ~= nil and not data.redirected then
+            -- print("反伤", inst,data.attacker,data.damage,data.damageresolved,data.weapon)
             inst.attackbackcd = inst:DoTaskInTime(.3, function(inst)
                 inst.attackbackcd = nil
             end)
@@ -1445,6 +1446,7 @@ local function addHit(inst, follower)
                         follower.hitcd = true
                         target.components.combat:GetAttacked(follower, damage * 0.25 + 0.4*level)
                         if lifestealupamount > 0 then
+                            print("吸血")
                             follower.components.health:DoDelta(damage*lifestealupamount*allachiv_coindata["lifesteal"])
                         end
                         follower:DoTaskInTime(0.3, function() follower.hitcd=false end)

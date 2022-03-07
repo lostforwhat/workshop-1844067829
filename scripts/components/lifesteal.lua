@@ -89,6 +89,7 @@ function LifeSteal:Onhitother(inst, data)
             damage = damage * (1- math.clamp(absorb, 0, 1))
             local lifestealnum = self.percent * 0.01 * damage * (1 + self.extra_percent)
             inst.components.health:DoDelta(lifestealnum, false, "lifesteal")
+            -- print("吸血",lifestealnum,data.stimuli,data.redirected,data.damageresolved)
         end
     end
 end

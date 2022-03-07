@@ -1,3 +1,5 @@
+local events = require("event_table")
+
 local loot = { -- oceanfish_shoalspawner 鱼场
 new_loot = {
         {chance = 5, item = "log"},--木头
@@ -35,6 +37,7 @@ new_loot = {
         {chance = 1.2, item = "nightmarefuel"},--噩梦燃料
         {chance = 0.2, item = "transistor"},--电子元件
         {chance = 0.5, item = "poop"},--便便
+        {chance = 0.2, item = "compostwrap"},--肥料包
         {chance = 0.02, item = "waxpaper"},--蜡纸
         {chance = 0.1, item = "moonrocknugget"},--月石
         {chance = 0.5, item = "houndstooth"},--狗牙
@@ -188,8 +191,8 @@ new_loot = {
         {chance = 0.08, item = "dug_berrybush_juicy"},--多汁浆果丛
         {chance = 0.02, item = "phlegm"},--脓鼻涕
         {chance = 0.1, item = "eel"},--鳗鱼
-        {chance = 0.1, item = "bullkelp_root",},--海带茎
-        {chance = 0.01, item = "waterplant_planter",},--海芽插穗
+        {chance = 0.1, item = "bullkelp_root"},--海带茎
+        {chance = 0.01, item = "waterplant_planter"},--海芽插穗
     },
 
 s_loot = {
@@ -268,6 +271,14 @@ s_loot = {
         {chance = 0.05, item = "shieldofterror"},--恐怖盾牌
         {chance = 0.1, item = "eyemaskhat"},--眼面具
 
+        {chance = 0.1, item = "balloonspeed"},--迅捷气球
+        {chance = 0.1, item = "balloonvest"},--充气背心
+        {chance = 0.1, item = "balloonparty"},--派对气球
+
+        {chance = 0.1, items = {"spice_sugar","spice_salt","spice_chili","spice_garlic"}},--香料
+
+        {chance = 0.15, item = "wortox_soul"},--灵魂
+
         {chance = 0.1, item = "beemine"},--蜜蜂地雷
         {chance = 0.15, item = "trap_teeth"},--犬牙陷阱
         {chance = 0.15, item = "armorslurper"},--饥饿腰带
@@ -297,9 +308,7 @@ s_loot = {
         {chance = 0.05, item = "goose_feather"},--鹿鸭羽毛
         {chance = 0.01, item = "bearger_fur"},--熊皮
         {chance = 0.02, item = "beargervest"},--熊皮背心
-        {chance = 0.05, item = "red_mushroomhat"},--红蘑菇帽
-        {chance = 0.05, item = "green_mushroomhat"},--绿蘑菇帽
-        {chance = 0.05, item = "blue_mushroomhat"},--蓝蘑菇帽
+        {chance = 0.05, items = {"red_mushroomhat","green_mushroomhat","blue_mushroomhat"}},--红蘑菇帽
         {chance = 0.1, item = "armor_bramble"},--荆棘甲
         {chance = 0.5, item = "blueprint"},--蓝图
         {chance = 0.02, item = "trident"},--三叉戟
@@ -370,9 +379,10 @@ ss_loot = {
         {chance = 0.001, item = "archive_moon_statue", building = true}, --远古月亮雕像
         {chance = 0.0003, item = "moonbase", building = true}, --月亮石
         {chance = 0.0005, item = "pigking", building = true}, --猪王
-        {chance = 0.001, item = "nightmaregrowth", building = true}, --梦魇城墙
-        {chance = 0.001, item = "atrium_idol", building = true}, --远古方尖碑1
-        {chance = 0.001, item = "atrium_overgrowth", building = true}, --远古方尖碑2
+        {chance = 0.008, item = "oceanvine", building = true},--苔藓藤条植株
+        {chance = 0.002, item = "cavelight", name = "洞穴光"}, -- 洞穴光
+        {chance = 0.001, items = {"nightmaregrowth","atrium_idol","atrium_overgrowth"}, building = true}, --梦魇城墙
+        {chance = 0.01, items = {"birdcage","lightning_rod","cookpot","mushroom_farm","firesuppressor","icebox","resurrectionstatue","siestahut","portabletent","tent","beebox"}, name = "家具", building = true}, --家具
     },
 
 d_loot = {
@@ -460,6 +470,7 @@ big_boss_loot = {
         {chance = 0.05, item = "moose", aggro = true},--鹿鸭\麋鹿鹅
         -- {chance = 0.02, item = "warg", aggro = true},--座狼
         {chance = 0.03, item = "bearger", aggro = true},--熊大
+        {chance = 0.03, item = "klaus", name = "克劳斯", event = events.klaus},--克劳斯
         --{chance = 0.01, item = "stalker_atrium", aggro = true},--远古影织者
         --{chance = 0.01, item = "stalker", aggro = true},--复活的骨架
         --{chance = 0.03, item = "stalker_forest", aggro = true},--森林守护者

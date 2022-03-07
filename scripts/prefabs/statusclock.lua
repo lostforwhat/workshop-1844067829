@@ -47,6 +47,7 @@ local function fn()
     inst:AddComponent("inspectable")
     
     inst:AddComponent("named")
+    inst:AddComponent("lootdropper")
 
     --物品栏组件，可以放到物品栏里
     inst:AddComponent("inventoryitem")

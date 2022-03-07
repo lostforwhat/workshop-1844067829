@@ -947,22 +947,22 @@ function uiachievement:loadTitleInfo(index)
 		self.titlecontent.equip[3]:SetPosition(0, -120, 0)
 		self.titlecontent.equip[3]:SetHAlign(ANCHOR_LEFT)
 
-		self.titlecontent.visit = self.titlecontent:AddChild(TextButton())
-		self.titlecontent.visit:SetPosition(-90, 103, 0)
-		self.titlecontent.visit:SetText(STRINGS.GUI["visit"])
-		self.titlecontent.visit:SetTextSize(12)
-		self.titlecontent.visit:SetColour(0.95,0.2,0.9,1)
-		self.titlecontent.visit:SetOnClick(function() 
-			if self.cooldown then
-				self.cooldown = false
-				if not TUNING.vipurl then
-					TUNING.vipurl = "http://vip.tumbleweedofall.xyz:8008?userid="..self.owner.userid
-				end
-				VisitURL(TUNING.vipurl)
-				self.owner:DoTaskInTime(0.3, function() self.cooldown = true end)
-			end
-		end)
-		self.titlecontent.visit:Hide()
+		-- self.titlecontent.visit = self.titlecontent:AddChild(TextButton())
+		-- self.titlecontent.visit:SetPosition(-90, 103, 0)
+		-- self.titlecontent.visit:SetText(STRINGS.GUI["visit"])
+		-- self.titlecontent.visit:SetTextSize(12)
+		-- self.titlecontent.visit:SetColour(0.95,0.2,0.9,1)
+		-- self.titlecontent.visit:SetOnClick(function() 
+		-- 	if self.cooldown then
+		-- 		self.cooldown = false
+		-- 		if not TUNING.vipurl then
+		-- 			TUNING.vipurl = "http://vip.tumbleweedofall.xyz:8008?userid="..self.owner.userid
+		-- 		end
+		-- 		VisitURL(TUNING.vipurl)
+		-- 		self.owner:DoTaskInTime(0.3, function() self.cooldown = true end)
+		-- 	end
+		-- end)
+		-- self.titlecontent.visit:Hide()
 	end
 
 	local title = STRINGS.TITLE[index]
@@ -980,9 +980,9 @@ function uiachievement:loadTitleInfo(index)
 	self.titlecontent.name:SetColour(r,g,b,t)
 
 	if title.id == "title13" and level == 8 then
-		self.titlecontent.visit:Show()
+		-- self.titlecontent.visit:Show()
 	else
-		self.titlecontent.visit:Hide()
+		-- self.titlecontent.visit:Hide()
 	end
 	for k=1,5 do
 		self.titlecontent.desc[k]:SetString("")

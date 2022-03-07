@@ -114,7 +114,7 @@ _G.ToStringEx = function(value)
 end
 
 -- 自动换皮服
-function SetSpellCB(target,player)
+GLOBAL.SetSpellCB = function(target,player)
     if target == nil or not target:IsValid() then return false end
     -- player = player or target.components.inventorytarget.owner --没有就在看是否存在持有者,要加变胡子彩蛋？
     local target_types = {}
@@ -145,9 +145,7 @@ if TUNING.new_items then
             end
         end
         local function RemoveTumbleweed_5(inst,data)
-            if inst.tumbleweed_5[data.tumbleweed.GUID] ~= nil then
-                inst.tumbleweed_5[data.tumbleweed.GUID] = nil
-            end
+            inst.tumbleweed_5[data.tumbleweed.GUID] = nil
         end
         inst:DoTaskInTime(0,function(inst)
             inst:ListenForEvent("Atumbleweed_5",AddTumbleweed_5)
@@ -1345,9 +1343,9 @@ AddPlayerPostInit(function(inst)
         inst.components.allachivcoin:Init(inst)
         inst.components.levelsystem:Init(inst)
         inst.components.titlesystem:Init(inst)
-        if inst.components.oldager then
-            inst.components.oldager:AddValidHealingCause("lifesteal")
-        end
+        -- if inst.components.oldager then --旺达吸血
+            -- inst.components.oldager:AddValidHealingCause("lifesteal") -- 吸血技能
+        -- end
     end
 end)
 

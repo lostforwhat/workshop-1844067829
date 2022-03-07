@@ -136,7 +136,7 @@ local function randomItem(value,luck)--传入vip等级
 		end
 	end
 	]]
-	if loot_table == nil then return end
+	if loot_table == nil then return SpawnPrefab("ash") end
 	--普通物品表
 	local types1 = {"new_loot","s_loot"}
 	--高级物品表
@@ -612,8 +612,9 @@ function Titlesystem:ApplayTilte(inst)
 				if gl > threshold then 
 					local lootdropper = target.components.lootdropper and target.components.lootdropper:GenerateLoot() or nil  --生成战利品
 					if lootdropper and #lootdropper > 0 then
-                		item = SpawnPrefab(lootdropper[math.random(#lootdropper)])                
-                		item.Transform:SetPosition(target:GetPosition():Get())
+                		item = SpawnPrefab(lootdropper[math.random(#lootdropper)]) 
+                		               
+                		-- item.Transform:SetPosition(target:GetPosition():Get())
                 	else
                 		item = SpawnPrefab("twigs")
                 	end
@@ -641,11 +642,14 @@ function Titlesystem:ApplayTilte(inst)
 					inst.components.inventory:GiveItem(item)
 					print(item)
 				end
-				]]    
+				]]  
+				if item == nil then return end  
+				-- 放不下时，掉角色身边
+				item.Transform:SetPosition(target:GetPosition():Get())
 				-- 换肤
 				SetSpellCB(item, self.inst)
 				--宣告贵重物品
-    			if item ~= nil and needNotice(item) then
+    			if needNotice(item) then
     				if not toqie then
         				TheNet:Announce(self.inst:GetDisplayName().." 使用探云手，从 "..target:GetDisplayName().." 偷取了 "..item:GetDisplayName())
         			else

@@ -39,6 +39,26 @@ local function OnPray(inst, prayers)
                 end
             end
             if #achiv_tab > 0 then
+
+                -- for k, v in pairs(achiv_tab) do
+                --     if not IsInTable(v, tempachiv) then
+                --         prayers.components.allachivevent[v] = allachiv_eventdata[v]
+                --         prayers.components.allachivevent:seffc(prayers, v)
+                --         prayers:DoTaskInTime(0.5,function() 
+                --             prayers:PushEvent("achivecompleted", {achivname=v})
+                --         end) 
+                --     else
+                --         prayers.components.allachivevent.tempachiv[v] = allachiv_eventdata[v]
+                --         local tempstr = TableToStr(prayers.components.allachivevent.tempachiv)
+                --         prayers.components.allachivevent.tempachiv = StrToTable(tempstr)
+                --         prayers.components.allachivevent:seffc(prayers, v)
+                --         prayers:DoTaskInTime(0.5,function() 
+                --             prayers:PushEvent("achivecompleted", {achivname=v})
+                --         end) 
+                --         prayers.components.allachivevent:checkAllTemp(prayers)
+                --     end                    
+                -- end
+
                 local achivname = achiv_tab[math.random(#achiv_tab)]
 
                 if not IsInTable(achivname, tempachiv) then

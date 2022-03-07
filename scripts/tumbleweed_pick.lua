@@ -279,7 +279,7 @@ local function spawnPlayerGift(picker)
 end
 
 local function spawnAtGround(name, x,y,z)
-    if GLOBAL.TheWorld.Map:IsPassableAtPoint(x, y, z) then
+    if name and GLOBAL.TheWorld.Map:IsPassableAtPoint(x, y, z) then
         local item = type(name) == "table" and GLOBAL.SpawnPrefab(name[math.random(#name)]) or GLOBAL.SpawnPrefab(name)
         if item then
             item.Transform:SetPosition(x, y, z)
@@ -697,7 +697,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
                 "armorruins",
                 "thulecite_pieces",
             }
-            local gl=math.random() - picker.components.luck:GetLuck()/1000
+            local gl= math.random() - picker.components.luck:GetLuck()/1000
 
             if gl<=0.15 then 
                 merge(giveItemList,giveItemList3) itemInt = 4
@@ -877,7 +877,7 @@ local function doSpawnItem(it, target, picker) --it风滚草奖励列表里的�
     -- 目标是物品才能执行到这里啊
     local item = spawnAtGround(it.item or it.items, x,y,z)
     if item == nil then return end
-    SetSpellCB(item, picker)
+    GLOBAL.SetSpellCB(item, picker)
     if it.aggro and item.components.combat ~= nil and picker ~= nil then
         item.components.combat:SuggestTarget(picker)
     end
@@ -1248,7 +1248,7 @@ AddPrefabPostInit(
                 -- 对扩展mod的掉落物表
                 for name,loottables in pairs(GLOBAL.TUNING.TUMBLEWEED_ALL or {}) do 
                     for key,loot in pairs(loottables) do
-                        print("表---",key)
+                        -- print("表---",key)
                         operateLoot(loot)
                     end
                 end
