@@ -1446,7 +1446,7 @@ local function addHit(inst, follower)
                         follower.hitcd = true
                         target.components.combat:GetAttacked(follower, damage * 0.25 + 0.4*level)
                         if lifestealupamount > 0 then
-                            print("吸血")
+                            --print("吸血")
                             follower.components.health:DoDelta(damage*lifestealupamount*allachiv_coindata["lifesteal"])
                         end
                         follower:DoTaskInTime(0.3, function() follower.hitcd=false end)
@@ -2133,7 +2133,7 @@ function allachivcoin:gearusefn(inst)
     inst:ListenForEvent("oneat", function(inst, data)
         local food = data.food
         if self.gearuse > 0 then
-            if food and food.components.edible and food.components.edible.foodtype == FOODTYPE.GEARS then
+            if food and food.components.edible and food.components.edible.foodtype == FOODTYPE.GEARS then -- 吃了齿轮
                 inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARGE"))
                 if inst.eat_charge ~= true then
                     inst.components.combat.damagemultiplier = inst.components.combat.damagemultiplier + 0.5
@@ -2166,7 +2166,7 @@ function allachivcoin:lightpowerfn(inst)
                 if inst.components.moisture.moisture>0 then
                     if weapon.components.weapon.projectile ~= nil then return end
                     local range, hit, per = 4, 5, 0.3
-                    if inst.charge_time > 0 then
+                    if inst.charge_time and inst.charge_time > 0 then
                         range, hit, per = 8, 10, 0.5
                     end
                     --weapon.components.weapon.olddmg = weapon.components.weapon.damage
@@ -2189,7 +2189,7 @@ function allachivcoin:lightpowerfn(inst)
                     if weapon == nil or weapon.prefab == "hambat" then return end
                     if weapon.components.weapon and weapon.components.weapon.attackrange == nil then
                         local range, hit, per = 4, 5, 0.3
-                        if inst.charge_time > 0 then
+                        if inst.charge_time and inst.charge_time > 0 then
                             range, hit, per = 8, 10, 0.5
                         end
                         --weapon.components.weapon.olddmg = weapon.components.weapon.damage
@@ -3237,8 +3237,8 @@ function allachivcoin:getprefabs(inst, prefabname)
             for k,v in pairs(inst.components.inventory.itemslots) do
                 if v and not v:HasTag("irreplaceable") then
                     local num = GetStackSize(v)
-                    if recycle_table[v.prefab] then 
-                        backnum = backnum + recycle_table[v.prefab] * num
+                    if TUNING.recycle_table[v.prefab] then 
+                        backnum = backnum + TUNING.recycle_table[v.prefab] * num
                     else
                         backnum = backnum + 1 * num
                     end
@@ -3257,8 +3257,8 @@ function allachivcoin:getprefabs(inst, prefabname)
                     for i,j in pairs(k.components.container.slots) do
                         if j and not j:HasTag("irreplaceable") then
                             local num = GetStackSize(j)
-                            if recycle_table[j.prefab] then 
-                                backnum = backnum + recycle_table[j.prefab] * num
+                            if TUNING.recycle_table[j.prefab] then 
+                                backnum = backnum + TUNING.recycle_table[j.prefab] * num
                             else
                                 backnum = backnum + 1 * num
                             end
@@ -3628,6 +3628,8 @@ function allachivcoin:Init(inst)
 		local currentSpeedMult = inst.components.locomotor:GetExternalSpeedMultiplier(inst,"speedUpgrade")
 		currentSpeedMult = currentSpeedMult + self.speedupamount*allachiv_coindata["speedup"]
 		inst.components.locomotor:SetExternalSpeedMultiplier(inst,"speedUpgrade", currentSpeedMult)
+
+        -- inst.components.inventory:IsInsulated()
 	end)
 
     inst:DoPeriodicTask(.5, function() self:onupdate(inst) end)

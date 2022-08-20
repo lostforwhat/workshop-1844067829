@@ -110,13 +110,10 @@ new_loot = {
         {chance = 0.5, item = "farm_hoe"},--园艺锄
         {chance = 0.25, item = "golden_farm_hoe"},--黄金园艺锄
         {chance = 0.1, item = "hammer"},--锤子
-        {chance = 0.05, item = "boat_item"},--船套装
-        {chance = 0.3, item = "golden_farm_hoe"},--浆
-        {chance = 0.06, item = "oar"},--锚套装
-        {chance = 0.06, item = "anchor_item"},--方向舵套装
-        {chance = 0.3, item = "steeringwheel_item"},--船补丁
-        {chance = 0.06, item = "boatpatch"},--桅杆套装
+        {chance = 0.05, items = {"boat_item","boat_grass_item"}},--船套装
+        {chance = 0.06, items = {"boatpatch","anchor_item","oar","steeringwheel_item","golden_farm_hoe","boat_cannon_kit","ocean_trawler_kit"}},--桅杆套装
         {chance = 0.05, item = "mast_item"},--海钓竿
+        {chance = 0.05, item = "boat_rotator_kit"},--海钓竿
         {chance = 0.05, item = "oceanfishingrod"},--木球浮标
         {chance = 0.05, item = "oceanfishingbobber_ball"},--木球浮标
         {chance = 0.05, item = "oceanfishingbobber_oval"},--硬物浮标
@@ -177,6 +174,8 @@ new_loot = {
         {chance = 0.1, item = "carrat_planted"},--胡萝卜鼠
         {chance = 0.05,item="wobster_sheller"},--龙虾
         {chance = 0.1, item = "dug_sapling_moon"},--月岛树苗
+        {chance = 0.02, item = "dug_bananabush"},--香蕉丛
+        {chance = 0.02, item = "dug_monkeytail"},--猴尾草
         {chance = 0.2, item = "moonbutterfly"},--蝴蝶
         {chance = 0.1, item = "moonglass"},--月亮碎片
         {chance = 0.3, item = "fruitdragon", aggro = true},--沙拉蝾螈
@@ -193,6 +192,9 @@ new_loot = {
         {chance = 0.1, item = "eel"},--鳗鱼
         {chance = 0.1, item = "bullkelp_root"},--海带茎
         {chance = 0.01, item = "waterplant_planter"},--海芽插穗
+        {chance = 0.01, item = "palmcone_scale"},--棕榈松果树鳞片
+        {chance = 0.01, item = "palmcone_seed"},--棕榈松果树芽
+        {chance = 0.01, item = "yotc_seedpacket"},--种子包
     },
 
 s_loot = {
@@ -244,7 +246,7 @@ s_loot = {
         -- {chance = 0.03, item = "unagi"},--鳗鱼料理
         -- {chance = 0.07, item = "vegstinger"},--蔬菜鸡尾酒
         -- {chance = 0.13, item = "voltgoatjelly"},--伏特羊肉冻
-
+        {chance = 0.01, item = "yotc_seedpacket_rare"},--高级种子包
         {chance = 0.3, item = "healingsalve"},--治疗药膏
         {chance = 0.2, item = "bandage"},--蜂蜜药膏
         {chance = 0.01, item = "walrus_tusk"},--象牙
@@ -284,6 +286,8 @@ s_loot = {
         {chance = 0.15, item = "armorslurper"},--饥饿腰带
         {chance = 0.25, item = "wathgrithrhat"},--战斗头盔
         {chance = 0.15, item = "spear_wathgrithr"},--战斗长矛
+        {chance = 0.1, item = "cutless"},--木头短剑
+        {chance = 0.1, item = "oar_monkey"},--战桨
         {chance = 0.1, item = "gunpowder"},--炸药
         {chance = 0.06, item = "purplegem"},--紫宝石
         {chance = 0.1, item = "bluegem"},--蓝宝石
@@ -357,8 +361,10 @@ ss_loot = {
         {chance = 0.01, item = "greengem"}, announce = false,--绿宝石
         {chance = 0.01, item = "opalpreciousgem"},--彩虹宝石
         {chance = 0.08, item = "thulecite", announce = false},--铥矿
+        {chance = 0.08, item = "moonstorm_static_item", announce = false},--约束静电
         {chance = 0.005, item = "cane"},--步行手杖
         {chance = 0.01, item = "eyebrellahat"},--眼球伞
+        {chance = 0.01, item = "polly_rogershat"},--波莉·罗杰的帽子
         {chance = 0.01, item = "panflute"},--排箫
         {chance = 0.02, item = "orangeamulet", announce = false},--懒人强盗
         {chance = 0.01, item = "yellowamulet"},--魔光护符
@@ -386,6 +392,7 @@ ss_loot = {
     },
 
 d_loot = {
+        {chance = 0.01, item = "cursed_monkey_token"},--诅咒饰品
         {chance = 0.05, item = "monsterlasagna"},--怪物千层饼
         {chance = 0.05, item = "wetgoop"},--湿腻焦糊
         {chance = 0.05, item = "mushroombomb"},--炸弹蘑菇
@@ -402,6 +409,8 @@ d_loot = {
         {chance = 0.1, item = "bunnyman", aggro = true},--兔人
         {chance = 0.4, item = "merm", aggro = true},--鱼人
         {chance = 0.1, item = "squid", aggro = true},--鱿鱼
+        {chance = 0.1, item = "lightcrab", aggro = true},--发光蟹
+        {chance = 0.1, item = "powder_monkey", aggro = true},--火药猴
         --{chance = 0.4, item = "mushgnome", aggro = true},--蘑菇地精
         {chance = 0.3, item = "spider_warrior", aggro = true},--蜘蛛战士
         {chance = 0.25, item = "spider_hider", aggro = true},--蜘蛛2
@@ -424,6 +433,7 @@ d_loot = {
         --{chance = 0.05, item = "birchnutdrake", aggro = true},--坚果树精
         --{chance = 0.05, item = "deciduoustree", aggro = true},--桦木树精
         {chance = 0.002, item = "monkeybarrel", building = true, announce = true}, -- 猴子桶
+        {chance = 0.002, item = "monkeyhut", building = true, announce = true}, -- 猴子小屋
         {chance = 0.002, item = "catcoonden", building = true, announce = true}, --中空树桩
         {chance = 0.002, item = "pigtorch", building = true, announce = true}, -- 猪人火炬
         {chance = 0.002, item = "houndmound", building = true, announce = true}, -- 猎犬丘
@@ -548,7 +558,7 @@ gift_loot = { --彩蛋
         {chance = 0.06, item = "packing_gift", gift = true}, --礼物彩蛋       
         {chance = 0.01, item = "luck_gift", gift = true}, --好运来彩蛋       
         {chance = 0.02, item = "kingtreasure", gift = true}, --王的宝库     
-        {chance = 0.02, item = "open_gift", gift = true}, --开草福利  
+        -- {chance = 0.02, item = "open_gift", gift = true}, --开草福利  
     },
 
 new_items_loot = { --新物品

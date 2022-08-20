@@ -838,10 +838,9 @@ function allachivevent:tempachivinit(inst)
     end
 end
 
---Enter Game
+--Enter Game--进入游戏
 function allachivevent:intogamefn(inst)
     inst:DoTaskInTime(3, function()
-    	-- TUNING.new_start
         if AchievementData[inst:GetDisplayName()] ~= nil then --换人
             local achievements = AchievementData[inst:GetDisplayName()]
             for k,v in pairs(achievements) do
@@ -850,7 +849,7 @@ function allachivevent:intogamefn(inst)
             inst.components.allachivcoin.coinamount = achievements["totalstar"]
             AchievementData[inst:GetDisplayName()] = nil
         else
-            if self.intogame < allachiv_eventdata["intogame"] then
+            if self.intogame < allachiv_eventdata["intogame"] then --新进入游戏
                 self.intogame = 1
                 self:seffc(inst, "intogame")
             end
@@ -1654,6 +1653,10 @@ function allachivevent:chopper(inst)
             self:addOneJob(inst, "mine666")
             self:addOneTemp(inst, "remine10")
         end
+        -- local wq = inst.components.inventory.equipslots["hands"]
+        -- if wq then
+        -- 	wq:PushEvent("toolworkfinished")
+        -- end
     end)
 end
 
@@ -1967,26 +1970,35 @@ function allachivevent:givefn(inst)
 end
 
 function allachivevent:onreroll(inst)
+	-- 监听自己 换人时触发
     inst:ListenForEvent("ms_playerreroll", function(inst)
-        local SaveAchieve = {}
-        for k,v in pairs(allachiv_eventdata) do
-            if type(v) == "number" then
-                SaveAchieve[k] = self[k] or 0
-            end
-        end
-        SaveAchieve["killboss"] = self.killboss or 0
-        SaveAchieve["complete_time"] = self.complete_time or nil
-        SaveAchieve["temp_total"] = self.temp_total or 0
-        SaveAchieve["tumbleweednum"] = self.tumbleweednum or 0
-        
-        SaveAchieve["totalstar"] = math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95)
-		if SaveAchieve["totalstar"] > 10 then
-            SaveAchieve["totalstar"] = SaveAchieve["totalstar"] - 10
-        else
-            SaveAchieve["totalstar"] = 0
-        end
-        AchievementData[inst:GetDisplayName()] = SaveAchieve
-        --inst.components.allachivcoin:removecoin(inst)
+    	if not inst:HasTag("removecoin_mod") and inst:HasTag("MONKEY_CURSE_3") then --removecoin_mod 必要的 在使用大门换人时，会为true
+    		return
+    	end
+    	--记录数据前,先清空兑换的能力为成就点
+    	inst.components.allachivcoin:removecoin(inst)--重置自己成就点
+	  --       local SaveAchieve = {}
+	  --       for k,v in pairs(allachiv_eventdata) do -- 成就任务
+	  --           if type(v) == "number" then
+	  --               SaveAchieve[k] = self[k] or 0
+	  --           end
+	  --       end
+	  --       SaveAchieve["killboss"] = self.killboss or 0
+	  --       SaveAchieve["complete_time"] = self.complete_time or nil
+	  --       SaveAchieve["temp_total"] = self.temp_total or 0
+	  --       SaveAchieve["tumbleweednum"] = self.tumbleweednum or 0
+	        
+	  --       SaveAchieve["totalstar"] = math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95)
+			-- if SaveAchieve["totalstar"] > 10 then
+	  --           SaveAchieve["totalstar"] = SaveAchieve["totalstar"] - 10
+	  --       else
+	  --           SaveAchieve["totalstar"] = 0
+	  --       end
+	  --   inst:DoTaskInTime(1, function()
+	  --       print("换人前",inst:GetDisplayName(),inst:GetAdjectivedName(),SaveAchieve)
+	  --       AchievementData[inst:GetDisplayName()] = SaveAchieve
+	  --       --inst.components.allachivcoin:removecoin(inst)
+	  --   end)
     end)
 end
 --Init

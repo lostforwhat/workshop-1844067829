@@ -827,7 +827,7 @@ recycle_table = {
 	["nightmarefuel"] = 10,--噩梦燃料
 	["transistor"] = 20,--电子元件
 	["marble"] = 10,--大理石
-	["ice"] = 1,--冰
+	["ice"] = 10,--冰
 	["poop"] = 5,--便便
 	["guano"] = 5,--鸟粪
 	["dragon_scales"] = 120,--蜻蜓鳞片
@@ -1095,7 +1095,10 @@ recycle_table = {
 	["voltgoatjelly"]=60,--伏特羊肉冻
 	["eyemaskhat"]=200,--眼面具
 	["shieldofterror"]=250,--恐怖盾牌
-	["milkywhites"]=10,--乳白物
+	["polly_rogershat"]=300,--波莉·罗杰的帽子
+	["palmcone_scale"]=10,--棕榈松果树鳞片
+	["cutless"]=80,--木头短剑
+	["oar_monkey"]=80,--战桨
 }
 
 if TUNING.new_items then
@@ -1111,3 +1114,5 @@ if TUNING.new_items then
 	recycle_table["opalgemsamulet"] = 900--彩色护符
 	recycle_table["stealingknife"] = 500--偷窃刀
 end
+
+TUNING.recycle_table = TUNING.recycle_table or recycle_table

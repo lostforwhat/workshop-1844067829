@@ -106,6 +106,7 @@ local states =
             inst.AnimState:PlayAnimation("paw_loop", true)
             inst.sg:SetTimeout(1.5)
             ChangeAttack(inst)
+            inst.chargecount = 0
         end,
 
         timeline =
@@ -132,7 +133,9 @@ local states =
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
             inst.SoundEmitter:PlaySound("dontstarve/creatures/rook_minotaur/step")
         end,
-
+        onupdate = function(inst, dt)
+            inst.chargecount = inst.chargecount + dt
+        end,
         timeline =
         {
             TimeEvent(5 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/rook_minotaur/step") end),

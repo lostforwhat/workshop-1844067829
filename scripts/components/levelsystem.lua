@@ -295,13 +295,16 @@ end
 
 function levelsystem:onreroll(inst)
     inst:ListenForEvent("ms_playerreroll", function(inst)
-                local SaveLevel = {}
-                SaveLevel["level"] = self.level or 1
-				SaveLevel["levelxp"] = self.levelxp or 0
-				SaveLevel["overallxp"] = self.overallxp or 0
-				SaveLevel["widgetXpos"] = self.widgetXpos or -1
-				SaveLevel["zoomlevel"] = self.zoomlevel or 1
-				LevelData[inst:GetDisplayName()] = SaveLevel
+    	-- inst.components.allachivcoin:removecoin(inst)
+  --   	inst:DoTaskInTime(1, function()
+  --               local SaveLevel = {}
+  --               SaveLevel["level"] = self.level or 1
+		-- 		SaveLevel["levelxp"] = self.levelxp or 0
+		-- 		SaveLevel["overallxp"] = self.overallxp or 0
+		-- 		SaveLevel["widgetXpos"] = self.widgetXpos or -1
+		-- 		SaveLevel["zoomlevel"] = self.zoomlevel or 1
+		-- 		LevelData[inst:GetDisplayName()] = SaveLevel
+		-- end)
     end)
 end
 

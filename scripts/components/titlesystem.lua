@@ -121,10 +121,10 @@ end
 
 local function randomItem(value,luck)--传入vip等级
 	--[[
-	local num = GetTableLength(recycle_table)
+	local num = GetTableLength(TUNING.recycle_table)
 	local rand = math.random(1, num)
 	local index = 1
-	for k,v in pairs(recycle_table) do
+	for k,v in pairs(TUNING.recycle_table) do
 		if index == rand then
 			if v < value then
 				return k
