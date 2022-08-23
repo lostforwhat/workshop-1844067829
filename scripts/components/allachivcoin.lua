@@ -3677,5 +3677,17 @@ function allachivcoin:onupdate(inst)
     end
 end
 
+function allachivcoin:TransferComponent(newinst)
+    local data = self:OnSave()
+    if data then
+        local newcomponent = newinst.components.allachivcoin
+        if not newcomponent then
+            newinst:AddComponent("allachivcoin")
+            newcomponent = newinst.components.allachivcoin
+        end
+        newcomponent:OnLoad(data)
+    end
+end
+
 
 return allachivcoin

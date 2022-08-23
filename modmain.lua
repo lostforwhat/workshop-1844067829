@@ -1466,7 +1466,7 @@ AddPrefabPostInit("multiplayer_portal_moonrock",function(inst)
     -- 当玩家要换人的时候
     local function moonrock_onaccept(inst, giver)--, item)
         -- giver.removecoin_mod = true
-        giver:AddTag("removecoin_mod") --给玩家添加标记
+        giver.removecoin_mod = true --给玩家添加标记
         giver:PushEvent("ms_playerreroll")
 
         if giver.components.inventory ~= nil then
@@ -1502,6 +1502,7 @@ AddPrefabPostInit("multiplayer_portal_moonrock",function(inst)
 end)
 --------------------------RPC----------------------------
 local function HuanRenShi(shardId,uid,dataStr)
+    if not GLOBAL.TheWorld.ismastershard then return end
     local data = StrToTable(dataStr)
     GLOBAL.TheWorld:PushEvent("ms_inheritdata",{
         userid = uid,
@@ -1523,17 +1524,20 @@ AddPlayerPostInit(function(inst)
             -- print("执行之前的保存方法")
             data = oln_SaveForReroll(inst)
         end
-        if data == nil then
-            data = {}
-        end
-        data["allachivevent"] = inst.components.allachivevent ~= nil and inst.components.allachivevent:OnSave() or nil
-        data["allachivcoin"] = inst.components.allachivcoin ~= nil and inst.components.allachivcoin:OnSave() or nil
-        data["levelsystem"] = inst.components.levelsystem ~= nil and inst.components.levelsystem:OnSave() or nil
-        data["coinamount"] = inst:HasTag("removecoin_mod") and math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95) or nil --用于判断怎么换人的
-        if inst:HasTag("removecoin_mod") and not GLOBAL.TheWorld.ismastershard then --非主碎片时，将数据传送到主碎片
+        if inst.removecoin_mod and not GLOBAL.TheWorld.ismastershard then --非主碎片时，将数据传送到主碎片
+            if data == nil then
+                data = {}
+            end
+            inst.components.allachivcoin:removecoin(inst) --重置奖励
+            data["allachivevent"] = inst.components.allachivevent ~= nil and inst.components.allachivevent:OnSave() or nil
+            data["allachivcoin"] = inst.components.allachivcoin ~= nil and inst.components.allachivcoin:OnSave() or nil
+            data["levelsystem"] = inst.components.levelsystem ~= nil and inst.components.levelsystem:OnSave() or nil
+            data["titlesystem"] = inst.components.levelsystem ~= nil and inst.components.levelsystem:OnSave() or nil
+            data["luck"] = inst.components.levelsystem ~= nil and inst.components.levelsystem:OnSave() or nil
+            data["coinamount"] = inst.removecoin_mod and math.ceil(inst.components.allachivcoin.coinamount + inst.components.allachivcoin.starsspent*0.95) or nil --用于判断怎么换人的
             local uid = inst.userid --玩家克雷id
             local dataStr = TableToStr(data)
-            SendModRPCToShard(GetShardModRPC(modname, "HuanRenShi"),1,uid,dataStr)--将数据传入主世界
+            SendModRPCToShard(GetShardModRPC(modname, "HuanRenShi"),nil,uid,dataStr)--将数据传入主世界
             return 
         end
         return GLOBAL.next(data) ~= nil and data or nil
@@ -1545,7 +1549,7 @@ AddPlayerPostInit(function(inst)
         end
         -- print("加载旧数据",inst.components.allachivevent)
 
-        -- 加载换人时
+        -- 加载换人时 组件里添加 TransferComponent 方法 用于人猴互换数据
         if data.allachivevent ~= nil and inst.components.allachivevent then 
             inst.components.allachivevent:OnLoad(data.allachivevent)
         end
@@ -1554,6 +1558,12 @@ AddPlayerPostInit(function(inst)
         end
         if data.levelsystem ~= nil and inst.components.levelsystem then 
             inst.components.levelsystem:OnLoad(data.levelsystem)
+        end
+        if data.titlesystem ~= nil and inst.components.titlesystem then 
+            inst.components.titlesystem:OnLoad(data.titlesystem)
+        end
+        if data.luck ~= nil and inst.components.luck then 
+            inst.components.luck:OnLoad(data.luck)
         end
         if data.coinamount then
             inst.components.allachivcoin.coinamount = data.coinamount

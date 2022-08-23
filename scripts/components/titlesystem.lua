@@ -1677,4 +1677,16 @@ function Titlesystem:Init(inst)
 	end)
 end
 
+function Titlesystem:TransferComponent(newinst)
+    local data = self:OnSave()
+    if data then
+        local newcomponent = newinst.components.titlesystem
+        if not newcomponent then
+            newinst:AddComponent("titlesystem")
+            newcomponent = newinst.components.titlesystem
+        end
+        newcomponent:OnLoad(data)
+    end
+end
+
 return Titlesystem

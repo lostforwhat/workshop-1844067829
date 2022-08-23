@@ -164,6 +164,18 @@ function levelsystem:OnLoad(data)
 
 end
 
+function levelsystem:TransferComponent(newinst)
+    local data = self:OnSave()
+    if data then
+        local newcomponent = newinst.components.levelsystem
+        if not newcomponent then
+            newinst:AddComponent("levelsystem")
+            newcomponent = newinst.components.levelsystem
+        end
+        newcomponent:OnLoad(data)
+    end
+end
+
 function levelsystem:savewidgetXPos(inst, xpos)
 	self.widgetXpos = xpos
 end

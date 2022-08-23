@@ -77,4 +77,16 @@ function Luck:OnLoad(data)
 	end
 end
 
+function Luck:TransferComponent(newinst)
+    local data = self:OnSave()
+    if data then
+        local newcomponent = newinst.components.luck
+        if not newcomponent then
+            newinst:AddComponent("luck")
+            newcomponent = newinst.components.luck
+        end
+        newcomponent:OnLoad(data)
+    end
+end
+
 return Luck
